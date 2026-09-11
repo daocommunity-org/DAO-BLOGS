@@ -415,16 +415,14 @@
   overflow: visible !important;
 }
 
+.mermaid svg .node .label,
+.mermaid-wrapper svg .node .label,
+.mermaid-fullscreen-content svg .node .label,
 .mermaid svg .node foreignObject div,
 .mermaid-wrapper svg .node foreignObject div,
 .mermaid-fullscreen-content svg .node foreignObject div {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  height: 100% !important;
-  width: 100% !important;
   text-align: center !important;
+  display: block !important;
   overflow: visible !important;
 }
 
@@ -450,8 +448,6 @@
   color: #ffffff !important;
   font-family: var(--font-montserrat), Montserrat, sans-serif !important;
   font-size: 13px !important;
-  text-anchor: middle !important;
-  text-align: center !important;
 }
 
 /* Connective paths and arrows */
@@ -504,10 +500,9 @@
 .mermaid-wrapper svg .edgeLabel tspan {
   fill: #cbd5e1 !important;
   color: #cbd5e1 !important;
-  font-family: Montserrat, -apple-system, BlinkMacSystemFont, sans-serif !important;
-  font-size: 11.5px !important;
+  font-family: var(--font-montserrat), Montserrat, sans-serif !important;
+  font-size: 12px !important;
   font-weight: 500 !important;
-  text-anchor: middle !important;
   overflow: visible !important;
 }
 

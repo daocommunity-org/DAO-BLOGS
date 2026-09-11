@@ -13,8 +13,30 @@ function initMermaid() {
   mermaid.initialize({
     startOnLoad: false,
     securityLevel: "loose",
-    theme: "dark",
-    fontFamily: font,
+    theme: "base",
+    themeVariables: {
+      darkMode: true,
+      background: "transparent",
+      fontFamily: font,
+      fontSize: "13px",
+      primaryColor: "#222e45",
+      primaryTextColor: "#ffffff",
+      primaryBorderColor: "#415a77",
+      lineColor: "#778da9",
+      secondaryColor: "#1b263b",
+      tertiaryColor: "#1a2436",
+      mainBkg: "#222e45",
+      nodeBorder: "#415a77",
+      nodeTextColor: "#ffffff",
+      clusterBkg: "#1a2436",
+      clusterBorder: "#415a77",
+      defaultLinkColor: "#778da9",
+      titleColor: "#ffffff",
+      edgeLabelBackground: "#162032",
+      labelBoxBkgColor: "#162032",
+      labelBoxBorderColor: "#415a77",
+      labelTextColor: "#cbd5e1",
+    },
     flowchart: {
       look: "classic",
       htmlLabels: true,
@@ -23,23 +45,6 @@ function initMermaid() {
       nodeSpacing: 45,
       rankSpacing: 45,
       useMaxWidth: false,
-    },
-    themeVariables: {
-      darkMode: true,
-      background: "transparent",
-      fontFamily: font,
-      fontSize: "13px",
-      mainBkg: "#222e45",
-      nodeBkg: "#222e45",
-      nodeTextColor: "#ffffff",
-      nodeBorder: "#415a77",
-      primaryColor: "#222e45",
-      primaryTextColor: "#ffffff",
-      primaryBorderColor: "#415a77",
-      lineColor: "#778da9",
-      secondaryColor: "#1b263b",
-      tertiaryColor: "#1b263b",
-      edgeLabelBackground: "#162032",
     },
   });
 }
@@ -72,7 +77,11 @@ export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
         }
         initMermaid();
         const id = `mermaid-${Math.random().toString(36).substring(2, 9)}`;
-        const { svg: renderedSvg } = await mermaid.render(id, chart);
+        const { svg: renderedSvg } = await mermaid.render(
+          id,
+          chart,
+          containerRef.current || undefined
+        );
         if (isMounted) {
           setSvg(renderedSvg);
           setError(null);
