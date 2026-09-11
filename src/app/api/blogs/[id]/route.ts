@@ -6,6 +6,10 @@ import Blog from "@/models/Blog";
 import Like from "@/models/Like";
 import Comment from "@/models/Comment";
 import mongoose from "mongoose";
+import {
+  extractAllCloudinaryUrls,
+  deleteOrphanedCloudinaryImages,
+} from "@/lib/cloudinary";
 
 export async function GET(
   request: NextRequest,
@@ -113,6 +117,16 @@ export async function PUT(
       }
     }
 
+    // Fetch existing blog to track current images before update
+    const existingBlog = await Blog.findOne(query);
+    if (!existingBlog) {
+      return NextResponse.json(
+        { success: false, error: "Blog not found" },
+        { status: 404 }
+      );
+    }
+    const oldImageUrls = extractAllCloudinaryUrls(existingBlog.content, existingBlog.coverImage);
+
     const updatedBlog = await Blog.findOneAndUpdate(
       query,
       { $set: updateData },
@@ -125,6 +139,12 @@ export async function PUT(
         { status: 404 }
       );
     }
+
+    // Clean up any images that were removed or replaced
+    const newImageUrls = extractAllCloudinaryUrls(updatedBlog.content, updatedBlog.coverImage);
+    deleteOrphanedCloudinaryImages(oldImageUrls, newImageUrls).catch((err) =>
+      console.error("Orphaned Cloudinary images cleanup failed:", err)
+    );
 
     return NextResponse.json({ success: true, blog: updatedBlog });
   } catch (error: any) {
@@ -163,6 +183,14 @@ export async function DELETE(
       return NextResponse.json(
         { success: false, error: "Blog not found" },
         { status: 404 }
+      );
+    }
+
+    // Automatically clean up all Cloudinary images associated with this post
+    const imagesToDelete = extractAllCloudinaryUrls(blog.content, blog.coverImage);
+    if (imagesToDelete.length > 0) {
+      deleteOrphanedCloudinaryImages(imagesToDelete, []).catch((err) =>
+        console.error("Cloudinary image deletion failed for blog", blog._id, err)
       );
     }
 
