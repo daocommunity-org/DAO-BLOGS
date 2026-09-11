@@ -325,15 +325,11 @@
 
 /* Fullscreen Diagram Modal Content */
 .mermaid-fullscreen-content {
-  background-color: transparent !important;
+  background: transparent !important;
   border: none !important;
   padding: 0 !important;
   margin: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: auto !important;
-  max-width: none !important;
+  box-shadow: none !important;
   overflow: visible !important;
 }
 
@@ -341,6 +337,7 @@
   display: block !important;
   width: max-content !important;
   max-width: none !important;
+  max-height: none !important;
   height: auto !important;
   margin: 0 auto !important;
   overflow: visible !important;
@@ -348,30 +345,18 @@
 }
 
 /* Node shapes - dark slate cards with blueprint border */
-.mermaid svg .node rect,
 .mermaid-wrapper svg .node rect,
-.mermaid-fullscreen-content svg .node rect,
-.mermaid svg .node polygon,
 .mermaid-wrapper svg .node polygon,
-.mermaid-fullscreen-content svg .node polygon,
-.mermaid svg .node circle,
 .mermaid-wrapper svg .node circle,
-.mermaid-fullscreen-content svg .node circle,
-.mermaid svg .node ellipse,
 .mermaid-wrapper svg .node ellipse,
-.mermaid-fullscreen-content svg .node ellipse,
-.mermaid svg .node path,
-.mermaid-wrapper svg .node path,
-.mermaid-fullscreen-content svg .node path {
+.mermaid-wrapper svg .node path {
   fill: #222e45 !important;
   stroke: #415a77 !important;
   stroke-width: 1.5px !important;
 }
 
 /* Subgraph clusters (Blueprint dashed boundaries) */
-.mermaid svg .cluster rect,
-.mermaid-wrapper svg .cluster rect,
-.mermaid-fullscreen-content svg .cluster rect {
+.mermaid-wrapper svg .cluster rect {
   fill: #1a2436 !important;
   stroke: #415a77 !important;
   stroke-dasharray: 6 4 !important;
@@ -380,24 +365,14 @@
   ry: 8px !important;
 }
 
-.mermaid svg .cluster foreignObject,
-.mermaid-wrapper svg .cluster foreignObject,
-.mermaid-fullscreen-content svg .cluster foreignObject {
+.mermaid-wrapper svg .cluster foreignObject {
   overflow: visible !important;
 }
 
-.mermaid svg .cluster text,
 .mermaid-wrapper svg .cluster text,
-.mermaid-fullscreen-content svg .cluster text,
-.mermaid svg .cluster-label,
 .mermaid-wrapper svg .cluster-label,
-.mermaid-fullscreen-content svg .cluster-label,
-.mermaid svg .cluster-label text,
 .mermaid-wrapper svg .cluster-label text,
-.mermaid-fullscreen-content svg .cluster-label text,
-.mermaid svg .cluster-label span,
-.mermaid-wrapper svg .cluster-label span,
-.mermaid-fullscreen-content svg .cluster-label span {
+.mermaid-wrapper svg .cluster-label span {
   fill: #94a3b8 !important;
   color: #94a3b8 !important;
   font-family: Montserrat, sans-serif !important;
@@ -410,63 +385,51 @@
 
 /* Node Text & Label Styling */
 .mermaid svg .node foreignObject,
-.mermaid-wrapper svg .node foreignObject,
-.mermaid-fullscreen-content svg .node foreignObject {
+.mermaid-wrapper svg .node foreignObject {
   overflow: visible !important;
 }
 
-.mermaid svg .node .label,
-.mermaid-wrapper svg .node .label,
-.mermaid-fullscreen-content svg .node .label,
 .mermaid svg .node foreignObject div,
-.mermaid-wrapper svg .node foreignObject div,
-.mermaid-fullscreen-content svg .node foreignObject div {
+.mermaid-wrapper svg .node foreignObject div {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100% !important;
+  width: 100% !important;
   text-align: center !important;
-  display: block !important;
   overflow: visible !important;
 }
 
 .mermaid svg text,
 .mermaid-wrapper svg text,
-.mermaid-fullscreen-content svg text,
 .mermaid svg .node text,
 .mermaid-wrapper svg .node text,
-.mermaid-fullscreen-content svg .node text,
 .mermaid svg .nodeLabel,
 .mermaid-wrapper svg .nodeLabel,
-.mermaid-fullscreen-content svg .nodeLabel,
 .mermaid svg .label text,
 .mermaid-wrapper svg .label text,
-.mermaid-fullscreen-content svg .label text,
 .mermaid svg .node foreignObject span,
 .mermaid-wrapper svg .node foreignObject span,
-.mermaid-fullscreen-content svg .node foreignObject span,
 .mermaid svg tspan,
-.mermaid-wrapper svg tspan,
-.mermaid-fullscreen-content svg tspan {
+.mermaid-wrapper svg tspan {
   fill: #ffffff !important;
   color: #ffffff !important;
   font-family: var(--font-montserrat), Montserrat, sans-serif !important;
   font-size: 13px !important;
+  text-anchor: middle !important;
+  text-align: center !important;
 }
 
 /* Connective paths and arrows */
-.mermaid svg .edgePath path.path,
 .mermaid-wrapper svg .edgePath path.path,
-.mermaid-fullscreen-content svg .edgePath path.path,
-.mermaid svg .flowchart-link,
-.mermaid-wrapper svg .flowchart-link,
-.mermaid-fullscreen-content svg .flowchart-link {
+.mermaid-wrapper svg .flowchart-link {
   stroke: #778da9 !important;
   stroke-width: 1.5px !important;
 }
 
-.mermaid svg .marker,
 .mermaid-wrapper svg .marker,
-.mermaid-fullscreen-content svg .marker,
-.mermaid svg marker path,
-.mermaid-wrapper svg marker path,
-.mermaid-fullscreen-content svg marker path {
+.mermaid-wrapper svg marker path {
   fill: #778da9 !important;
   stroke: #778da9 !important;
 }
@@ -500,9 +463,10 @@
 .mermaid-wrapper svg .edgeLabel tspan {
   fill: #cbd5e1 !important;
   color: #cbd5e1 !important;
-  font-family: var(--font-montserrat), Montserrat, sans-serif !important;
-  font-size: 12px !important;
+  font-family: Montserrat, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 11.5px !important;
   font-weight: 500 !important;
+  text-anchor: middle !important;
   overflow: visible !important;
 }
 
