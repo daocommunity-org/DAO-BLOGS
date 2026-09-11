@@ -1,69 +1,184 @@
-import Image from "next/image";
+import { Navbar } from "@/components/navbar";
+import { connectToDatabase } from "@/lib/mongodb";
+import Blog from "@/models/Blog";
+import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export default function Home() {
+export const revalidate = 60;
+
+function formatDate(date: string | Date) {
+  return new Date(date)
+    .toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    })
+    .toUpperCase();
+}
+
+async function getBlogs() {
+  try {
+    await connectToDatabase();
+    const blogs = await Blog.find({ status: "published" })
+      .sort({ createdAt: -1 })
+      .select("title slug excerpt coverImage tags author likesCount commentsCount createdAt")
+      .lean();
+    return JSON.parse(JSON.stringify(blogs));
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    return [];
+  }
+}
+
+export default async function HomePage() {
+  const blogs = await getBlogs();
+  const featuredPost = blogs[0];
+  const remainingPosts = blogs.slice(1);
+
+  // Group remaining posts in pairs of 2 for grid rows
+  const rows = [];
+  for (let i = 0; i < remainingPosts.length; i += 2) {
+    rows.push(remainingPosts.slice(i, i + 2));
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <Navbar />
+
+      <main className="flex-1 w-full flex flex-col">
+        {/* Hero Header (No center vertical line) */}
+        <section className="w-full dashed-border-b">
+          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground">
+              DAO Community <span className="text-primary font-extrabold">Blog</span>
+            </h1>
+            <p className="text-sm sm:text-base text-muted-foreground mt-2 max-w-xl leading-relaxed">
+              Ideas, technical deep dives, and stories from our community.
+            </p>
+          </div>
+        </section>
+
+        {blogs.length === 0 ? (
+          <section className="w-full dashed-border-b">
+            <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-20 dashed-border-x text-center">
+              <p className="text-sm text-muted-foreground">No blogs published yet.</p>
+            </div>
+          </section>
+        ) : (
+          <>
+            {/* Featured Post (Big single row - no center vertical line) */}
+            {featuredPost && (
+              <section className="w-full dashed-border-b">
+                <div className="max-w-6xl w-full mx-auto p-6 sm:p-10 dashed-border-x">
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                    <div className="lg:col-span-7 flex flex-col justify-between space-y-5">
+                      <div className="space-y-3">
+                        <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-medium">
+                          {formatDate(featuredPost.createdAt)}
+                        </span>
+                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground hover:text-primary transition-colors leading-tight">
+                          <Link href={`/blogs/${featuredPost.slug}`}>
+                            {featuredPost.title}
+                          </Link>
+                        </h2>
+                        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed line-clamp-3">
+                          {featuredPost.excerpt}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2.5 pt-1">
+                        <Avatar className="w-6 h-6 border border-border/60">
+                          <AvatarImage
+                            src={featuredPost.author?.image}
+                            alt={featuredPost.author?.name}
+                            referrerPolicy="no-referrer"
+                          />
+                          <AvatarFallback className="text-[10px] font-medium">
+                            {featuredPost.author?.name?.[0]?.toUpperCase() || "A"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-xs text-foreground/80 font-medium">
+                          {featuredPost.author?.name}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="lg:col-span-5">
+                      <Link href={`/blogs/${featuredPost.slug}`} className="w-full block group">
+                        <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden border border-border/60 bg-muted/30">
+                          {featuredPost.coverImage ? (
+                            <img
+                              src={featuredPost.coverImage}
+                              alt={featuredPost.title}
+                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-card text-muted-foreground text-xs font-mono">
+                              Cover Image
+                            </div>
+                          )}
+                        </div>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* 2-Column Grid Rows (No cover images, separated by dashed lines) */}
+            {rows.map((row, rowIndex) => (
+              <section key={rowIndex} className="w-full dashed-border-b">
+                <div className="max-w-6xl w-full mx-auto dashed-border-x grid grid-cols-1 md:grid-cols-2">
+                  {row.map((post: any, colIndex: number) => (
+                    <article
+                      key={post._id}
+                      className={`p-6 sm:p-10 flex flex-col justify-between gap-6 ${
+                        colIndex === 0 ? "md:dashed-border-r max-md:dashed-border-b" : ""
+                      }`}
+                    >
+                      <div className="space-y-3">
+                        <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-medium">
+                          {formatDate(post.createdAt)}
+                        </span>
+                        <h3 className="text-xl sm:text-2xl font-bold text-foreground hover:text-primary transition-colors leading-snug">
+                          <Link href={`/blogs/${post.slug}`}>
+                            {post.title}
+                          </Link>
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                          {post.excerpt}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2.5 pt-1">
+                        <Avatar className="w-6 h-6 border border-border/60">
+                          <AvatarImage
+                            src={post.author?.image}
+                            alt={post.author?.name}
+                            referrerPolicy="no-referrer"
+                          />
+                          <AvatarFallback className="text-[10px] font-medium">
+                            {post.author?.name?.[0]?.toUpperCase() || "A"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-xs text-foreground/80 font-medium">
+                          {post.author?.name}
+                        </span>
+                      </div>
+                    </article>
+                  ))}
+                  {row.length === 1 && (
+                    <div className="hidden md:block" />
+                  )}
+                </div>
+              </section>
+            ))}
+          </>
+        )}
       </main>
     </div>
   );
 }
+
+

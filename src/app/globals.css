@@ -1,26 +1,514 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,700&family=Roboto+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap");
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-montserrat), "Montserrat", system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-roboto-mono), "Roboto Mono", monospace;
+  --font-heading: var(--font-montserrat), "Montserrat", system-ui, -apple-system, sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  /* Base Colors */
+  --background: #1b263b;
+  --foreground: #ffffff;
+
+  /* Primary Colors */
+  --primary: #1fb6ff;
+  --primary-foreground: #0d1b2a;
+
+  /* Secondary & Accent */
+  --secondary: #778da9;
+  --secondary-foreground: #0d1b2a;
+  --accent: #2a3a52;
+  --accent-foreground: #e0e1dd;
+
+  /* UI Components */
+  --card: #222e45;
+  --card-foreground: #e0e1dd;
+  --popover: #1b263b;
+  --popover-foreground: #ffffff;
+  --muted: #2a3a52;
+  --muted-foreground: #a0a0a0;
+
+  /* Utilities & Forms */
+  --border: #415a77;
+  --input: #415a77;
+  --ring: #1fb6ff;
+
+  /* Status & Feedback */
+  --destructive: #ff3d8f;
+  --destructive-foreground: #ffffff;
+
+  /* Charts */
+  --chart-1: #1fb6ff;
+  --chart-2: #778da9;
+  --chart-3: #a76eff;
+  --chart-4: #e0e1dd;
+  --chart-5: #ff3d8f;
+
+  /* Sidebar */
+  --sidebar: #1b263b;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #1fb6ff;
+  --sidebar-primary-foreground: #0d1b2a;
+  --sidebar-accent: #2a3a52;
+  --sidebar-accent-foreground: #e0e1dd;
+  --sidebar-border: #415a77;
+  --sidebar-ring: #1fb6ff;
+
+  --radius: 0.625rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    font-family: var(--font-montserrat), "Montserrat", system-ui, -apple-system, sans-serif;
+  }
+  html {
+    font-family: var(--font-montserrat), "Montserrat", system-ui, -apple-system, sans-serif;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-montserrat), "Montserrat", system-ui, -apple-system, sans-serif;
+  }
+  code, pre, kbd, samp {
+    font-family: var(--font-roboto-mono), "Roboto Mono", monospace;
   }
 }
 
-body {
-  background: var(--background);
+/* Blog Content Typography */
+.blog-content {
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-montserrat), "Montserrat", sans-serif;
+  line-height: 1.75;
+}
+
+.blog-content h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  line-height: 1.25;
+}
+
+.blog-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 2rem;
+  margin-bottom: 0.875rem;
+  padding-bottom: 0.375rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  line-height: 1.3;
+}
+
+.blog-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #ffffff;
+  line-height: 1.35;
+}
+
+.blog-content h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+}
+
+.blog-content p {
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 1.25rem;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.blog-content p.lead,
+.blog-content .lead {
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+  padding-left: 1rem;
+  border-left: 3px solid var(--primary);
+  font-style: italic;
+}
+
+.blog-content ul {
+  list-style-type: disc !important;
+  padding-left: 1.75rem !important;
+  margin-bottom: 1.25rem !important;
+}
+
+.blog-content ol {
+  list-style-type: decimal !important;
+  padding-left: 1.75rem !important;
+  margin-bottom: 1.25rem !important;
+}
+
+.blog-content li {
+  font-size: 1rem;
+  line-height: 1.75;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.85);
+  padding-left: 0.25rem;
+}
+
+.blog-content strong,
+.blog-content b {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.blog-content em,
+.blog-content i {
+  font-style: italic;
+}
+
+.blog-content a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: opacity 0.15s ease;
+}
+
+.blog-content a:hover {
+  opacity: 0.8;
+}
+
+.blog-content blockquote {
+  border-left: 3px solid var(--primary);
+  padding: 0.75rem 1.25rem;
+  margin: 1.5rem 0;
+  background-color: rgba(255, 255, 255, 0.04);
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-style: italic;
+}
+
+.blog-content blockquote p {
+  margin-bottom: 0;
+}
+
+.blog-content code:not(pre code) {
+  font-family: var(--font-roboto-mono), monospace;
+  font-size: 0.85em;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--primary);
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.blog-content pre:not(.mermaid) {
+  font-family: var(--font-roboto-mono), monospace;
+  font-size: 0.825rem;
+  line-height: 1.6;
+  background-color: #0e1726;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  color: #e0e1dd;
+}
+
+.blog-content hr {
+  border: 0;
+  border-top: 1px dashed rgba(255, 255, 255, 0.2);
+  margin: 2rem 0;
+}
+
+.blog-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  margin: 1.5rem 0;
+}
+
+.blog-content table {
+  width: 100%;
+  margin: 1.5rem 0;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.blog-content th {
+  background-color: rgba(255, 255, 255, 0.06);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.blog-content td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Mermaid Diagram Dark Blueprint Styling */
+.mermaid-wrapper {
+  background-color: #162032 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 0.75rem !important;
+  padding: 1.5rem !important;
+  margin: 1.75rem 0 !important;
+  overflow-x: auto !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.mermaid-wrapper svg {
+  max-width: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+/* Fullscreen Diagram Modal Content */
+.mermaid-fullscreen-content svg {
+  max-width: 90vw !important;
+  max-height: 80vh !important;
+  width: auto !important;
+  height: auto !important;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.6));
+}
+
+/* Node shapes - dark slate cards with blueprint border */
+.mermaid-wrapper svg .node rect,
+.mermaid-wrapper svg .node polygon,
+.mermaid-wrapper svg .node circle,
+.mermaid-wrapper svg .node ellipse,
+.mermaid-wrapper svg .node path {
+  fill: #222e45 !important;
+  stroke: #415a77 !important;
+  stroke-width: 1.5px !important;
+}
+
+/* Subgraph clusters (Blueprint dashed boundaries) */
+.mermaid-wrapper svg .cluster rect {
+  fill: #1a2436 !important;
+  stroke: #415a77 !important;
+  stroke-dasharray: 6 4 !important;
+  stroke-width: 1px !important;
+  rx: 8px !important;
+  ry: 8px !important;
+}
+
+.mermaid-wrapper svg .cluster foreignObject {
+  overflow: visible !important;
+}
+
+.mermaid-wrapper svg .cluster text,
+.mermaid-wrapper svg .cluster-label,
+.mermaid-wrapper svg .cluster-label text,
+.mermaid-wrapper svg .cluster-label span {
+  fill: #94a3b8 !important;
+  color: #94a3b8 !important;
+  font-family: Montserrat, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: normal !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+/* Node Text & Label Styling */
+.mermaid-wrapper svg .node foreignObject {
+  overflow: visible !important;
+}
+
+.mermaid-wrapper svg text,
+.mermaid-wrapper svg .node text,
+.mermaid-wrapper svg .nodeLabel,
+.mermaid-wrapper svg .label text,
+.mermaid-wrapper svg .node foreignObject div,
+.mermaid-wrapper svg tspan {
+  fill: #ffffff !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+  text-align: center !important;
+}
+
+/* Connective paths and arrows */
+.mermaid-wrapper svg .edgePath path.path,
+.mermaid-wrapper svg .flowchart-link {
+  stroke: #778da9 !important;
+  stroke-width: 1.5px !important;
+}
+
+.mermaid-wrapper svg .marker,
+.mermaid-wrapper svg marker path {
+  fill: #778da9 !important;
+  stroke: #778da9 !important;
+}
+
+/* Edge Labels */
+.mermaid-wrapper svg .edgeLabel text,
+.mermaid-wrapper svg text.edgeLabel {
+  fill: #cbd5e1 !important;
+  font-family: Montserrat, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+}
+
+.mermaid-wrapper svg .edgeLabel rect {
+  fill: #1b263b !important;
+  stroke: rgba(119, 141, 169, 0.4) !important;
+  stroke-width: 1px !important;
+  rx: 4px !important;
+  ry: 4px !important;
+}
+
+/* Dashed Blueprint Borders */
+.dashed-border-b {
+  background: repeating-linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.22) 0,
+    rgba(255, 255, 255, 0.22) 12px,
+    transparent 12px,
+    transparent 22px
+  ) bottom / 100% 1px no-repeat;
+}
+
+.dashed-border-t {
+  background: repeating-linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.22) 0,
+    rgba(255, 255, 255, 0.22) 12px,
+    transparent 12px,
+    transparent 22px
+  ) top / 100% 1px no-repeat;
+}
+
+.dashed-border-x {
+  background-image: 
+    repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 0, rgba(255, 255, 255, 0.22) 12px, transparent 12px, transparent 22px),
+    repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.22) 0, rgba(255, 255, 255, 0.22) 12px, transparent 12px, transparent 22px);
+  background-size: 1px 100%, 1px 100%;
+  background-position: left, right;
+  background-repeat: no-repeat, no-repeat;
+}
+
+.dashed-border-r {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.22) 0,
+    rgba(255, 255, 255, 0.22) 12px,
+    transparent 12px,
+    transparent 22px
+  ) right / 1px 100% no-repeat;
+}
+
+.dashed-border-l {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.22) 0,
+    rgba(255, 255, 255, 0.22) 12px,
+    transparent 12px,
+    transparent 22px
+  ) left / 1px 100% no-repeat;
+}
+
+@media (min-width: 768px) {
+  .md\:dashed-border-r {
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.22) 0,
+      rgba(255, 255, 255, 0.22) 12px,
+      transparent 12px,
+      transparent 22px
+    ) right / 1px 100% no-repeat;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:dashed-border-r {
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.22) 0,
+      rgba(255, 255, 255, 0.22) 12px,
+      transparent 12px,
+      transparent 22px
+    ) right / 1px 100% no-repeat;
+  }
+}
+
+@media (max-width: 1023px) {
+  .max-lg\:dashed-border-b {
+    background: repeating-linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.22) 0,
+      rgba(255, 255, 255, 0.22) 12px,
+      transparent 12px,
+      transparent 22px
+    ) bottom / 100% 1px no-repeat;
+  }
+}
+
+@media (max-width: 767px) {
+  .max-md\:dashed-border-b {
+    background: repeating-linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.22) 0,
+      rgba(255, 255, 255, 0.22) 12px,
+      transparent 12px,
+      transparent 22px
+    ) bottom / 100% 1px no-repeat;
+  }
 }
