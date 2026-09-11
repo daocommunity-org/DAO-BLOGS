@@ -20,8 +20,8 @@ function initMermaid() {
       htmlLabels: true,
       curve: "linear",
       padding: 24,
-      nodeSpacing: 45,
-      rankSpacing: 45,
+      nodeSpacing: 50,
+      rankSpacing: 50,
       useMaxWidth: true,
     },
     themeVariables: {

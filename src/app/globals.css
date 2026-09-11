@@ -442,7 +442,7 @@
   stroke: #778da9 !important;
 }
 
-/* Edge Labels Background - 100% opaque to completely hide arrow path underneath */
+/* Edge Labels Background & Badge */
 .mermaid svg .edgeLabel rect,
 .mermaid-wrapper svg .edgeLabel rect,
 .mermaid svg .edgeLabels rect,
@@ -453,9 +453,27 @@
   fill-opacity: 1 !important;
   opacity: 1 !important;
   stroke: #415a77 !important;
-  stroke-width: 1.5px !important;
+  stroke-width: 1px !important;
   rx: 4px !important;
   ry: 4px !important;
+}
+
+.mermaid svg .edgeLabel span,
+.mermaid-wrapper svg .edgeLabel span,
+.mermaid svg .edgeLabel div,
+.mermaid-wrapper svg .edgeLabel div {
+  background-color: #162032 !important;
+  border: 1px solid #415a77 !important;
+  border-radius: 4px !important;
+  padding: 2px 6px !important;
+  color: #cbd5e1 !important;
+  font-family: Montserrat, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  display: inline-block !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6) !important;
 }
 
 /* Edge Label Typography */
@@ -465,14 +483,12 @@
 .mermaid-wrapper svg .edgeLabel text,
 .mermaid svg text.edgeLabel,
 .mermaid-wrapper svg text.edgeLabel,
-.mermaid svg .edgeLabel span,
-.mermaid-wrapper svg .edgeLabel span,
 .mermaid svg .edgeLabel tspan,
 .mermaid-wrapper svg .edgeLabel tspan {
   fill: #cbd5e1 !important;
   color: #cbd5e1 !important;
   font-family: Montserrat, -apple-system, BlinkMacSystemFont, sans-serif !important;
-  font-size: 11.5px !important;
+  font-size: 11px !important;
   font-weight: 500 !important;
   text-anchor: middle !important;
   overflow: visible !important;
