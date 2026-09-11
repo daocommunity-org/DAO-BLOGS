@@ -443,6 +443,22 @@
 }
 
 /* Edge Labels Background - Seamless floating text without box/borders */
+.mermaid svg .edgeLabel foreignObject,
+.mermaid-wrapper svg .edgeLabel foreignObject {
+  overflow: visible !important;
+}
+
+.mermaid svg .edgeLabel foreignObject div,
+.mermaid-wrapper svg .edgeLabel foreignObject div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100% !important;
+  width: 100% !important;
+  text-align: center !important;
+  overflow: visible !important;
+}
+
 .mermaid svg .edgeLabel rect,
 .mermaid-wrapper svg .edgeLabel rect,
 .mermaid svg .edgeLabels rect,
@@ -479,8 +495,19 @@
   font-weight: 500 !important;
   line-height: 1.25 !important;
   text-anchor: middle !important;
+  dominant-baseline: central !important;
+  alignment-baseline: central !important;
   text-align: center !important;
   overflow: visible !important;
+}
+
+.mermaid svg .edgeLabel span,
+.mermaid-wrapper svg .edgeLabel span {
+  display: inline-block !important;
+  background-color: #162032 !important;
+  padding: 2px 8px !important;
+  border-radius: 2px !important;
+  vertical-align: middle !important;
 }
 
 /* Ensure no foreignObject ever clips in any browser */

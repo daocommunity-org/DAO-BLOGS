@@ -50,34 +50,35 @@ interface MermaidViewerProps {
 }
 
 function wrapEdgeLabels(diagramCode: string): string {
-  // Matches edge labels like: -->|Word1 Word2| or -.->|Word1 Word2| or ==>|Word1 Word2|
-  return diagramCode.replace(/(-->|--\>|-\.->|==>|--)\s*\|([^|\n]+)\|/g, (match, arrow, label) => {
+  // 1) Pipe syntax: -->|text| or -.->|text| or ==>|text| or --> |text|
+  let res = diagramCode.replace(/([=-]+>|--\>|-\.->|==>|--)\s*\|([^|\n]+)\|/g, (match, arrow, label) => {
     let clean = label.trim();
-    if (/<br\s*\/?>/i.test(clean)) {
-      return match;
-    }
+    if (/<br\s*\/?>/i.test(clean)) return match;
     const hasQuotes = clean.startsWith('"') && clean.endsWith('"');
-    if (hasQuotes) {
-      clean = clean.slice(1, -1);
-    }
+    if (hasQuotes) clean = clean.slice(1, -1);
     const words = clean.split(/\s+/);
     if (words.length >= 2) {
-      let wrapped = "";
-      if (words.length === 2) {
-        wrapped = words.join("<br/>");
-      } else if (words.length === 3) {
-        wrapped = `${words[0]}<br/>${words[1]} ${words[2]}`;
-      } else {
-        const lines: string[] = [];
-        for (let i = 0; i < words.length; i += 2) {
-          lines.push(words.slice(i, i + 2).join(" "));
-        }
-        wrapped = lines.join("<br/>");
-      }
-      return `${arrow}|"${wrapped}"|`;
+      const wrapped = words.length === 2 ? words.join("<br/>") : words.join("<br/>");
+      return `${arrow.trim()}|"${wrapped}"|`;
     }
     return match;
   });
+
+  // 2) Dash syntax: -- text --> or -- "text" -->
+  res = res.replace(/--\s+([A-Za-z0-9&/ _-]+?)\s+-->/g, (match, label) => {
+    let clean = label.trim();
+    if (/<br\s*\/?>/i.test(clean)) return match;
+    const hasQuotes = clean.startsWith('"') && clean.endsWith('"');
+    if (hasQuotes) clean = clean.slice(1, -1);
+    const words = clean.split(/\s+/);
+    if (words.length >= 2) {
+      const wrapped = words.join("<br/>");
+      return `-->|"${wrapped}"|`;
+    }
+    return match;
+  });
+
+  return res;
 }
 
 export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
