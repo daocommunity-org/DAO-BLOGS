@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { MonacoHtmlEditor } from "./monaco-html-editor";
 import { Button } from "./ui/button";
@@ -31,6 +31,7 @@ import {
   FileText,
   Hash,
   Compass,
+  Upload,
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -133,9 +134,41 @@ graph LR
     }
   };
 
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const coverFileInputRef = useRef<HTMLInputElement>(null);
+
   const handleCoverImageChange = (val: string) => {
     setCoverImage(val);
     setImageLoadError(false);
+  };
+
+  const handleCoverUpload = async (file: File) => {
+    if (!file) return;
+    setIsUploadingCover(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", "dao-blogs/covers");
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to upload cover image");
+      }
+
+      setCoverImage(data.url);
+      setImageLoadError(false);
+      toast.success("Cover image uploaded to Cloudinary!");
+    } catch (err: any) {
+      console.error("Cover upload error:", err);
+      toast.error(err.message || "Failed to upload cover image.");
+    } finally {
+      setIsUploadingCover(false);
+    }
   };
 
   const validateForm = () => {
@@ -605,39 +638,63 @@ graph LR
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
                     <ImageIcon className="w-3.5 h-3.5 text-primary" />
-                    Cover Media Preview
+                    Cover Media
                   </span>
-                  {coverImage && (
-                    <button
+                  <div className="flex items-center gap-2">
+                    <Button
                       type="button"
-                      onClick={() => handleCoverImageChange("")}
-                      className="text-[11px] font-mono text-muted-foreground hover:text-destructive cursor-pointer flex items-center gap-1"
+                      variant="outline"
+                      size="xs"
+                      disabled={isUploadingCover}
+                      onClick={() => coverFileInputRef.current?.click()}
+                      className="gap-1.5 text-xs cursor-pointer border-primary/40 hover:border-primary text-primary"
                     >
-                      <X className="w-3 h-3" /> Clear image
-                    </button>
-                  )}
+                      {isUploadingCover ? (
+                        <Loader2 className="w-3 h-3 animate-spin text-primary" />
+                      ) : (
+                        <Upload className="w-3 h-3 text-primary" />
+                      )}
+                      {isUploadingCover ? "Uploading..." : coverImage ? "Change Image" : "Upload Image"}
+                    </Button>
+                    {coverImage && (
+                      <button
+                        type="button"
+                        onClick={() => handleCoverImageChange("")}
+                        className="text-[11px] font-mono text-muted-foreground hover:text-destructive cursor-pointer flex items-center gap-1"
+                      >
+                        <X className="w-3 h-3" /> Clear
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Preview how the cover artwork appears on the hero and card grid.
+                  Upload directly to Cloudinary or specify an external image URL.
                 </p>
               </div>
 
-              {/* Cover Image URL Input */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-foreground font-mono">
-                  Cover Image URL (Optional)
-                </label>
-                <Input
-                  type="url"
-                  value={coverImage}
-                  onChange={(e) => handleCoverImageChange(e.target.value)}
-                  placeholder="https://images.unsplash.com/... or public image URL"
-                  className="font-mono text-xs h-10"
-                />
-              </div>
+              {/* Hidden File Input for Cover Image */}
+              <input
+                ref={coverFileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleCoverUpload(file);
+                  e.target.value = "";
+                }}
+              />
 
-              {/* Real-time Cover Image Preview Frame */}
-              <div className="rounded-xl border border-border/70 overflow-hidden bg-card/40">
+              {/* Real-time Cover Image Preview Frame / Dropzone */}
+              <div
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const file = e.dataTransfer.files?.[0];
+                  if (file) handleCoverUpload(file);
+                }}
+                className="rounded-xl border border-border/70 overflow-hidden bg-card/40 relative group"
+              >
                 {coverImage ? (
                   imageLoadError ? (
                     <div className="w-full aspect-[16/9] flex flex-col items-center justify-center text-center p-4 bg-destructive/10 text-destructive space-y-1.5">
@@ -656,19 +713,63 @@ graph LR
                         onError={() => setImageLoadError(true)}
                         className="w-full h-full object-cover"
                       />
+                      {/* Hover Overlay to change image */}
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          disabled={isUploadingCover}
+                          onClick={() => coverFileInputRef.current?.click()}
+                          className="gap-1.5 text-xs cursor-pointer shadow-lg"
+                        >
+                          <Upload className="w-3.5 h-3.5" />
+                          Upload New
+                        </Button>
+                      </div>
                     </div>
                   )
                 ) : (
-                  <div className="w-full aspect-[16/9] flex flex-col items-center justify-center text-center p-6 bg-muted/10">
-                    <ImageIcon className="w-8 h-8 text-muted-foreground/40 mb-2" />
-                    <span className="text-xs font-medium text-muted-foreground">
-                      No cover image specified
-                    </span>
-                    <p className="text-[11px] text-muted-foreground/70 max-w-xs mt-1">
-                      Articles without a cover image will automatically render using clean text typography.
-                    </p>
+                  <div
+                    onClick={() => coverFileInputRef.current?.click()}
+                    className={`w-full aspect-[16/9] flex flex-col items-center justify-center text-center p-6 bg-muted/10 border-2 border-dashed border-border/70 hover:border-primary/50 transition-colors cursor-pointer ${
+                      isUploadingCover ? "pointer-events-none opacity-60" : ""
+                    }`}
+                  >
+                    {isUploadingCover ? (
+                      <>
+                        <Loader2 className="w-8 h-8 text-primary animate-spin mb-2" />
+                        <span className="text-xs font-medium text-foreground">
+                          Uploading to Cloudinary...
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <ImageIcon className="w-8 h-8 text-muted-foreground/40 mb-2" />
+                        <span className="text-xs font-medium text-muted-foreground">
+                          Click to upload or drag & drop cover image
+                        </span>
+                        <p className="text-[11px] text-muted-foreground/70 max-w-xs mt-1 font-mono">
+                          PNG, JPG, WebP up to 10MB
+                        </p>
+                      </>
+                    )}
                   </div>
                 )}
+              </div>
+
+              {/* Cover Image URL Input */}
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground font-mono">
+                  Direct Image URL (Optional override)
+                </label>
+                <Input
+                  type="url"
+                  value={coverImage}
+                  onChange={(e) => handleCoverImageChange(e.target.value)}
+                  placeholder="https://res.cloudinary.com/... or external image URL"
+                  className="font-mono text-xs h-9"
+                />
               </div>
             </div>
 

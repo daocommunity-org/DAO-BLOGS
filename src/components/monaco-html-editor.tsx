@@ -1,10 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import { BlogContentRenderer } from "./blog-content-renderer";
 import { Button } from "./ui/button";
-import { Workflow, Layout, Heading2, Code2, Columns2, Eye } from "lucide-react";
+import {
+  Workflow,
+  Layout,
+  Heading2,
+  Code2,
+  Columns2,
+  Eye,
+  Image as ImageIcon,
+  Loader2,
+} from "lucide-react";
+import { toast } from "sonner";
 
 interface MonacoHtmlEditorProps {
   value: string;
@@ -18,9 +28,57 @@ export function MonacoHtmlEditor({
   minHeight = "560px",
 }: MonacoHtmlEditorProps) {
   const [viewMode, setViewMode] = useState<"split" | "editor" | "preview">("split");
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const editorRef = useRef<any>(null);
 
   const insertSnippet = (snippet: string) => {
+    if (editorRef.current) {
+      const editor = editorRef.current;
+      const selection = editor.getSelection();
+      if (selection) {
+        editor.executeEdits("snippet-insert", [
+          { range: selection, text: snippet, forceMoveMarkers: true },
+        ]);
+        editor.focus();
+        return;
+      }
+    }
     onChange(value ? `${value}\n\n${snippet}` : snippet);
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Reset input so re-selecting same file triggers change
+    e.target.value = "";
+
+    setIsUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", "dao-blogs/content");
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to upload image");
+      }
+
+      const imgTag = `<img src="${data.url}" alt="Article graphic" class="w-full max-h-[500px] object-cover rounded-xl border border-border my-6" />`;
+      insertSnippet(imgTag);
+      toast.success("Image uploaded and inserted into article!");
+    } catch (err: any) {
+      console.error("Editor image upload error:", err);
+      toast.error(err.message || "Failed to upload image to Cloudinary.");
+    } finally {
+      setIsUploadingImage(false);
+    }
   };
 
   const mermaidSample = `<pre class="mermaid">
@@ -37,12 +95,37 @@ graph LR
 
   return (
     <div className="flex flex-col border border-border/80 rounded-xl overflow-hidden bg-card/60">
+      {/* Hidden File Input for Image Upload */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+
       {/* Editor Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-card/90 border-b border-border/70">
         <div className="flex flex-wrap items-center gap-2 text-xs">
           <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground mr-1">
             Quick Insert:
           </span>
+          <Button
+            type="button"
+            variant="outline"
+            size="xs"
+            disabled={isUploadingImage}
+            onClick={() => fileInputRef.current?.click()}
+            className="gap-1.5 text-xs cursor-pointer border-primary/40 hover:border-primary text-primary"
+            title="Upload image to Cloudinary and insert into article"
+          >
+            {isUploadingImage ? (
+              <Loader2 className="w-3 h-3 animate-spin text-primary" />
+            ) : (
+              <ImageIcon className="w-3 h-3 text-primary" />
+            )}
+            {isUploadingImage ? "Uploading..." : "+ Upload Image"}
+          </Button>
           <Button
             type="button"
             variant="outline"
@@ -132,6 +215,9 @@ graph LR
               defaultLanguage="html"
               theme="vs-dark"
               value={value}
+              onMount={(editor) => {
+                editorRef.current = editor;
+              }}
               onChange={(val) => onChange(val || "")}
               options={{
                 minimap: { enabled: false },
