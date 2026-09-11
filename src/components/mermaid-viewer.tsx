@@ -81,6 +81,53 @@ function wrapEdgeLabels(diagramCode: string): string {
   return res;
 }
 
+function adjustClusterLabels(svgString: string): string {
+  if (typeof window === "undefined" || !window.DOMParser) {
+    return svgString;
+  }
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svgString, "image/svg+xml");
+    const svg = doc.querySelector("svg");
+    if (!svg) return svgString;
+
+    const clusters = doc.querySelectorAll("g.cluster");
+    const clusterLabels: Element[] = [];
+
+    clusters.forEach((cluster) => {
+      const rect = cluster.querySelector("rect");
+      const label = cluster.querySelector("g.cluster-label");
+      if (rect && label) {
+        const rectX = parseFloat(rect.getAttribute("x") || "0");
+        const rectY = parseFloat(rect.getAttribute("y") || "0");
+        label.setAttribute("transform", `translate(${rectX + 16}, ${rectY - 10})`);
+        clusterLabels.push(label);
+      }
+    });
+
+    if (clusterLabels.length > 0) {
+      const edgePaths = doc.querySelector("g.edges, g.edgePaths");
+      const elevatedGroup = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+      elevatedGroup.setAttribute("class", "cluster-labels-elevated");
+
+      clusterLabels.forEach((label) => {
+        elevatedGroup.appendChild(label);
+      });
+
+      if (edgePaths && edgePaths.parentNode) {
+        edgePaths.parentNode.insertBefore(elevatedGroup, edgePaths.nextSibling);
+      } else {
+        svg.appendChild(elevatedGroup);
+      }
+    }
+
+    return new XMLSerializer().serializeToString(doc);
+  } catch (err) {
+    console.error("Error adjusting cluster labels:", err);
+    return svgString;
+  }
+}
+
 export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>("");
@@ -106,8 +153,9 @@ export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
         const id = `mermaid-${Math.random().toString(36).substring(2, 9)}`;
         const processedChart = wrapEdgeLabels(chart);
         const { svg: renderedSvg } = await mermaid.render(id, processedChart);
+        const finalSvg = adjustClusterLabels(renderedSvg);
         if (isMounted) {
-          setSvg(renderedSvg);
+          setSvg(finalSvg);
           setError(null);
         }
       } catch (err: any) {

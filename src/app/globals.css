@@ -373,22 +373,56 @@
   ry: 8px !important;
 }
 
-.mermaid-wrapper svg .cluster foreignObject {
+.mermaid svg .cluster foreignObject,
+.mermaid-wrapper svg .cluster foreignObject,
+.mermaid svg .cluster-label foreignObject,
+.mermaid-wrapper svg .cluster-label foreignObject,
+.mermaid svg .cluster-labels-elevated foreignObject,
+.mermaid-wrapper svg .cluster-labels-elevated foreignObject {
   overflow: visible !important;
 }
 
+.mermaid svg .cluster text,
 .mermaid-wrapper svg .cluster text,
+.mermaid svg .cluster-label,
 .mermaid-wrapper svg .cluster-label,
+.mermaid svg .cluster-label text,
 .mermaid-wrapper svg .cluster-label text,
-.mermaid-wrapper svg .cluster-label span {
+.mermaid svg .cluster-label span,
+.mermaid-wrapper svg .cluster-label span,
+.mermaid svg .cluster-label p,
+.mermaid-wrapper svg .cluster-label p,
+.mermaid svg .cluster-labels-elevated,
+.mermaid-wrapper svg .cluster-labels-elevated,
+.mermaid svg .cluster-labels-elevated text,
+.mermaid-wrapper svg .cluster-labels-elevated text,
+.mermaid svg .cluster-labels-elevated span,
+.mermaid-wrapper svg .cluster-labels-elevated span,
+.mermaid svg .cluster-labels-elevated p,
+.mermaid-wrapper svg .cluster-labels-elevated p {
   fill: #94a3b8 !important;
   color: #94a3b8 !important;
-  font-family: Montserrat, sans-serif !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  letter-spacing: normal !important;
+  font-family: var(--font-montserrat), Montserrat, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
   white-space: nowrap !important;
-  overflow: visible !important;
+  margin: 0 !important;
+}
+
+.mermaid svg .cluster-label span,
+.mermaid-wrapper svg .cluster-label span,
+.mermaid svg .cluster-labels-elevated span,
+.mermaid-wrapper svg .cluster-labels-elevated span {
+  display: inline-flex !important;
+  align-items: center !important;
+  background-color: #1a2436 !important;
+  padding: 2px 8px !important;
+  border-radius: 4px !important;
+  border: 1px solid #415a77 !important;
+  vertical-align: middle !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* Node Text & Label Styling */
