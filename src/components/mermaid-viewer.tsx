@@ -20,8 +20,8 @@ function initMermaid() {
       htmlLabels: true,
       curve: "linear",
       padding: 24,
-      nodeSpacing: 50,
-      rankSpacing: 50,
+      nodeSpacing: 45,
+      rankSpacing: 45,
       useMaxWidth: true,
     },
     themeVariables: {
@@ -49,6 +49,37 @@ interface MermaidViewerProps {
   className?: string;
 }
 
+function wrapEdgeLabels(diagramCode: string): string {
+  // Matches edge labels like: -->|Word1 Word2| or -.->|Word1 Word2| or ==>|Word1 Word2|
+  return diagramCode.replace(/(-->|--\>|-\.->|==>|--)\s*\|([^|\n]+)\|/g, (match, arrow, label) => {
+    let clean = label.trim();
+    if (/<br\s*\/?>/i.test(clean)) {
+      return match;
+    }
+    const hasQuotes = clean.startsWith('"') && clean.endsWith('"');
+    if (hasQuotes) {
+      clean = clean.slice(1, -1);
+    }
+    const words = clean.split(/\s+/);
+    if (words.length >= 2) {
+      let wrapped = "";
+      if (words.length === 2) {
+        wrapped = words.join("<br/>");
+      } else if (words.length === 3) {
+        wrapped = `${words[0]}<br/>${words[1]} ${words[2]}`;
+      } else {
+        const lines: string[] = [];
+        for (let i = 0; i < words.length; i += 2) {
+          lines.push(words.slice(i, i + 2).join(" "));
+        }
+        wrapped = lines.join("<br/>");
+      }
+      return `${arrow}|"${wrapped}"|`;
+    }
+    return match;
+  });
+}
+
 export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>("");
@@ -72,7 +103,8 @@ export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
         }
         initMermaid();
         const id = `mermaid-${Math.random().toString(36).substring(2, 9)}`;
-        const { svg: renderedSvg } = await mermaid.render(id, chart);
+        const processedChart = wrapEdgeLabels(chart);
+        const { svg: renderedSvg } = await mermaid.render(id, processedChart);
         if (isMounted) {
           setSvg(renderedSvg);
           setError(null);
