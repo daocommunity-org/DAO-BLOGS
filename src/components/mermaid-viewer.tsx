@@ -22,7 +22,7 @@ function initMermaid() {
       padding: 24,
       nodeSpacing: 45,
       rankSpacing: 45,
-      useMaxWidth: false,
+      useMaxWidth: true,
     },
     themeVariables: {
       darkMode: true,
@@ -179,7 +179,7 @@ export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
         <div
           ref={containerRef}
           onClick={handleOpen}
-          className={`mermaid mermaid-wrapper w-full max-w-full p-6 rounded-xl overflow-x-auto overflow-y-visible cursor-zoom-in transition-all duration-200 hover:border-[#1fb6ff]/40 text-center ${className}`}
+          className={`mermaid mermaid-wrapper w-full max-w-full p-6 rounded-xl overflow-hidden cursor-zoom-in transition-all duration-200 hover:border-[#1fb6ff]/40 text-center ${className}`}
           dangerouslySetInnerHTML={{ __html: svg }}
           title="Click to expand diagram in fullscreen viewer"
         />
