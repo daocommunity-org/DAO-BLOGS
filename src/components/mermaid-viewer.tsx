@@ -289,7 +289,7 @@ export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
                 transformOrigin: "center center",
                 transition: isDragging ? "none" : "transform 0.1s ease-out",
               }}
-              className="mermaid-fullscreen-content flex items-center justify-center pointer-events-none"
+              className="mermaid-fullscreen-content mermaid-wrapper mermaid pointer-events-none"
               dangerouslySetInnerHTML={{ __html: svg }}
             />
           </div>
