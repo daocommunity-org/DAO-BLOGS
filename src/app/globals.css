@@ -403,20 +403,38 @@
 }
 
 /* Edge Labels */
+.mermaid svg .edgeLabel,
+.mermaid-wrapper svg .edgeLabel,
+.mermaid svg .edgeLabel text,
 .mermaid-wrapper svg .edgeLabel text,
-.mermaid-wrapper svg text.edgeLabel {
+.mermaid svg text.edgeLabel,
+.mermaid-wrapper svg text.edgeLabel,
+.mermaid svg .edgeLabel span,
+.mermaid-wrapper svg .edgeLabel span,
+.mermaid svg .edgeLabel tspan,
+.mermaid-wrapper svg .edgeLabel tspan {
   fill: #cbd5e1 !important;
+  color: #cbd5e1 !important;
   font-family: Montserrat, -apple-system, BlinkMacSystemFont, sans-serif !important;
   font-size: 11.5px !important;
   font-weight: 500 !important;
+  overflow: visible !important;
 }
 
+.mermaid svg .edgeLabel rect,
 .mermaid-wrapper svg .edgeLabel rect {
   fill: #1b263b !important;
   stroke: rgba(119, 141, 169, 0.4) !important;
   stroke-width: 1px !important;
   rx: 4px !important;
   ry: 4px !important;
+  overflow: visible !important;
+}
+
+/* Ensure no foreignObject ever clips in any browser */
+.mermaid svg foreignObject,
+.mermaid-wrapper svg foreignObject {
+  overflow: visible !important;
 }
 
 /* Dashed Blueprint Borders */

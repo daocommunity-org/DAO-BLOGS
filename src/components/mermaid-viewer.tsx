@@ -8,10 +8,7 @@ let isMermaidInitialized = false;
 function initMermaid() {
   if (typeof window === "undefined") return;
 
-  const font =
-    typeof window !== "undefined" && document.body
-      ? window.getComputedStyle(document.body).fontFamily || "Montserrat, sans-serif"
-      : "Montserrat, sans-serif";
+  const font = "Montserrat, sans-serif";
 
   mermaid.initialize({
     startOnLoad: false,
@@ -20,11 +17,9 @@ function initMermaid() {
     fontFamily: font,
     flowchart: {
       look: "classic",
-      wrappingWidth: 450,
-      minNodeWidth: 180,
-      htmlLabels: true,
+      htmlLabels: false,
       curve: "linear",
-      padding: 24,
+      padding: 20,
       nodeSpacing: 45,
       rankSpacing: 45,
       useMaxWidth: false,
@@ -33,7 +28,7 @@ function initMermaid() {
       darkMode: true,
       background: "transparent",
       fontFamily: font,
-      fontSize: "14px",
+      fontSize: "13px",
       mainBkg: "#222e45",
       nodeBkg: "#222e45",
       nodeTextColor: "#ffffff",
@@ -68,7 +63,6 @@ export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
 
   useEffect(() => {
     let isMounted = true;
-    initMermaid();
 
     const renderChart = async () => {
       if (!chart.trim()) return;
@@ -76,6 +70,7 @@ export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
         if (typeof document !== "undefined" && document.fonts) {
           await document.fonts.ready;
         }
+        initMermaid();
         const id = `mermaid-${Math.random().toString(36).substring(2, 9)}`;
         const { svg: renderedSvg } = await mermaid.render(id, chart);
         if (isMounted) {
