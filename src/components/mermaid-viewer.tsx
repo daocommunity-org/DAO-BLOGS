@@ -180,11 +180,11 @@ export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
   return (
     <>
       {/* 1. In-Post Diagram Card with Click-to-Expand */}
-      <div className="relative group my-6">
+      <div className="relative group my-6 w-full max-w-full">
         <div
           ref={containerRef}
           onClick={handleOpen}
-          className={`mermaid-wrapper p-6 rounded-xl flex items-center justify-center overflow-x-auto cursor-zoom-in transition-all duration-200 hover:border-[#1fb6ff]/40 ${className}`}
+          className={`mermaid-wrapper mermaid w-full max-w-full p-6 rounded-xl flex items-center justify-center overflow-x-auto overflow-y-visible cursor-zoom-in transition-all duration-200 hover:border-[#1fb6ff]/40 ${className}`}
           dangerouslySetInnerHTML={{ __html: svg }}
           title="Click to expand diagram in fullscreen viewer"
         />
