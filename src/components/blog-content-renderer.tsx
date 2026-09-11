@@ -7,15 +7,25 @@ interface BlogContentRendererProps {
   content: string;
 }
 
+function decodeHtmlEntities(str: string): string {
+  return str
+    .replace(/&gt;/g, ">")
+    .replace(/&lt;/g, "<")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, "&");
+}
+
 export function BlogContentRenderer({ content }: BlogContentRendererProps) {
   // Extract mermaid blocks:
   // Match either:
-  // 1) <pre class="mermaid">...</pre>
-  // 2) ```mermaid ... ```
+  // 1) <div class="mermaid">...</div> (recommended)
+  // 2) <pre class="mermaid">...</pre>
+  // 3) ```mermaid ... ```
   const parts: { type: "html" | "mermaid"; data: string }[] = [];
 
   const regex =
-    /(?:<pre\s+class=["'](?:language-)?mermaid["']>([\s\S]*?)<\/pre>)|(?:```mermaid\n([\s\S]*?)```)/gi;
+    /(?:<(?:div|pre)\s+class=["'](?:language-)?mermaid["']>([\s\S]*?)<\/(?:div|pre)>)|(?:```mermaid\n([\s\S]*?)```)/gi;
 
   let lastIndex = 0;
   let match: RegExpExecArray | null;
@@ -32,7 +42,8 @@ export function BlogContentRenderer({ content }: BlogContentRendererProps) {
       });
     }
 
-    const mermaidCode = (match[1] || match[2] || "").trim();
+    const rawCode = match[1] ?? match[2] ?? "";
+    const mermaidCode = decodeHtmlEntities(rawCode).trim();
     parts.push({
       type: "mermaid",
       data: mermaidCode,

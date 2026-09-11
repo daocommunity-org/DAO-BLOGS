@@ -305,21 +305,20 @@
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   border-radius: 0.75rem !important;
   padding: 1.5rem !important;
-  margin: 1.75rem 0 !important;
+  margin: 32px 0 !important;
   width: 100% !important;
   max-width: 100% !important;
   overflow-x: auto !important;
   overflow-y: visible !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
+  text-align: center !important;
 }
 
 .mermaid svg,
 .mermaid-wrapper svg {
-  max-width: 100% !important;
-  height: auto !important;
   display: block !important;
+  width: max-content !important;
+  max-width: none !important;
+  height: auto !important;
   margin: 0 auto !important;
   overflow: visible !important;
 }

@@ -184,7 +184,7 @@ export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
         <div
           ref={containerRef}
           onClick={handleOpen}
-          className={`mermaid-wrapper mermaid w-full max-w-full p-6 rounded-xl flex items-center justify-center overflow-x-auto overflow-y-visible cursor-zoom-in transition-all duration-200 hover:border-[#1fb6ff]/40 ${className}`}
+          className={`mermaid mermaid-wrapper w-full max-w-full p-6 rounded-xl overflow-x-auto overflow-y-visible cursor-zoom-in transition-all duration-200 hover:border-[#1fb6ff]/40 text-center ${className}`}
           dangerouslySetInnerHTML={{ __html: svg }}
           title="Click to expand diagram in fullscreen viewer"
         />
