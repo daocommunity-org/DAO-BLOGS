@@ -19,7 +19,7 @@ function initMermaid() {
       look: "classic",
       htmlLabels: false,
       curve: "linear",
-      padding: 20,
+      padding: 24,
       nodeSpacing: 45,
       rankSpacing: 45,
       useMaxWidth: false,
@@ -39,7 +39,7 @@ function initMermaid() {
       lineColor: "#778da9",
       secondaryColor: "#1b263b",
       tertiaryColor: "#1b263b",
-      edgeLabelBackground: "#1b263b",
+      edgeLabelBackground: "#162032",
     },
   });
 }
