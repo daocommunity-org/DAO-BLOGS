@@ -17,7 +17,7 @@ function initMermaid() {
     fontFamily: font,
     flowchart: {
       look: "classic",
-      htmlLabels: false,
+      htmlLabels: true,
       curve: "linear",
       padding: 24,
       nodeSpacing: 45,
