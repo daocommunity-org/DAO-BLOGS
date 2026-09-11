@@ -15,13 +15,9 @@ declare global {
   var _mongoClient: MongoClient | undefined;
 }
 
-if (process.env.NODE_ENV === "development") {
-  if (!global._mongoClient) {
-    global._mongoClient = new MongoClient(uri, options);
-  }
-  client = global._mongoClient;
-} else {
-  client = new MongoClient(uri, options);
+if (!global._mongoClient) {
+  global._mongoClient = new MongoClient(uri, options);
 }
+client = global._mongoClient;
 
 export default client;

@@ -73,6 +73,22 @@ export async function POST(
     await connectToDatabase();
     const blogId = new mongoose.Types.ObjectId(id);
 
+    const blog = await Blog.findById(blogId);
+    if (!blog) {
+      return NextResponse.json(
+        { success: false, error: "Blog post not found." },
+        { status: 404 }
+      );
+    }
+
+    const userRole = (session?.user as { role?: string } | undefined)?.role;
+    if (blog.status === "draft" && userRole !== "admin") {
+      return NextResponse.json(
+        { success: false, error: "Cannot comment on an unpublished blog post." },
+        { status: 403 }
+      );
+    }
+
     const newComment = await Comment.create({
       blogId,
       userId: session.user.id,

@@ -38,30 +38,49 @@ export async function POST(
 
     if (existingLike) {
       // Unlike
-      await Like.deleteOne({ _id: existingLike._id });
-      const updated = await Blog.findByIdAndUpdate(
-        blogId,
-        { $inc: { likesCount: -1 } },
-        { new: true }
-      );
+      const res = await Like.deleteOne({ _id: existingLike._id });
+      if (res.deletedCount > 0) {
+        await Blog.findByIdAndUpdate(blogId, {
+          $inc: { likesCount: -1 },
+        });
+      }
+      const currentBlog = await Blog.findById(blogId).select("likesCount").lean();
+      const safeCount = Math.max(0, currentBlog?.likesCount ?? 0);
+      if ((currentBlog?.likesCount ?? 0) < 0) {
+        await Blog.findByIdAndUpdate(blogId, { $set: { likesCount: 0 } });
+      }
+
       return NextResponse.json({
         success: true,
         liked: false,
-        likesCount: Math.max(0, updated?.likesCount ?? 0),
+        likesCount: safeCount,
       });
     } else {
       // Like
-      await Like.create({ blogId, userId });
-      const updated = await Blog.findByIdAndUpdate(
-        blogId,
-        { $inc: { likesCount: 1 } },
-        { new: true }
-      );
-      return NextResponse.json({
-        success: true,
-        liked: true,
-        likesCount: updated?.likesCount ?? 1,
-      });
+      try {
+        await Like.create({ blogId, userId });
+        const updated = await Blog.findByIdAndUpdate(
+          blogId,
+          { $inc: { likesCount: 1 } },
+          { new: true }
+        );
+        return NextResponse.json({
+          success: true,
+          liked: true,
+          likesCount: Math.max(0, updated?.likesCount ?? 1),
+        });
+      } catch (createErr: any) {
+        // If code 11000 (duplicate key from concurrent request), user is already liked
+        if (createErr.code === 11000) {
+          const currentBlog = await Blog.findById(blogId).select("likesCount").lean();
+          return NextResponse.json({
+            success: true,
+            liked: true,
+            likesCount: Math.max(0, currentBlog?.likesCount ?? 1),
+          });
+        }
+        throw createErr;
+      }
     }
   } catch (error: any) {
     console.error("POST /api/blogs/[id]/like error:", error);

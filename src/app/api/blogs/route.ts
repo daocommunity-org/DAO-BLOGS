@@ -4,28 +4,44 @@ import { auth } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 
+function escapeRegex(text: string): string {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
+
 export async function GET(request: NextRequest) {
   try {
     await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const tag = searchParams.get("tag");
     const search = searchParams.get("search");
-    const all = searchParams.get("all") === "true";
+    const requestedAll = searchParams.get("all") === "true";
+
+    let allowAll = false;
+    if (requestedAll) {
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      });
+      const userRole = (session?.user as { role?: string } | undefined)?.role;
+      if (session && userRole === "admin") {
+        allowAll = true;
+      }
+    }
 
     const filter: Record<string, any> = {};
 
-    if (!all) {
+    if (!allowAll) {
       filter.status = "published";
     }
 
     if (tag) {
-      filter.tags = tag;
+      filter.tags = tag.trim().toLowerCase();
     }
 
-    if (search) {
+    if (search && search.trim()) {
+      const safeSearch = escapeRegex(search.trim());
       filter.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { excerpt: { $regex: search, $options: "i" } },
+        { title: { $regex: safeSearch, $options: "i" } },
+        { excerpt: { $regex: safeSearch, $options: "i" } },
       ];
     }
 

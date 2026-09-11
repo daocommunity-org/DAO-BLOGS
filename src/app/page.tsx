@@ -12,6 +12,7 @@ function formatDate(date: string | Date) {
       month: "long",
       day: "numeric",
       year: "numeric",
+      timeZone: "UTC",
     })
     .toUpperCase();
 }

@@ -61,10 +61,20 @@ export async function generateMetadata({
 }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
   await connectToDatabase();
-  const blog = await Blog.findOne({ slug }).select("title excerpt").lean();
+  const blog = await Blog.findOne({ slug }).select("title excerpt status").lean();
 
   if (!blog) {
     return { title: "Not Found - DAO Blogs" };
+  }
+
+  if (blog.status === "draft") {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    const userRole = (session?.user as { role?: string } | undefined)?.role;
+    if (userRole !== "admin") {
+      return { title: "Not Found - DAO Blogs" };
+    }
   }
 
   return {
@@ -88,6 +98,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       month: "long",
       day: "numeric",
       year: "numeric",
+      timeZone: "UTC",
     })
     .toUpperCase();
 

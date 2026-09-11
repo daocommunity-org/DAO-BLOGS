@@ -3,11 +3,22 @@ import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { admin } from "better-auth/plugins";
 import client from "./mongodb-client";
 
-// Designated Admin User IDs
+// Designated Admin User IDs & Emails
 const ADMIN_USER_IDS = [
   "6aa41ebcf8e6a5333a46830d",
   ...(process.env.ADMIN_USER_IDS ? process.env.ADMIN_USER_IDS.split(",").map((s) => s.trim()) : []),
 ];
+
+const ADMIN_EMAILS = [
+  ...(process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(",").map((s) => s.trim().toLowerCase()) : []),
+];
+
+const isAdminUser = (user: { id?: string; email?: string } | null | undefined) => {
+  if (!user) return false;
+  if (user.id && ADMIN_USER_IDS.includes(user.id)) return true;
+  if (user.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) return true;
+  return false;
+};
 
 export const auth = betterAuth({
   database: mongodbAdapter(client.db(), {
@@ -25,7 +36,7 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user: any) => {
-          if (ADMIN_USER_IDS.includes(user.id)) {
+          if (isAdminUser(user)) {
             return { data: { ...user, role: "admin" } };
           }
         },
@@ -33,7 +44,7 @@ export const auth = betterAuth({
     },
   },
   customSession: async ({ user, session }: { user: any; session: any }) => {
-    if (ADMIN_USER_IDS.includes(user.id)) {
+    if (isAdminUser(user)) {
       return {
         user: {
           ...user,

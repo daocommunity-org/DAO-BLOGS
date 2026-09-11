@@ -34,11 +34,17 @@ export async function DELETE(
     }
 
     await connectToDatabase();
-    const comment = await Comment.findById(commentId);
+    const blogObjectId = new mongoose.Types.ObjectId(id);
+    const commentObjectId = new mongoose.Types.ObjectId(commentId);
+
+    const comment = await Comment.findOne({
+      _id: commentObjectId,
+      blogId: blogObjectId,
+    });
 
     if (!comment) {
       return NextResponse.json(
-        { success: false, error: "Comment not found" },
+        { success: false, error: "Comment not found on this blog." },
         { status: 404 }
       );
     }
@@ -54,8 +60,11 @@ export async function DELETE(
       );
     }
 
-    await Comment.findByIdAndDelete(commentId);
-    await Blog.findByIdAndUpdate(id, { $inc: { commentsCount: -1 } });
+    await Comment.findByIdAndDelete(commentObjectId);
+    await Blog.updateOne(
+      { _id: blogObjectId, commentsCount: { $gt: 0 } },
+      { $inc: { commentsCount: -1 } }
+    );
 
     return NextResponse.json({
       success: true,

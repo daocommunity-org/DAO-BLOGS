@@ -16,9 +16,8 @@ export async function GET(
     await connectToDatabase();
 
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
-    const blog = await Blog.findOne({
-      $or: [{ slug: id }, { _id: isObjectId ? id : null }],
-    }).lean();
+    const query = isObjectId ? { $or: [{ _id: id }, { slug: id }] } : { slug: id };
+    const blog = await Blog.findOne(query).lean();
 
     if (!blog) {
       return NextResponse.json(
@@ -81,10 +80,42 @@ export async function PUT(
     await connectToDatabase();
     const body = await request.json();
 
+    // Whitelist explicitly allowed fields to prevent mass assignment
+    const updateData: Record<string, any> = {};
+    if (body.title !== undefined) updateData.title = String(body.title).trim();
+    if (body.slug !== undefined) updateData.slug = String(body.slug).trim();
+    if (body.excerpt !== undefined) updateData.excerpt = String(body.excerpt).trim();
+    if (body.coverImage !== undefined) updateData.coverImage = String(body.coverImage).trim();
+    if (body.tags !== undefined) {
+      updateData.tags = Array.isArray(body.tags)
+        ? body.tags.map((t: string) => String(t).trim().toLowerCase()).filter(Boolean)
+        : [];
+    }
+    if (body.content !== undefined) updateData.content = String(body.content);
+    if (body.status !== undefined) {
+      updateData.status = body.status === "published" ? "published" : "draft";
+    }
+
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
+    const query = isObjectId ? { $or: [{ _id: id }, { slug: id }] } : { slug: id };
+
+    // Check slug uniqueness if slug is being updated
+    if (updateData.slug) {
+      const slugConflict = await Blog.findOne({
+        slug: updateData.slug,
+        ...(isObjectId ? { _id: { $ne: id } } : { slug: { $ne: id } }),
+      });
+      if (slugConflict) {
+        return NextResponse.json(
+          { success: false, error: "A blog post with this slug already exists." },
+          { status: 400 }
+        );
+      }
+    }
+
     const updatedBlog = await Blog.findOneAndUpdate(
-      { $or: [{ slug: id }, { _id: isObjectId ? id : null }] },
-      { $set: body },
+      query,
+      { $set: updateData },
       { new: true, runValidators: true }
     );
 
@@ -125,9 +156,8 @@ export async function DELETE(
 
     await connectToDatabase();
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
-    const blog = await Blog.findOneAndDelete({
-      $or: [{ slug: id }, { _id: isObjectId ? id : null }],
-    });
+    const query = isObjectId ? { $or: [{ _id: id }, { slug: id }] } : { slug: id };
+    const blog = await Blog.findOneAndDelete(query);
 
     if (!blog) {
       return NextResponse.json(
