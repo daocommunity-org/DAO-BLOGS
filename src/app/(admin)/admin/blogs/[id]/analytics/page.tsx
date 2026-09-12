@@ -44,7 +44,7 @@ export default async function BlogAnalyticsPage({ params }: BlogAnalyticsPagePro
       <main className="flex-1 w-full flex flex-col">
         {/* Top Navigation */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
             <Link
               href="/admin/blogs"
               className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -62,7 +62,7 @@ export default async function BlogAnalyticsPage({ params }: BlogAnalyticsPagePro
 
         {/* Header Section */}
         <header className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-12 dashed-border-x flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-12 dashed-border-x flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div className="space-y-1.5 max-w-2xl">
               <div className="flex items-center gap-2">
                 <span
@@ -115,7 +115,7 @@ export default async function BlogAnalyticsPage({ params }: BlogAnalyticsPagePro
 
         {/* Blog Analytics Feed Container */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 dashed-border-x">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 dashed-border-x">
             <BlogAnalyticsView
               blogId={id}
               blogTitle={blog.title}

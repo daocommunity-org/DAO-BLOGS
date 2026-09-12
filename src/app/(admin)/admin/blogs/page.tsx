@@ -37,7 +37,7 @@ export default async function AdminBlogsPage() {
       <main className="flex-1 w-full flex flex-col">
         {/* Top Navigation */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
             <Link
               href="/"
               className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -50,7 +50,7 @@ export default async function AdminBlogsPage() {
 
         {/* Header Section */}
         <header className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-12 dashed-border-x flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-12 dashed-border-x flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div className="space-y-1">
               <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
                 Blog Management
@@ -71,7 +71,7 @@ export default async function AdminBlogsPage() {
 
         {/* 4-Column Minimal Stats Row */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto dashed-border-x grid grid-cols-2 md:grid-cols-4">
+          <div className="max-w-screen-2xl w-full mx-auto dashed-border-x grid grid-cols-2 md:grid-cols-4">
             <div className="p-6 md:dashed-border-r max-md:dashed-border-b flex flex-col justify-between space-y-2">
               <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
                 Total Articles
@@ -112,7 +112,7 @@ export default async function AdminBlogsPage() {
 
         {/* Management Table / Feed */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 dashed-border-x">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 dashed-border-x">
             <AdminBlogsManager blogs={blogs} />
           </div>
         </section>

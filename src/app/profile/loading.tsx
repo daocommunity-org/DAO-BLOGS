@@ -6,14 +6,14 @@ export default function ProfileLoading() {
       <main className="flex-1 w-full flex flex-col">
         {/* Top Breadcrumb Bar */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
             <Skeleton className="h-4 w-24" />
           </div>
         </section>
 
         {/* Profile Identity Hero */}
         <header className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div className="flex items-start sm:items-center gap-5">
               <Skeleton className="w-16 h-16 sm:w-20 sm:h-20 rounded-full shrink-0" />
               <div className="space-y-2">
@@ -33,7 +33,7 @@ export default function ProfileLoading() {
 
         {/* Metrics Row */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto dashed-border-x grid grid-cols-1 sm:grid-cols-3">
+          <div className="max-w-screen-2xl w-full mx-auto dashed-border-x grid grid-cols-1 sm:grid-cols-3">
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
@@ -51,7 +51,7 @@ export default function ProfileLoading() {
 
         {/* User Activity Tabs */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-12 dashed-border-x space-y-8">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-12 dashed-border-x space-y-8">
             {/* Underline Tabs */}
             <div className="flex items-center gap-8 border-b border-border/40 pb-3">
               <Skeleton className="h-5 w-24" />

@@ -61,14 +61,14 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   };
 
   return (
-    <nav className="w-full space-y-3 select-none" aria-label="Table of contents">
-      {/* Top Section Label matching user design */}
-      <div className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground/70 pl-3">
+    <nav className="w-full space-y-2 select-none" aria-label="Table of contents">
+      {/* Top Section Label */}
+      <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/60 pl-2.5">
         On this page
       </div>
 
       {/* Navigation Links with Active Guideline Track */}
-      <div className="relative border-l border-border/40 pl-3 space-y-1.5">
+      <div className="relative border-l border-border/40 pl-2.5 space-y-1">
         {headings.map((heading) => {
           const isActive = activeId === heading.id;
           const isSubheading = heading.level === 3;
@@ -78,7 +78,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
               {/* Active bracket / notch indicator on the left border */}
               {isActive && (
                 <span
-                  className="absolute -left-[13px] top-1/2 -translate-y-1/2 w-0.5 h-4 bg-primary rounded-full shadow-[0_0_8px_rgba(255,102,0,0.6)] transition-all duration-200"
+                  className="absolute -left-[11px] top-1/2 -translate-y-1/2 w-0.5 h-3.5 bg-primary rounded-full shadow-[0_0_6px_rgba(255,102,0,0.5)] transition-all duration-200"
                   aria-hidden="true"
                 />
               )}
@@ -91,12 +91,13 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
                   else headingRefs.current.delete(heading.id);
                 }}
                 className={
-                  'block text-xs transition-colors duration-150 leading-snug cursor-pointer ' +
-                  (isSubheading ? 'pl-3.5 py-0.5 ' : 'py-1 ') +
+                  'block text-[11px] transition-colors duration-150 leading-snug cursor-pointer ' +
+                  (isSubheading ? 'pl-2.5 py-0.5 ' : 'py-0.5 ') +
                   (isActive
-                    ? 'text-primary font-semibold'
-                    : 'text-muted-foreground/80 hover:text-foreground font-normal')
+                    ? 'text-primary font-medium'
+                    : 'text-muted-foreground/75 hover:text-foreground font-normal')
                 }
+                title={heading.text}
               >
                 {heading.text}
               </a>

@@ -5,7 +5,7 @@ export default function EditLoading() {
     <div className="w-full flex flex-col">
       {/* Sticky bar skeleton */}
       <div className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/90 backdrop-blur-md">
-        <div className="max-w-6xl w-full mx-auto px-4 sm:px-8 h-14 flex items-center justify-between gap-3">
+        <div className="max-w-screen-2xl w-full mx-auto px-4 sm:px-8 h-14 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Skeleton className="h-4 w-24" />
             <span className="text-border/60 select-none">·</span>
@@ -22,7 +22,7 @@ export default function EditLoading() {
 
       {/* Page header skeleton */}
       <div className="w-full dashed-border-b">
-        <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-8 dashed-border-x space-y-2">
+        <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-8 dashed-border-x space-y-2">
           <Skeleton className="h-4 w-28" />
           <Skeleton className="h-3.5 w-72" />
         </div>
@@ -30,7 +30,7 @@ export default function EditLoading() {
 
       {/* 2-column grid skeleton */}
       <div className="w-full dashed-border-b">
-        <div className="max-w-6xl w-full mx-auto dashed-border-x grid grid-cols-1 md:grid-cols-2">
+        <div className="max-w-screen-2xl w-full mx-auto dashed-border-x grid grid-cols-1 md:grid-cols-2">
           {/* Left column */}
           <div className="p-6 sm:p-10 md:dashed-border-r max-md:dashed-border-b space-y-6">
             <div className="space-y-1.5">
@@ -103,7 +103,7 @@ export default function EditLoading() {
 
       {/* Open Editor CTA skeleton */}
       <div className="w-full dashed-border-b">
-        <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 dashed-border-x">
+        <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 dashed-border-x">
           <Skeleton className="h-24 w-full rounded-2xl" />
         </div>
       </div>

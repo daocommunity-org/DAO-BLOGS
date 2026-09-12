@@ -108,12 +108,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <Navbar />
+      <Navbar maxWidth="max-w-screen-2xl" />
 
       <main className="flex-1 w-full flex flex-col">
         {/* Top Back Navigation Bar */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
             <Link
               href="/"
               className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -132,7 +132,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         {/* Blog Post Header */}
         <header className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x space-y-6">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
                 {formattedDate}
@@ -217,14 +217,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         {/* Article Body Content with Sidebar TOC */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto dashed-border-x">
+          <div className="max-w-screen-2xl w-full mx-auto dashed-border-x">
             {headings.length >= 2 ? (
-              <div className="grid grid-cols-1 lg:grid-cols-12">
-                <article className="p-6 sm:p-10 lg:dashed-border-r lg:col-span-8">
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px]">
+                <article className="p-6 sm:p-10 lg:dashed-border-r min-w-0">
                   <BlogContentRenderer content={modifiedHtml} />
                 </article>
-                <aside className="hidden lg:block lg:col-span-4 p-6 sm:p-8">
-                  <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2">
+                <aside className="hidden lg:block w-[260px] p-5">
+                  <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-1">
                     <TableOfContents headings={headings} />
                   </div>
                 </aside>
@@ -241,7 +241,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         {/* Bottom Reactions & Comments Section */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x">
             <div className="w-full space-y-10">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">

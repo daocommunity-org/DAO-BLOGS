@@ -6,7 +6,7 @@ export default function BlogPostLoading() {
       <main className="flex-1 w-full flex flex-col">
         {/* Top Breadcrumb Bar */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
             <Skeleton className="h-4 w-28" />
             <div className="flex items-center gap-4">
               <Skeleton className="h-3 w-16" />
@@ -18,7 +18,7 @@ export default function BlogPostLoading() {
 
         {/* Blog Post Header */}
         <header className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x space-y-6">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <Skeleton className="h-3 w-28" />
               <div className="flex gap-2">
@@ -56,8 +56,8 @@ export default function BlogPostLoading() {
 
         {/* Article Body Content */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto dashed-border-x grid grid-cols-1 lg:grid-cols-12">
-            <div className="p-6 sm:p-10 lg:dashed-border-r lg:col-span-8 space-y-4">
+          <div className="max-w-screen-2xl w-full mx-auto dashed-border-x grid grid-cols-1 lg:grid-cols-[1fr_260px]">
+            <div className="p-6 sm:p-10 lg:dashed-border-r min-w-0 space-y-4">
               <Skeleton className="h-4 w-full" />
               <Skeleton className="h-4 w-full" />
               <Skeleton className="h-4 w-5/6" />
@@ -80,16 +80,16 @@ export default function BlogPostLoading() {
             </div>
 
             {/* TOC Skeleton */}
-            <div className="hidden lg:block lg:col-span-4 p-6 sm:p-8">
-              <div className="sticky top-24 space-y-4">
-                <Skeleton className="h-3 w-24" />
-                <div className="border-l border-border/40 pl-3 space-y-3">
-                  <Skeleton className="h-3.5 w-3/4" />
-                  <Skeleton className="h-3.5 w-5/6" />
-                  <Skeleton className="h-3 w-1/2 ml-3" />
-                  <Skeleton className="h-3.5 w-2/3" />
-                  <Skeleton className="h-3.5 w-4/5" />
-                  <Skeleton className="h-3 w-3/5 ml-3" />
+            <div className="hidden lg:block w-[260px] p-5">
+              <div className="sticky top-24 space-y-3">
+                <Skeleton className="h-3 w-20" />
+                <div className="border-l border-border/40 pl-2.5 space-y-2.5">
+                  <Skeleton className="h-3 w-3/4" />
+                  <Skeleton className="h-3 w-5/6" />
+                  <Skeleton className="h-2.5 w-1/2 ml-2" />
+                  <Skeleton className="h-3 w-2/3" />
+                  <Skeleton className="h-3 w-4/5" />
+                  <Skeleton className="h-2.5 w-3/5 ml-2" />
                 </div>
               </div>
             </div>
@@ -98,7 +98,7 @@ export default function BlogPostLoading() {
 
         {/* Bottom Reactions & Comments Section */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x space-y-8">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x space-y-8">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Skeleton className="h-5 w-40" />

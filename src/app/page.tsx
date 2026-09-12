@@ -51,7 +51,7 @@ export default async function HomePage() {
       <main className="flex-1 w-full flex flex-col">
         {/* Hero Header (No center vertical line) */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-foreground">
               DAO Community <span className="text-primary font-semibold">Blog</span>
             </h1>
@@ -63,7 +63,7 @@ export default async function HomePage() {
 
         {blogs.length === 0 ? (
           <section className="w-full dashed-border-b">
-            <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-20 dashed-border-x text-center">
+            <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-20 dashed-border-x text-center">
               <p className="text-sm text-muted-foreground">No blogs published yet.</p>
             </div>
           </section>
@@ -72,7 +72,7 @@ export default async function HomePage() {
             {/* Featured Post (Big single row - no center vertical line) */}
             {featuredPost && (
               <section className="w-full dashed-border-b">
-                <div className="max-w-6xl w-full mx-auto p-6 sm:p-10 dashed-border-x">
+                <div className="max-w-screen-2xl w-full mx-auto p-6 sm:p-10 dashed-border-x">
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
                     <div className="lg:col-span-7 flex flex-col justify-between space-y-5">
                       <div className="space-y-3">
@@ -171,7 +171,7 @@ export default async function HomePage() {
             {/* 2-Column Grid Rows (No cover images, separated by dashed lines) */}
             {rows.map((row, rowIndex) => (
               <section key={rowIndex} className="w-full dashed-border-b">
-                <div className="max-w-6xl w-full mx-auto dashed-border-x grid grid-cols-1 md:grid-cols-2">
+                <div className="max-w-screen-2xl w-full mx-auto dashed-border-x grid grid-cols-1 md:grid-cols-2">
                   {row.map((post: any, colIndex: number) => (
                     <article
                       key={post._id}

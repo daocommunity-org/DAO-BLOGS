@@ -19,7 +19,7 @@ export default function AdminError({ error, reset }: AdminErrorProps) {
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       {/* Top Breadcrumb Section */}
       <section className="w-full dashed-border-b">
-        <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
+        <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
           <Link
             href="/admin/blogs"
             className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -36,7 +36,7 @@ export default function AdminError({ error, reset }: AdminErrorProps) {
 
       {/* Header Section */}
       <header className="w-full dashed-border-b">
-        <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-12 sm:py-16 dashed-border-x space-y-3">
+        <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-12 sm:py-16 dashed-border-x space-y-3">
           <div className="flex items-center gap-2">
             <span className="text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded border border-destructive/30 bg-destructive/10 text-destructive flex items-center gap-1.5">
               <ShieldAlert className="w-3 h-3" />
@@ -64,7 +64,7 @@ export default function AdminError({ error, reset }: AdminErrorProps) {
 
       {/* 2-Column Action & Diagnostic Grid */}
       <section className="w-full dashed-border-b">
-        <div className="max-w-6xl w-full mx-auto dashed-border-x grid grid-cols-1 md:grid-cols-2">
+        <div className="max-w-screen-2xl w-full mx-auto dashed-border-x grid grid-cols-1 md:grid-cols-2">
           {/* Left Action Box */}
           <div className="p-8 sm:p-10 md:dashed-border-r max-md:dashed-border-b space-y-4">
             <div className="space-y-1">

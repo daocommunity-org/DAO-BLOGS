@@ -91,7 +91,7 @@ export default async function ProfilePage() {
       <main className="flex-1 w-full flex flex-col">
         {/* Top Breadcrumb Bar */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
             <Link
               href="/"
               className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -104,7 +104,7 @@ export default async function ProfilePage() {
 
         {/* Profile Identity Hero */}
         <header className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div className="flex items-start sm:items-center gap-5">
               <Avatar className="w-16 h-16 sm:w-20 sm:h-20 rounded-full shrink-0">
                 <AvatarImage
@@ -152,7 +152,7 @@ export default async function ProfilePage() {
         {/* Metrics Row */}
         <section className="w-full dashed-border-b">
           <div
-            className={`max-w-6xl w-full mx-auto dashed-border-x grid ${
+            className={`max-w-screen-2xl w-full mx-auto dashed-border-x grid ${
               isAdmin
                 ? "grid-cols-1 sm:grid-cols-3"
                 : "grid-cols-1 sm:grid-cols-2"

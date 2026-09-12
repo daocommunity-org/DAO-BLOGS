@@ -5,7 +5,7 @@ export default function HomeLoading() {
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       {/* Hero Header */}
       <div className="w-full dashed-border-b">
-        <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x space-y-3">
+        <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x space-y-3">
           <Skeleton className="h-10 w-72 sm:w-96" />
           <Skeleton className="h-4 w-64 sm:w-80" />
         </div>
@@ -13,7 +13,7 @@ export default function HomeLoading() {
 
       {/* Featured Post Card Skeleton */}
       <div className="w-full dashed-border-b">
-        <div className="max-w-6xl w-full mx-auto dashed-border-x">
+        <div className="max-w-screen-2xl w-full mx-auto dashed-border-x">
           <div className="p-6 sm:p-10 lg:p-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 space-y-4">
               <div className="flex items-center gap-3">
@@ -43,7 +43,7 @@ export default function HomeLoading() {
 
       {/* Grid of Remaining Article Skeletons */}
       <div className="w-full dashed-border-b">
-        <div className="max-w-6xl w-full mx-auto dashed-border-x grid grid-cols-1 md:grid-cols-2">
+        <div className="max-w-screen-2xl w-full mx-auto dashed-border-x grid grid-cols-1 md:grid-cols-2">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="p-6 sm:p-10 md:dashed-border-r last:border-r-0 max-md:dashed-border-b space-y-4">
               <Skeleton className="w-full aspect-[16/10] rounded-2xl" />

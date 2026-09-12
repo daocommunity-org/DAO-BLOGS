@@ -4,10 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { AuthButton } from "@/components/auth-button";
 
-export function Navbar() {
+interface NavbarProps {
+  maxWidth?: string;
+}
+
+export function Navbar({ maxWidth = "max-w-screen-2xl" }: NavbarProps = {}) {
   return (
     <header className="w-full dashed-border-b">
-      <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 h-16 sm:h-20 flex items-center justify-between gap-4 dashed-border-x">
+      <div className={`${maxWidth} w-full mx-auto px-6 sm:px-10 h-16 sm:h-20 flex items-center justify-between gap-4 dashed-border-x`}>
         <Link
           href="/"
           className="flex items-center gap-3 hover:opacity-90 transition-opacity min-w-0"

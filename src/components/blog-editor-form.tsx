@@ -441,7 +441,7 @@ graph LR
 
       {/* ── Sticky Top Bar ── */}
       <div className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/90 backdrop-blur-md">
-        <div className="max-w-6xl w-full mx-auto px-4 sm:px-8 h-14 flex items-center justify-between gap-3">
+        <div className="max-w-screen-2xl w-full mx-auto px-4 sm:px-8 h-14 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Link
               href="/admin/blogs"
@@ -581,7 +581,7 @@ graph LR
       {/* ── Error Banner ── */}
       {error && (
         <div className="w-full bg-destructive/10 border-b border-destructive/20">
-          <div className="max-w-6xl w-full mx-auto px-4 sm:px-8 py-3 flex items-center gap-2 text-destructive text-xs font-medium">
+          <div className="max-w-screen-2xl w-full mx-auto px-4 sm:px-8 py-3 flex items-center gap-2 text-destructive text-xs font-medium">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
             <button type="button" onClick={() => setError(null)} className="ml-auto hover:text-destructive/70 cursor-pointer">
@@ -593,7 +593,7 @@ graph LR
 
       {/* ── Page Header ── */}
       <div className="w-full dashed-border-b">
-        <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-8 dashed-border-x">
+        <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-8 dashed-border-x">
           <div className="space-y-1">
             <span className="text-[11px] uppercase tracking-wider text-primary font-semibold">
               {isEdit ? "Edit Article" : "New Article"}
@@ -612,7 +612,7 @@ graph LR
 
       {/* 3. Metadata & Media 2-Column Grid */}
       <section className="w-full dashed-border-b">
-        <div className="max-w-6xl w-full mx-auto dashed-border-x grid grid-cols-1 md:grid-cols-2">
+        <div className="max-w-screen-2xl w-full mx-auto dashed-border-x grid grid-cols-1 md:grid-cols-2">
           {/* Left Column: Article Parameters */}
           <div className="p-6 sm:p-10 md:dashed-border-r max-md:dashed-border-b space-y-6">
             <div className="space-y-1">
@@ -1040,7 +1040,7 @@ graph LR
       {/* ── Open Editor CTA ── */}
       {isEdit && initialData?._id && (
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 dashed-border-x">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 dashed-border-x">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 rounded-2xl border border-border/60 bg-muted/10">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
