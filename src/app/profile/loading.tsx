@@ -1,8 +1,12 @@
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProfileLoading() {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <Navbar />
+
       <main className="flex-1 w-full flex flex-col">
         {/* Top Breadcrumb Bar */}
         <section className="w-full dashed-border-b">
@@ -50,8 +54,8 @@ export default function ProfileLoading() {
         </section>
 
         {/* User Activity Tabs */}
-        <section className="w-full dashed-border-b">
-          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-12 dashed-border-x space-y-8">
+        <section className="w-full flex-1 flex flex-col">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-12 dashed-border-x flex-1 space-y-8">
             {/* Underline Tabs */}
             <div className="flex items-center gap-8 border-b border-border/40 pb-3">
               <Skeleton className="h-5 w-24" />
@@ -77,6 +81,9 @@ export default function ProfileLoading() {
           </div>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }
+

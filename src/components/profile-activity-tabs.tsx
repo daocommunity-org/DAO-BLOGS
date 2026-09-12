@@ -31,8 +31,8 @@ export function ProfileActivityTabs({
   };
 
   return (
-    <section className="w-full dashed-border-b">
-      <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-12 dashed-border-x space-y-8">
+    <section className="w-full flex-1 flex flex-col">
+      <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-12 dashed-border-x flex-1 space-y-8">
         {/* Clean Underline Tab Navigation - No Boxes */}
         <div className="flex items-center justify-between border-b border-border/40 pb-px">
           <div className="flex items-center gap-8">

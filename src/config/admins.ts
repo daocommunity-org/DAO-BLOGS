@@ -7,6 +7,7 @@ export const ADMIN_USER_IDS: string[] = [
   "6aa518cfe0b081a8f0f759a6", // FRANK
   "6aa436d32df875cca8324cd8", // Supbase test
   "6aa53bfae482469c59899ecd",
+  "6aa5517cff6746d43ecde28c",
   ...(process.env.ADMIN_USER_IDS
     ? process.env.ADMIN_USER_IDS.split(",")
         .map((s) => s.trim())

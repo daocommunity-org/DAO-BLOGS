@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { connectToDatabase } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 import Link from "next/link";
@@ -62,8 +63,8 @@ export default async function HomePage() {
         </section>
 
         {blogs.length === 0 ? (
-          <section className="w-full dashed-border-b">
-            <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-20 dashed-border-x text-center">
+          <section className="w-full flex-1 flex flex-col">
+            <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 flex-1 flex items-center justify-center dashed-border-x text-center py-20">
               <p className="text-sm text-muted-foreground">No blogs published yet.</p>
             </div>
           </section>
@@ -71,8 +72,8 @@ export default async function HomePage() {
           <>
             {/* Featured Post (Big single row - no center vertical line) */}
             {featuredPost && (
-              <section className="w-full dashed-border-b">
-                <div className="max-w-screen-2xl w-full mx-auto p-6 sm:p-10 dashed-border-x">
+              <section className={`w-full dashed-border-b ${rows.length === 0 ? "flex-1 flex flex-col" : ""}`}>
+                <div className={`max-w-screen-2xl w-full mx-auto p-6 sm:p-10 dashed-border-x ${rows.length === 0 ? "flex-1" : ""}`}>
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
                     <div className="lg:col-span-7 flex flex-col justify-between space-y-5">
                       <div className="space-y-3">
@@ -168,10 +169,18 @@ export default async function HomePage() {
               </section>
             )}
 
-            {/* 2-Column Grid Rows (No cover images, separated by dashed lines) */}
             {rows.map((row, rowIndex) => (
-              <section key={rowIndex} className="w-full dashed-border-b">
-                <div className="max-w-screen-2xl w-full mx-auto dashed-border-x grid grid-cols-1 md:grid-cols-2">
+              <section
+                key={rowIndex}
+                className={`w-full dashed-border-b ${
+                  rowIndex === rows.length - 1 ? "flex-1 flex flex-col" : ""
+                }`}
+              >
+                <div
+                  className={`max-w-screen-2xl w-full mx-auto dashed-border-x grid grid-cols-1 md:grid-cols-2 ${
+                    rowIndex === rows.length - 1 ? "flex-1" : ""
+                  }`}
+                >
                   {row.map((post: any, colIndex: number) => (
                     <article
                       key={post._id}
@@ -256,6 +265,8 @@ export default async function HomePage() {
           </>
         )}
       </main>
+
+      <Footer />
     </div>
   );
 }

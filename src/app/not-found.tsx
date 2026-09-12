@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Home } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
   return (
@@ -9,7 +10,7 @@ export default function NotFound() {
       <Navbar />
 
       <main className="flex-1 w-full flex flex-col">
-        {/* Top Breadcrumb Section */}
+        {/* Top Breadcrumb Bar */}
         <section className="w-full dashed-border-b">
           <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
             <Link
@@ -26,40 +27,37 @@ export default function NotFound() {
           </div>
         </section>
 
-        {/* Header Section */}
-        <header className="w-full dashed-border-b">
-          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-12 sm:py-16 dashed-border-x space-y-3">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-foreground font-mono">
-              4<span className="text-primary">0</span>4 — Page Not Found
-            </h1>
-
-            <p className="text-xs sm:text-sm text-muted-foreground max-w-xl leading-relaxed">
-              The article, route, or resource you requested could not be located. It may have been unpublished, moved, or deleted.
-            </p>
-          </div>
-        </header>
-
-        {/* Action Section */}
-        <section className="w-full dashed-border-b">
-          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-12 dashed-border-x flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-            <div className="space-y-1">
-              <h3 className="text-sm sm:text-base font-semibold text-foreground">
-                Looking for community articles?
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                Explore tutorials, governance posts, and decentralized engineering articles on the main feed.
-              </p>
+        {/* Centered Blueprint 404 */}
+        <section className="w-full flex-1 flex flex-col">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 flex-1 flex flex-col items-center justify-center dashed-border-x text-center py-20 sm:py-28">
+            {/* Giant Monospace 404 */}
+            <div className="text-7xl sm:text-9xl font-bold font-mono tracking-tighter text-foreground select-none">
+              4<span className="text-primary">0</span>4
             </div>
 
-            <Link href="/">
-              <Button size="sm" className="gap-2 text-xs font-semibold cursor-pointer h-9 px-4 shrink-0">
-                <Home className="w-3.5 h-3.5" />
-                Return to Homepage
-              </Button>
-            </Link>
+            {/* Title & Description */}
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground mt-4">
+              Page or Article Not Found
+            </h1>
+
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto leading-relaxed mt-2.5">
+              The requested route does not exist, may have been unpublished, or moved to another URL.
+            </p>
+
+            {/* Primary Action Button */}
+            <div className="flex items-center gap-3 mt-8">
+              <Link href="/">
+                <Button size="sm" className="gap-2 text-xs font-semibold cursor-pointer h-9 px-5">
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  Return to Home Feed
+                </Button>
+              </Link>
+            </div>
           </div>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }

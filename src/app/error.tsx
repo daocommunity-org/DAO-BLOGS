@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { AlertCircle, RotateCcw, Home, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Footer } from "@/components/footer";
 
 interface RootErrorProps {
   error: Error & { digest?: string };
@@ -63,8 +64,8 @@ export default function RootError({ error, reset }: RootErrorProps) {
       </header>
 
       {/* 2-Column Action & Diagnostic Grid */}
-      <section className="w-full dashed-border-b">
-        <div className="max-w-screen-2xl w-full mx-auto dashed-border-x grid grid-cols-1 md:grid-cols-2">
+      <section className="w-full flex-1 flex flex-col">
+        <div className="max-w-screen-2xl w-full mx-auto dashed-border-x flex-1 grid grid-cols-1 md:grid-cols-2">
           {/* Left Action Box */}
           <div className="p-8 sm:p-10 md:dashed-border-r max-md:dashed-border-b space-y-4">
             <div className="space-y-1">
@@ -114,6 +115,8 @@ export default function RootError({ error, reset }: RootErrorProps) {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }

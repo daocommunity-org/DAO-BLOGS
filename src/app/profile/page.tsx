@@ -6,6 +6,7 @@ import Blog from "@/models/Blog";
 import Comment from "@/models/Comment";
 import Like from "@/models/Like";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { ProfileSignOutButton } from "./profile-signout-button";
 import { ProfileActivityTabs } from "@/components/profile-activity-tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -222,6 +223,8 @@ export default async function ProfilePage() {
           comments={userComments}
         />
       </main>
+
+      <Footer />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { connectToDatabase } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 import Link from "next/link";
@@ -111,12 +112,14 @@ export default async function AdminBlogsPage() {
         </section>
 
         {/* Management Table / Feed */}
-        <section className="w-full dashed-border-b">
-          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 dashed-border-x">
+        <section className="w-full flex-1 flex flex-col">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 dashed-border-x flex-1">
             <AdminBlogsManager blogs={blogs} />
           </div>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }

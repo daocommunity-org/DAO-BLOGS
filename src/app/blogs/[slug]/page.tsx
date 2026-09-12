@@ -6,6 +6,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 import Like from "@/models/Like";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { BlogContentRenderer } from "@/components/blog-content-renderer";
 import { LikeButton } from "@/components/like-button";
 import { CommentsSection } from "@/components/comments-section";
@@ -240,8 +241,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </section>
 
         {/* Bottom Reactions & Comments Section */}
-        <section className="w-full dashed-border-b">
-          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x">
+        <section className="w-full flex-1 flex flex-col">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x flex-1">
             <div className="w-full space-y-10">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
@@ -264,6 +265,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }

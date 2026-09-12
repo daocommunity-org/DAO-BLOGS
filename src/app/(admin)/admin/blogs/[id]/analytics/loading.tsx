@@ -1,15 +1,19 @@
+import { Navbar } from "@/components/navbar";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AnalyticsLoading() {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-      {/* Top Bar Skeleton */}
-      <div className="w-full border-b border-border/40 py-4">
-        <div className="max-w-screen-2xl mx-auto px-6 sm:px-10 flex items-center justify-between">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-6 w-32 rounded" />
-        </div>
-      </div>
+      <Navbar />
+
+      <main className="flex-1 w-full flex flex-col">
+        {/* Top Bar Skeleton */}
+        <section className="w-full dashed-border-b">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-6 w-32 rounded" />
+          </div>
+        </section>
 
       {/* Header Section Skeleton */}
       <div className="w-full dashed-border-b">
@@ -51,32 +55,34 @@ export default function AnalyticsLoading() {
         </div>
       </div>
 
-      {/* List section skeleton */}
-      <div className="w-full">
-        <div className="max-w-screen-2xl mx-auto px-6 sm:px-10 py-8 dashed-border-x space-y-6">
-          <div className="flex items-center justify-between border-b border-border/40 pb-3">
-            <div className="flex gap-4">
-              <Skeleton className="h-8 w-28 rounded-lg" />
-              <Skeleton className="h-8 w-32 rounded-lg" />
-            </div>
-            <Skeleton className="h-8 w-48 rounded-lg" />
-          </div>
-          <div className="divide-y divide-border/20">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="py-4 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3.5 flex-1">
-                  <Skeleton className="w-8 h-8 rounded-full" />
-                  <div className="space-y-1.5 flex-1">
-                    <Skeleton className="h-3.5 w-32" />
-                    <Skeleton className="h-3 w-48" />
-                  </div>
-                </div>
-                <Skeleton className="h-3 w-16" />
+        {/* List section skeleton */}
+        <section className="w-full flex-1 flex flex-col dashed-border-b">
+          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-8 dashed-border-x flex-1 space-y-6">
+            <div className="flex items-center justify-between border-b border-border/40 pb-3">
+              <div className="flex gap-4">
+                <Skeleton className="h-8 w-28 rounded-lg" />
+                <Skeleton className="h-8 w-32 rounded-lg" />
               </div>
-            ))}
+              <Skeleton className="h-8 w-48 rounded-lg" />
+            </div>
+            <div className="divide-y divide-border/20">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="py-4 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3.5 flex-1">
+                    <Skeleton className="w-8 h-8 rounded-full" />
+                    <div className="space-y-1.5 flex-1">
+                      <Skeleton className="h-3.5 w-32" />
+                      <Skeleton className="h-3 w-48" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-3 w-16" />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   );
 }
+
