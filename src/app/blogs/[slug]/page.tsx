@@ -15,6 +15,8 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
+import { extractHeadingsAndInjectIds } from "@/lib/toc";
+import { TableOfContents } from "@/components/table-of-contents";
 
 export const revalidate = 60;
 
@@ -93,6 +95,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const { blog, hasLiked } = data;
+  const { headings, modifiedHtml } = extractHeadingsAndInjectIds(blog.content || "");
 
   const formattedDate = new Date(blog.createdAt)
     .toLocaleDateString("en-US", {
@@ -212,12 +215,27 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </header>
 
-        {/* Article Body Content (Full Bounded Blueprint Width) */}
+        {/* Article Body Content with Sidebar TOC */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-12 sm:py-16 dashed-border-x">
-            <article className="w-full">
-              <BlogContentRenderer content={blog.content} />
-            </article>
+          <div className="max-w-6xl w-full mx-auto dashed-border-x">
+            {headings.length >= 2 ? (
+              <div className="grid grid-cols-1 lg:grid-cols-12">
+                <article className="p-6 sm:p-10 lg:dashed-border-r lg:col-span-8">
+                  <BlogContentRenderer content={modifiedHtml} />
+                </article>
+                <aside className="hidden lg:block lg:col-span-4 p-6 sm:p-8">
+                  <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2">
+                    <TableOfContents headings={headings} />
+                  </div>
+                </aside>
+              </div>
+            ) : (
+              <div className="p-6 sm:p-10">
+                <article className="w-full">
+                  <BlogContentRenderer content={modifiedHtml} />
+                </article>
+              </div>
+            )}
           </div>
         </section>
 

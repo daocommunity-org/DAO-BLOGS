@@ -56,26 +56,43 @@ export default function BlogPostLoading() {
 
         {/* Article Body Content */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-12 sm:py-16 dashed-border-x space-y-4">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-5/6" />
-            <Skeleton className="h-4 w-4/5" />
+          <div className="max-w-6xl w-full mx-auto dashed-border-x grid grid-cols-1 lg:grid-cols-12">
+            <div className="p-6 sm:p-10 lg:dashed-border-r lg:col-span-8 space-y-4">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-4/5" />
 
-            {/* Diagram card skeleton */}
-            <div className="my-8 p-6 rounded-xl border border-border/40 bg-[#162032] flex items-center justify-center min-h-[220px]">
-              <div className="flex items-center gap-4">
-                <Skeleton className="h-10 w-28 rounded-lg bg-white/10" />
-                <Skeleton className="h-0.5 w-12 bg-white/10" />
-                <Skeleton className="h-10 w-28 rounded-lg bg-white/10" />
-                <Skeleton className="h-0.5 w-12 bg-white/10" />
-                <Skeleton className="h-10 w-28 rounded-lg bg-white/10" />
+              {/* Diagram card skeleton */}
+              <div className="my-8 p-6 rounded-xl border border-border/40 bg-[#162032] flex items-center justify-center min-h-[220px]">
+                <div className="flex items-center gap-4">
+                  <Skeleton className="h-10 w-28 rounded-lg bg-white/10" />
+                  <Skeleton className="h-0.5 w-12 bg-white/10" />
+                  <Skeleton className="h-10 w-28 rounded-lg bg-white/10" />
+                  <Skeleton className="h-0.5 w-12 bg-white/10" />
+                  <Skeleton className="h-10 w-28 rounded-lg bg-white/10" />
+                </div>
               </div>
+
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-11/12" />
+              <Skeleton className="h-4 w-3/4" />
             </div>
 
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-11/12" />
-            <Skeleton className="h-4 w-3/4" />
+            {/* TOC Skeleton */}
+            <div className="hidden lg:block lg:col-span-4 p-6 sm:p-8">
+              <div className="sticky top-24 space-y-4">
+                <Skeleton className="h-3 w-24" />
+                <div className="border-l border-border/40 pl-3 space-y-3">
+                  <Skeleton className="h-3.5 w-3/4" />
+                  <Skeleton className="h-3.5 w-5/6" />
+                  <Skeleton className="h-3 w-1/2 ml-3" />
+                  <Skeleton className="h-3.5 w-2/3" />
+                  <Skeleton className="h-3.5 w-4/5" />
+                  <Skeleton className="h-3 w-3/5 ml-3" />
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 

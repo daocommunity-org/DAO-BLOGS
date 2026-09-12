@@ -68,7 +68,7 @@ export function BlogContentRenderer({ content }: BlogContentRendererProps) {
           return <MermaidViewer key={index} chart={part.data} />;
         }
         const cleanHtml = DOMPurify.sanitize(part.data, {
-          ADD_ATTR: ["target", "rel", "referrerpolicy"],
+          ADD_ATTR: ["id", "target", "rel", "referrerpolicy"],
         });
         return (
           <div
