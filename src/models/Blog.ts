@@ -46,6 +46,10 @@ const BlogSchema = new Schema<IBlog>(
   { timestamps: true }
 );
 
+BlogSchema.index({ status: 1, createdAt: -1 });
+BlogSchema.index({ "author.id": 1, createdAt: -1 });
+BlogSchema.index({ tags: 1, status: 1, createdAt: -1 });
+
 export const Blog: Model<IBlog> =
   mongoose.models.Blog || mongoose.model<IBlog>("Blog", BlogSchema);
 
