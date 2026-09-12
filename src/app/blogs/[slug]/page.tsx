@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 
 export const revalidate = 60;
@@ -169,12 +170,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </div>
 
             {blog.coverImage && (
-              <div className="w-full aspect-[21/9] sm:aspect-[2/1] rounded-2xl overflow-hidden border border-border/60 bg-muted/30 mt-6">
-                <img
+              <div className="relative w-full aspect-[21/9] sm:aspect-[2/1] rounded-2xl overflow-hidden border border-border/60 bg-muted/30 mt-6">
+                <Image
                   src={blog.coverImage}
                   alt={blog.title}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover"
+                  fill
+                  priority
+                  sizes="(max-width: 1200px) 100vw, 1200px"
+                  className="object-cover"
                 />
               </div>
             )}

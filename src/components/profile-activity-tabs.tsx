@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Heart, MessageSquare, FileText } from "lucide-react";
 
 interface ProfileActivityTabsProps {
@@ -229,10 +230,11 @@ export function ProfileActivityTabs({
 
                         {blog.coverImage ? (
                           <Link href={`/blogs/${blog.slug}`} className="shrink-0 self-start sm:self-center">
-                            <img
+                            <Image
                               src={blog.coverImage}
                               alt={blog.title}
-                              referrerPolicy="no-referrer"
+                              width={144}
+                              height={96}
                               className="w-28 h-20 sm:w-36 sm:h-24 object-cover rounded-lg group-hover:opacity-90 transition-opacity"
                             />
                           </Link>

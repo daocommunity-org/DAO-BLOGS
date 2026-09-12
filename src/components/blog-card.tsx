@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { MessageSquare, Heart } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -34,12 +35,13 @@ export function BlogCard({ blog }: BlogCardProps) {
     <Card className="overflow-hidden border border-border bg-card flex flex-col justify-between">
       <div>
         {blog.coverImage && (
-          <div className="w-full h-44 overflow-hidden bg-muted">
-            <img
+          <div className="relative w-full h-44 overflow-hidden bg-muted">
+            <Image
               src={blog.coverImage}
               alt={blog.title}
-              referrerPolicy="no-referrer"
-              className="w-full h-full object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover"
             />
           </div>
         )}

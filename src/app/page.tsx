@@ -2,6 +2,7 @@ import { Navbar } from "@/components/navbar";
 import { connectToDatabase } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 import Link from "next/link";
+import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const revalidate = 60;
@@ -109,11 +110,13 @@ export default async function HomePage() {
                       <Link href={`/blogs/${featuredPost.slug}`} className="w-full block group">
                         <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden border border-border/60 bg-muted/30">
                           {featuredPost.coverImage ? (
-                            <img
+                            <Image
                               src={featuredPost.coverImage}
                               alt={featuredPost.title}
-                              referrerPolicy="no-referrer"
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              fill
+                              priority
+                              sizes="(max-width: 1024px) 100vw, 500px"
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center bg-card text-muted-foreground text-xs">
