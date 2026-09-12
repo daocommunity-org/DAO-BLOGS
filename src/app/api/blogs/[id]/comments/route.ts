@@ -77,8 +77,8 @@ export async function POST(
       );
     }
 
-    const DOMPurify = (await import("isomorphic-dompurify")).default;
-    const content = DOMPurify.sanitize(rawContent, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim();
+    // Strip any HTML tags to keep comments purely plain-text and XSS-free
+    const content = rawContent.replace(/<[^>]*>?/gm, "").trim();
 
     if (!content) {
       return NextResponse.json(

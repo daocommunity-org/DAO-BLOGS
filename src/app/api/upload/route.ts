@@ -66,9 +66,12 @@ export async function POST(request: NextRequest) {
     let buffer = Buffer.from(arrayBuffer);
 
     if (file.type === "image/svg+xml") {
-      const DOMPurify = (await import("isomorphic-dompurify")).default;
       const rawSvg = buffer.toString("utf-8");
-      const cleanSvg = DOMPurify.sanitize(rawSvg, { USE_PROFILES: { svg: true, svgFilters: true } });
+      // Sanitize SVG without heavy Node jsdom dependencies: remove scripts and inline event handlers
+      const cleanSvg = rawSvg
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+        .replace(/\bon\w+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)/gi, "")
+        .replace(/href\s*=\s*["']\s*javascript:[^"']*["']/gi, 'href="#"');
       buffer = Buffer.from(cleanSvg, "utf-8");
     }
 

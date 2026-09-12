@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import DOMPurify from "isomorphic-dompurify";
+import DOMPurify from "dompurify";
 import { MermaidViewer } from "./mermaid-viewer";
 
 interface BlogContentRendererProps {
