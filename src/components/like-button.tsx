@@ -58,29 +58,84 @@ export function LikeButton({
     }
   };
 
+  const baseCount = hasLiked ? likesCount - 1 : likesCount;
+  const targetCount = baseCount + 1;
+
   return (
-    <button
-      type="button"
-      onClick={handleToggleLike}
-      disabled={isLoading}
-      aria-label={hasLiked ? "Unlike post" : "Like post"}
-      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer disabled:opacity-75 ${
-        hasLiked
-          ? "border-destructive/50 bg-destructive/10 text-destructive hover:bg-destructive/15"
-          : "border-border/70 bg-card/60 text-muted-foreground hover:text-foreground hover:border-border hover:bg-card"
-      }`}
-    >
-      {isLoading ? (
-        <Loader2 className="w-3.5 h-3.5 animate-spin text-muted-foreground" />
-      ) : (
-        <Heart
-          className={`w-3.5 h-3.5 transition-colors ${
-            hasLiked ? "fill-destructive text-destructive" : "text-muted-foreground"
+    <div className="relative inline-flex items-center select-none">
+      <button
+        type="button"
+        onClick={handleToggleLike}
+        disabled={isLoading}
+        aria-label={hasLiked ? "Unlike post" : "Like post"}
+        className={`group relative flex items-center h-10 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 disabled:opacity-75 shadow-sm border ${
+          hasLiked
+            ? "border-primary/50 bg-primary/10 shadow-[0_0_15px_rgba(31,182,255,0.15)]"
+            : "border-border/60 bg-muted/20 hover:border-primary/40 hover:bg-muted/35"
+        }`}
+      >
+        {/* Left Part: Rolling Number Badge */}
+        <div
+          className={`h-full px-3.5 flex items-center justify-center font-semibold text-xs tracking-tight transition-all duration-300 border-r ${
+            hasLiked
+              ? "bg-primary text-primary-foreground border-primary/40 shadow-inner"
+              : "bg-muted/40 text-muted-foreground group-hover:text-foreground border-border/40"
           }`}
-        />
-      )}
-      <span className="font-mono text-xs">{likesCount}</span>
-    </button>
+        >
+          {isLoading ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
+          ) : (
+            <div className="relative h-4 overflow-hidden flex flex-col items-center justify-center leading-none min-w-[1.2rem]">
+              <span
+                className={`transition-all duration-300 transform inline-block ${
+                  hasLiked
+                    ? "-translate-y-full opacity-0 pointer-events-none"
+                    : "translate-y-0 opacity-100"
+                }`}
+              >
+                {baseCount}
+              </span>
+              <span
+                className={`transition-all duration-300 transform absolute inline-block ${
+                  hasLiked
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-full opacity-0 pointer-events-none"
+                }`}
+              >
+                {targetCount}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Right Part: Icon & Label */}
+        <div className="h-full px-3.5 flex items-center gap-2 transition-transform duration-200">
+          <svg
+            strokeLinejoin="round"
+            strokeLinecap="round"
+            strokeWidth={2}
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            className={`w-4 h-4 transition-all duration-300 transform ${
+              hasLiked
+                ? "text-primary scale-110 fill-primary/20 rotate-[-8deg]"
+                : "text-muted-foreground group-hover:text-primary group-hover:scale-110"
+            }`}
+          >
+            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+          </svg>
+          <span
+            className={`text-xs font-semibold tracking-wide transition-colors duration-200 ${
+              hasLiked
+                ? "text-primary"
+                : "text-muted-foreground group-hover:text-foreground"
+            }`}
+          >
+            {hasLiked ? "Liked" : "Like"}
+          </span>
+        </div>
+      </button>
+    </div>
   );
 }
 

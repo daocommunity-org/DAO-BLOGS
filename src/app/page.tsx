@@ -50,8 +50,8 @@ export default async function HomePage() {
         {/* Hero Header (No center vertical line) */}
         <section className="w-full dashed-border-b">
           <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground">
-              DAO Community <span className="text-primary font-extrabold">Blog</span>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-foreground">
+              DAO Community <span className="text-primary font-semibold">Blog</span>
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground mt-2 max-w-xl leading-relaxed">
               Ideas, technical deep dives, and stories from our community.
@@ -74,10 +74,10 @@ export default async function HomePage() {
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
                     <div className="lg:col-span-7 flex flex-col justify-between space-y-5">
                       <div className="space-y-3">
-                        <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-medium">
+                        <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
                           {formatDate(featuredPost.createdAt)}
                         </span>
-                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground hover:text-primary transition-colors leading-tight">
+                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-foreground hover:text-primary transition-colors leading-tight">
                           <Link href={`/blogs/${featuredPost.slug}`}>
                             {featuredPost.title}
                           </Link>
@@ -115,7 +115,7 @@ export default async function HomePage() {
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-card text-muted-foreground text-xs font-mono">
+                            <div className="w-full h-full flex items-center justify-center bg-card text-muted-foreground text-xs">
                               Cover Image
                             </div>
                           )}
@@ -139,10 +139,10 @@ export default async function HomePage() {
                       }`}
                     >
                       <div className="space-y-3">
-                        <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-medium">
+                        <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
                           {formatDate(post.createdAt)}
                         </span>
-                        <h3 className="text-xl sm:text-2xl font-bold text-foreground hover:text-primary transition-colors leading-snug">
+                        <h3 className="text-xl sm:text-2xl font-semibold text-foreground hover:text-primary transition-colors leading-snug">
                           <Link href={`/blogs/${post.slug}`}>
                             {post.title}
                           </Link>

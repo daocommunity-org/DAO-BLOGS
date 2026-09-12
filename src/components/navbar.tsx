@@ -22,7 +22,7 @@ export function Navbar() {
               priority
             />
           </div>
-          <span className="font-bold text-foreground text-base sm:text-lg tracking-tight truncate">
+          <span className="font-semibold text-foreground text-base sm:text-lg tracking-tight truncate">
             DAO Community
           </span>
         </Link>

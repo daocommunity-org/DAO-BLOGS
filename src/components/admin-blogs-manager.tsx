@@ -38,7 +38,7 @@ export function AdminBlogsManager({ blogs }: AdminBlogsManagerProps) {
       {/* Search & Filter Bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         {/* Status Tabs */}
-        <div className="inline-flex p-1 rounded-lg border border-border/70 bg-card/60 text-xs font-mono">
+        <div className="inline-flex p-1 rounded-lg border border-border/70 bg-card/60 text-xs">
           <button
             type="button"
             onClick={() => setStatusFilter("all")}
@@ -134,18 +134,18 @@ export function AdminBlogsManager({ blogs }: AdminBlogsManagerProps) {
                   <div className="flex items-center gap-2 flex-wrap">
                     <Badge
                       variant={b.status === "published" ? "default" : "secondary"}
-                      className="text-[10px] uppercase font-mono px-1.5 py-0"
+                      className="text-[10px] uppercase px-1.5 py-0"
                     >
                       {b.status}
                     </Badge>
-                    <span className="text-[11px] font-mono text-muted-foreground">
+                    <span className="text-[11px] text-muted-foreground">
                       {new Date(b.createdAt).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
                         year: "numeric",
                       })}
                     </span>
-                    <span className="text-[11px] font-mono text-muted-foreground/70 hidden sm:inline">
+                    <span className="text-[11px] text-muted-foreground/70 hidden sm:inline">
                       • By {b.author?.name}
                     </span>
                   </div>
@@ -158,7 +158,7 @@ export function AdminBlogsManager({ blogs }: AdminBlogsManagerProps) {
                     {b.excerpt}
                   </p>
 
-                  <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground pt-1">
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
                     <span className="text-[11px] text-muted-foreground/60">
                       /blogs/{b.slug}
                     </span>

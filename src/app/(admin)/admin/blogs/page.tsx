@@ -46,7 +46,7 @@ export default async function AdminBlogsPage() {
               Back to blogs
             </Link>
 
-            <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
+            <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
               ADMIN WORKSPACE // ARTICLE_DIRECTORY
             </span>
           </div>
@@ -56,10 +56,10 @@ export default async function AdminBlogsPage() {
         <header className="w-full dashed-border-b">
           <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-12 dashed-border-x flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div className="space-y-1.5">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-primary font-semibold">
+              <span className="text-[11px] uppercase tracking-wider text-primary font-semibold">
                 Control Plane
               </span>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
                 Blog Management
               </h1>
               <p className="text-xs sm:text-sm text-muted-foreground">
@@ -80,41 +80,41 @@ export default async function AdminBlogsPage() {
         <section className="w-full dashed-border-b">
           <div className="max-w-6xl w-full mx-auto dashed-border-x grid grid-cols-2 md:grid-cols-4">
             <div className="p-6 md:dashed-border-r max-md:dashed-border-b flex flex-col justify-between space-y-2">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
                 <FileText className="w-3.5 h-3.5 text-primary" />
                 Total Articles
               </span>
-              <div className="text-2xl sm:text-3xl font-bold font-mono text-foreground">
+              <div className="text-2xl sm:text-3xl font-bold text-foreground">
                 {totalCount}
               </div>
             </div>
 
             <div className="p-6 md:dashed-border-r max-md:dashed-border-b flex flex-col justify-between space-y-2">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
                 <Globe className="w-3.5 h-3.5 text-emerald-400" />
                 Published
               </span>
-              <div className="text-2xl sm:text-3xl font-bold font-mono text-foreground">
+              <div className="text-2xl sm:text-3xl font-bold text-foreground">
                 {publishedCount}
               </div>
             </div>
 
             <div className="p-6 md:dashed-border-r max-md:dashed-border-b flex flex-col justify-between space-y-2">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
                 <FileEdit className="w-3.5 h-3.5 text-amber-400" />
                 Drafts
               </span>
-              <div className="text-2xl sm:text-3xl font-bold font-mono text-foreground">
+              <div className="text-2xl sm:text-3xl font-bold text-foreground">
                 {draftCount}
               </div>
             </div>
 
             <div className="p-6 flex flex-col justify-between space-y-2">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
                 <MessageSquare className="w-3.5 h-3.5 text-primary" />
                 Total Engagement
               </span>
-              <div className="text-2xl sm:text-3xl font-bold font-mono text-foreground">
+              <div className="text-2xl sm:text-3xl font-bold text-foreground">
                 {totalEngagement}
               </div>
             </div>

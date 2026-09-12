@@ -89,7 +89,7 @@ graph LR
 </pre>`;
 
   const cardSample = `<div class="p-6 bg-card border border-border/70 rounded-xl my-4">
-  <h3 class="text-xl font-bold text-primary mb-2">Featured Guild</h3>
+  <h3 class="text-xl font-semibold text-primary mb-2">Featured Guild</h3>
   <p class="text-muted-foreground text-sm">Build decentralized protocols with our developer community.</p>
 </div>`;
 
@@ -107,7 +107,7 @@ graph LR
       {/* Editor Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-card/90 border-b border-border/70">
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground mr-1">
+          <span className="text-[11px] uppercase tracking-wider text-muted-foreground mr-1">
             Quick Insert:
           </span>
           <Button
@@ -152,7 +152,7 @@ graph LR
             size="xs"
             onClick={() =>
               insertSnippet(
-                '<h2 class="text-2xl font-bold text-foreground mt-8 mb-4">Section Heading</h2>\n<p class="text-muted-foreground leading-relaxed mb-4">\n  Add detailed analysis and documentation here.\n</p>'
+                '<h2 class="text-2xl font-semibold text-foreground mt-8 mb-4">Section Heading</h2>\n<p class="text-muted-foreground leading-relaxed mb-4">\n  Add detailed analysis and documentation here.\n</p>'
               )
             }
             className="gap-1.5 text-xs cursor-pointer"
@@ -163,7 +163,7 @@ graph LR
         </div>
 
         {/* View Mode Controls */}
-        <div className="inline-flex p-1 rounded-lg border border-border/70 bg-background/80 text-xs font-mono">
+        <div className="inline-flex p-1 rounded-lg border border-border/70 bg-background/80 text-xs">
           <button
             type="button"
             onClick={() => setViewMode("editor")}
@@ -227,7 +227,7 @@ graph LR
                 scrollBeyondLastLine: false,
                 automaticLayout: true,
                 padding: { top: 14, bottom: 14 },
-                fontFamily: "var(--font-roboto-mono), 'Roboto Mono', monospace",
+                fontFamily: "var(--font-montserrat), 'Montserrat', sans-serif",
               }}
             />
           </div>
@@ -240,7 +240,7 @@ graph LR
               viewMode === "preview" ? "col-span-2" : ""
             }`}
           >
-            <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-muted-foreground mb-6 pb-2.5 border-b border-border/50">
+            <div className="flex items-center justify-between text-xs uppercase tracking-wider text-muted-foreground mb-6 pb-2.5 border-b border-border/50">
               <span>Live Rendered Output</span>
               <span className="text-[10px] text-primary">Compiled HTML & Diagrams</span>
             </div>

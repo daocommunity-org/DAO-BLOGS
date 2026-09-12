@@ -118,7 +118,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               Back to blogs
             </Link>
 
-            <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground">
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
               <span>{blog.likesCount || 0} likes</span>
               <span>•</span>
               <span>{blog.commentsCount || 0} comments</span>
@@ -130,7 +130,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <header className="w-full dashed-border-b">
           <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-medium">
+              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
                 {formattedDate}
               </span>
 
@@ -145,7 +145,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               )}
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-foreground leading-tight">
               {blog.title}
             </h1>
 
@@ -190,13 +190,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </section>
 
-        {/* Bottom Reactions & Comments Section (Single Like Button) */}
+        {/* Bottom Reactions & Comments Section */}
         <section className="w-full dashed-border-b">
-          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-12 dashed-border-x">
-            <div className="w-full space-y-8">
-              <div className="flex items-center justify-between pb-6 border-b border-border/40">
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-semibold text-foreground">Enjoyed this article?</h4>
+          <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-14 dashed-border-x">
+            <div className="w-full space-y-10">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <h4 className="text-base font-semibold text-foreground">Enjoyed this article?</h4>
                   <p className="text-xs text-muted-foreground">Leave a reaction or join the discussion below.</p>
                 </div>
 

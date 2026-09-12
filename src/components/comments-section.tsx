@@ -2,25 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useSession, signIn } from "@/lib/auth-client";
-import { Trash2, Send, Loader2 } from "lucide-react";
+import { Send, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Badge } from "./ui/badge";
 import { Skeleton } from "./ui/skeleton";
-import { Separator } from "./ui/separator";
 import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "./ui/alert-dialog";
 
 interface CommentItem {
   _id: string;
@@ -124,50 +110,55 @@ export function CommentsSection({
   const count = comments.length || initialCommentsCount;
 
   return (
-    <section className="mt-16 space-y-6">
-      <Separator />
-
-      <div className="flex items-center gap-2 pt-2">
-        <h3 className="text-lg font-semibold text-foreground">
-          {count === 0 ? "No comments yet" : `${count} comment${count !== 1 ? "s" : ""}`}
+    <section className="space-y-8">
+      {/* Header */}
+      <div className="flex items-center gap-2">
+        <h3 className="text-base font-semibold text-foreground">
+          {count === 0 ? "Discussion" : `${count} Comment${count !== 1 ? "s" : ""}`}
         </h3>
       </div>
 
-      {/* Comment input */}
+      {/* Comment Input */}
       {session?.user ? (
         <form onSubmit={handlePostComment} className="space-y-3">
-          <Textarea
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-            placeholder="Share your thoughts..."
-            rows={3}
-            disabled={isSubmitting}
-            className="resize-none"
-          />
-          <div className="flex justify-end">
-            <Button
-              type="submit"
-              size="sm"
-              disabled={isSubmitting || !commentText.trim()}
-              className="gap-1.5 cursor-pointer"
-            >
-              {isSubmitting ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <Send className="w-3.5 h-3.5" />
-              )}
-              {isSubmitting ? "Posting…" : "Comment"}
-            </Button>
+          <div className="relative border border-border/50 focus-within:border-primary/60 rounded-xl bg-muted/10 transition-colors p-3">
+            <textarea
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="Share your thoughts or feedback..."
+              rows={3}
+              disabled={isSubmitting}
+              className="w-full bg-transparent border-0 outline-none resize-none text-sm text-foreground placeholder:text-muted-foreground/70 focus:ring-0 leading-relaxed"
+            />
+            <div className="flex items-center justify-between pt-2 border-t border-border/20">
+              <span className="text-[11px] text-muted-foreground">
+                Commenting as <span className="text-foreground font-medium">{session.user.name}</span>
+              </span>
+              <Button
+                type="submit"
+                size="sm"
+                disabled={isSubmitting || !commentText.trim()}
+                className="gap-1.5 cursor-pointer text-xs font-medium px-4 h-8 rounded-lg"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Send className="w-3.5 h-3.5" />
+                )}
+                {isSubmitting ? "Posting…" : "Post Comment"}
+              </Button>
+            </div>
           </div>
         </form>
       ) : (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-4 px-5 rounded-lg border border-border bg-card">
-          <p className="text-sm text-muted-foreground">
-            Sign in to join the conversation.
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4 px-5 rounded-xl border border-border/40 bg-muted/10">
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Join the discussion by signing in with your account.
           </p>
           <Button
             size="sm"
             variant="outline"
+            className="text-xs cursor-pointer rounded-lg"
             onClick={() =>
               signIn.social({
                 provider: "google",
@@ -181,103 +172,99 @@ export function CommentsSection({
       )}
 
       {/* Comment list */}
-      <div className="space-y-6">
+      <div className="space-y-6 pt-2">
         {isLoading ? (
           Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="flex gap-3">
-              <Skeleton className="w-8 h-8 rounded-full shrink-0" />
+              <Skeleton className="w-7 h-7 rounded-full shrink-0" />
               <div className="flex-1 space-y-2">
                 <Skeleton className="h-3 w-32" />
-                <Skeleton className="h-3 w-full" />
-                <Skeleton className="h-3 w-3/4" />
+                <Skeleton className="h-3.5 w-full" />
+                <Skeleton className="h-3.5 w-3/4" />
               </div>
             </div>
           ))
         ) : comments.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-4">
-            Be the first to comment.
-          </p>
+          <div className="py-8 text-center sm:text-left">
+            <p className="text-sm text-muted-foreground">
+              No comments yet. Be the first to share your thoughts!
+            </p>
+          </div>
         ) : (
-          comments.map((c) => {
-            const isAuthor = session?.user?.id === c.userId;
-            const canDelete = isAuthor || isAdmin;
+          <div className="divide-y divide-border/20">
+            {comments.map((c) => {
+              const isAuthor = session?.user?.id === c.userId;
+              const canDelete = isAuthor || isAdmin;
 
-            return (
-              <div key={c._id} className="flex gap-3">
-                <Avatar className="w-8 h-8 shrink-0">
-                  <AvatarImage src={c.userImage} referrerPolicy="no-referrer" />
-                  <AvatarFallback className="text-xs">
-                    {c.userName?.[0]?.toUpperCase() || "U"}
-                  </AvatarFallback>
-                </Avatar>
+              return (
+                <div key={c._id} className="py-5 first:pt-0 last:pb-0 flex gap-3.5">
+                  <Avatar className="w-8 h-8 shrink-0 rounded-full">
+                    <AvatarImage src={c.userImage} referrerPolicy="no-referrer" />
+                    <AvatarFallback className="text-xs font-medium">
+                      {c.userName?.[0]?.toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-medium text-foreground">
-                        {c.userName}
-                      </span>
-                      {isAuthor && (
-                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
-                          You
-                        </Badge>
+                  <div className="flex-1 min-w-0 space-y-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs font-medium text-foreground">
+                          {c.userName}
+                        </span>
+                        {isAuthor && (
+                          <span className="text-[10px] uppercase font-semibold tracking-wider text-primary bg-primary/10 px-1.5 py-0.5 rounded">
+                            You
+                          </span>
+                        )}
+                        <span className="text-muted-foreground/60 text-xs">•</span>
+                        <time className="text-[11px] text-muted-foreground">
+                          {new Date(c.createdAt).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </time>
+                      </div>
+
+                      {canDelete && (
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteComment(c._id)}
+                          disabled={deletingCommentId === c._id}
+                          title="Delete comment"
+                          className="group relative flex items-center h-7 w-[96px] rounded-md overflow-hidden bg-[#e62222] hover:bg-[#ff3636] active:scale-95 transition-all duration-200 cursor-pointer disabled:opacity-50 select-none shadow-sm"
+                        >
+                          {/* Label Text */}
+                          <span className="w-full text-left pl-3 text-xs font-semibold text-white tracking-wide transition-all duration-200 group-hover:text-transparent">
+                            {deletingCommentId === c._id ? "Deleting" : "Delete"}
+                          </span>
+
+                          {/* Icon Container that slides across full button on hover */}
+                          <span className="absolute right-0 top-0 bottom-0 w-7 flex items-center justify-center border-l border-[#c41b1b] transition-all duration-200 group-hover:w-full group-hover:border-l-0">
+                            {deletingCommentId === c._id ? (
+                              <Loader2 className="w-3.5 h-3.5 text-white animate-spin" />
+                            ) : (
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                className="w-3 h-3 fill-white transition-transform duration-200 group-active:scale-75"
+                              >
+                                <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z" />
+                              </svg>
+                            )}
+                          </span>
+                        </button>
                       )}
-                      <time className="text-xs text-muted-foreground">
-                        {new Date(c.createdAt).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </time>
                     </div>
 
-                    {canDelete && (
-                      <AlertDialog>
-                        <AlertDialogTrigger
-                          render={
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-6 w-6 text-muted-foreground hover:text-destructive shrink-0"
-                              title="Delete comment"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </Button>
-                          }
-                        />
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete comment?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This action cannot be undone. This comment will be permanently removed.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel disabled={deletingCommentId === c._id}>
-                              Cancel
-                            </AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleDeleteComment(c._id)}
-                              disabled={deletingCommentId === c._id}
-                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 gap-1.5 cursor-pointer"
-                            >
-                              {deletingCommentId === c._id && (
-                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                              )}
-                              {deletingCommentId === c._id ? "Deleting..." : "Confirm & Delete"}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    )}
+                    <p className="text-sm text-foreground/85 leading-relaxed whitespace-pre-line">
+                      {c.content}
+                    </p>
                   </div>
-
-                  <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line mt-1">
-                    {c.content}
-                  </p>
                 </div>
-              </div>
-            );
-          })
+              );
+            })}
+          </div>
         )}
       </div>
     </section>

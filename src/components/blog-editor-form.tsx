@@ -72,7 +72,7 @@ export function BlogEditorForm({ initialData, isEdit = false }: BlogEditorFormPr
   );
   const [content, setContent] = useState(
     initialData?.content ||
-      `<h2 class="text-2xl font-bold text-foreground mb-4">Introduction</h2>
+      `<h2 class="text-2xl font-semibold text-foreground mb-4">Introduction</h2>
 <p class="text-muted-foreground leading-relaxed mb-4">
   Welcome to our club blog post. We are exploring decentralized tools and workflows.
 </p>
@@ -282,7 +282,7 @@ graph LR
             Back to all articles
           </Link>
 
-          <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
+          <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
             ADMIN // {isEdit ? `EDIT_${status.toUpperCase()}` : "NEW_ARTICLE"}
           </span>
         </div>
@@ -293,20 +293,20 @@ graph LR
         <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-8 sm:py-10 dashed-border-x flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-1.5 min-w-0">
             <div className="flex items-center gap-2.5">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-primary font-semibold">
+              <span className="text-[11px] uppercase tracking-wider text-primary font-semibold">
                 Article Editor
               </span>
               <Badge
                 variant={status === "published" ? "default" : "secondary"}
-                className="text-[10px] font-mono uppercase px-2 py-0"
+                className="text-[10px] uppercase px-2 py-0"
               >
                 {status}
               </Badge>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground truncate">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground truncate">
               {title || (isEdit ? "Edit Article" : "Create New Article")}
             </h1>
-            <p className="text-xs text-muted-foreground font-mono">
+            <p className="text-xs text-muted-foreground">
               /blogs/{slug || "slug-placeholder"}
             </p>
           </div>
@@ -439,11 +439,11 @@ graph LR
                   />
                   <AlertDialogContent size="md">
                     <AlertDialogHeader className="space-y-1.5">
-                      <div className="flex items-center gap-2 text-primary text-xs font-mono font-semibold uppercase tracking-wider">
+                      <div className="flex items-center gap-2 text-primary text-xs font-semibold uppercase tracking-wider">
                         <Globe className="w-4 h-4" />
                         Community Publication
                       </div>
-                      <AlertDialogTitle className="text-xl font-bold tracking-tight text-foreground">
+                      <AlertDialogTitle className="text-xl font-semibold tracking-tight text-foreground">
                         Confirm Publication to DAO
                       </AlertDialogTitle>
                       <AlertDialogDescription className="text-xs text-muted-foreground leading-relaxed">
@@ -471,7 +471,7 @@ graph LR
                         <div className="font-semibold text-foreground text-sm truncate">
                           {title || "Untitled Article"}
                         </div>
-                        <div className="font-mono text-[11px] text-muted-foreground truncate">
+                        <div className="text-[11px] text-muted-foreground truncate">
                           /blogs/{slug || "slug"}
                         </div>
                         {excerpt && (
@@ -519,7 +519,7 @@ graph LR
           {/* Left Column: Article Parameters */}
           <div className="p-6 sm:p-10 md:dashed-border-r max-md:dashed-border-b space-y-6">
             <div className="space-y-1">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
                 <FileText className="w-3.5 h-3.5 text-primary" />
                 Article Parameters
               </span>
@@ -531,10 +531,10 @@ graph LR
             {/* Title */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold uppercase tracking-wider text-foreground font-mono">
+                <label className="text-xs font-bold uppercase tracking-wider text-foreground">
                   Title *
                 </label>
-                <span className="text-[11px] font-mono text-muted-foreground">
+                <span className="text-[11px] text-muted-foreground">
                   {title.length} chars
                 </span>
               </div>
@@ -550,14 +550,14 @@ graph LR
             {/* Slug */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold uppercase tracking-wider text-foreground font-mono flex items-center gap-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1">
                   <Compass className="w-3.5 h-3.5 text-primary" />
                   URL Slug *
                 </label>
                 <button
                   type="button"
                   onClick={() => setAutoSlug(!autoSlug)}
-                  className="text-[11px] font-mono text-primary hover:underline cursor-pointer"
+                  className="text-[11px] text-primary hover:underline cursor-pointer"
                 >
                   {autoSlug ? "Customize" : "Auto-slug"}
                 </button>
@@ -568,9 +568,9 @@ graph LR
                 disabled={autoSlug}
                 onChange={(e) => setSlug(e.target.value)}
                 placeholder="building-community-governance"
-                className="font-mono text-xs h-10"
+                className="text-xs h-10"
               />
-              <span className="text-[11px] font-mono text-muted-foreground block truncate">
+              <span className="text-[11px] text-muted-foreground block truncate">
                 Route: /blogs/{slug || "slug-preview"}
               </span>
             </div>
@@ -578,10 +578,10 @@ graph LR
             {/* Excerpt */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold uppercase tracking-wider text-foreground font-mono">
+                <label className="text-xs font-bold uppercase tracking-wider text-foreground">
                   Excerpt / Summary *
                 </label>
-                <span className="text-[11px] font-mono text-muted-foreground">
+                <span className="text-[11px] text-muted-foreground">
                   {excerpt.length} chars
                 </span>
               </div>
@@ -596,7 +596,7 @@ graph LR
 
             {/* Tags */}
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-foreground font-mono flex items-center gap-1">
+              <label className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1">
                 <Hash className="w-3.5 h-3.5 text-primary" />
                 Tags (Comma-Separated)
               </label>
@@ -636,7 +636,7 @@ graph LR
             <div className="space-y-4">
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
+                  <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
                     <ImageIcon className="w-3.5 h-3.5 text-primary" />
                     Cover Media
                   </span>
@@ -660,7 +660,7 @@ graph LR
                       <button
                         type="button"
                         onClick={() => handleCoverImageChange("")}
-                        className="text-[11px] font-mono text-muted-foreground hover:text-destructive cursor-pointer flex items-center gap-1"
+                        className="text-[11px] text-muted-foreground hover:text-destructive cursor-pointer flex items-center gap-1"
                       >
                         <X className="w-3 h-3" /> Clear
                       </button>
@@ -749,7 +749,7 @@ graph LR
                         <span className="text-xs font-medium text-muted-foreground">
                           Click to upload or drag & drop cover image
                         </span>
-                        <p className="text-[11px] text-muted-foreground/70 max-w-xs mt-1 font-mono">
+                        <p className="text-[11px] text-muted-foreground/70 max-w-xs mt-1">
                           PNG, JPG, WebP up to 10MB
                         </p>
                       </>
@@ -760,7 +760,7 @@ graph LR
 
               {/* Cover Image URL Input */}
               <div className="space-y-1.5">
-                <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground font-mono">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   Direct Image URL (Optional override)
                 </label>
                 <Input
@@ -768,13 +768,13 @@ graph LR
                   value={coverImage}
                   onChange={(e) => handleCoverImageChange(e.target.value)}
                   placeholder="https://res.cloudinary.com/... or external image URL"
-                  className="font-mono text-xs h-9"
+                  className="text-xs h-9"
                 />
               </div>
             </div>
 
             {/* Quick Document Audit */}
-            <div className="p-4 rounded-xl border border-border/60 bg-muted/20 space-y-2 text-xs font-mono text-muted-foreground">
+            <div className="p-4 rounded-xl border border-border/60 bg-muted/20 space-y-2 text-xs text-muted-foreground">
               <div className="flex justify-between items-center">
                 <span>Reading Time</span>
                 <span className="text-foreground font-medium">~{readingTime} min read ({wordCount} words)</span>
@@ -799,7 +799,7 @@ graph LR
         <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 dashed-border-x space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-2">
             <div>
-              <h2 className="text-lg font-bold text-foreground">
+              <h2 className="text-lg font-semibold text-foreground">
                 Article Body & Diagrams
               </h2>
               <p className="text-xs text-muted-foreground">
@@ -807,7 +807,7 @@ graph LR
               </p>
             </div>
 
-            <span className="text-xs font-mono text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               Use &quot;Split&quot; or &quot;Preview&quot; above to see real-time output.
             </span>
           </div>
