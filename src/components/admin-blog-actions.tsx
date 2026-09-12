@@ -92,42 +92,51 @@ export function AdminBlogActions({
   };
 
   return (
-    <div className="flex items-center gap-2 self-end md:self-center shrink-0 flex-wrap">
-      {/* View Link */}
-      <Link href={`/blogs/${slug}`} target="_blank">
-        <Button variant="ghost" size="sm" className="gap-1.5 text-xs cursor-pointer">
-          <ExternalLink className="w-3.5 h-3.5" />
-          View
-        </Button>
+    <div className="grid grid-cols-2 gap-2 shrink-0 self-stretch sm:self-end lg:self-center w-full sm:w-56 text-xs">
+      {/* 1. View Article */}
+      <Link
+        href={`/blogs/${slug}`}
+        target="_blank"
+        className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md bg-muted/30 hover:bg-muted/60 text-muted-foreground hover:text-foreground font-medium text-[11px] border border-border/40 hover:border-border transition-all active:scale-[0.98]"
+        title="View live post"
+      >
+        <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+        <span>View</span>
       </Link>
 
-      {/* Edit Link */}
-      <Link href={`/admin/blogs/${blogId}/edit`}>
-        <Button variant="outline" size="sm" className="gap-1.5 text-xs cursor-pointer">
-          <Edit className="w-3.5 h-3.5" />
-          Edit
-        </Button>
+      {/* 2. Edit Post */}
+      <Link
+        href={`/admin/blogs/${blogId}/edit`}
+        className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md bg-primary/10 hover:bg-primary/20 text-primary font-medium text-[11px] border border-primary/30 hover:border-primary/50 transition-all active:scale-[0.98]"
+        title="Edit post content"
+      >
+        <Edit className="w-3.5 h-3.5" />
+        <span>Edit</span>
       </Link>
 
-      {/* Toggle Status Modal Confirmation */}
+      {/* 3. Toggle Status (Publish / Draft) */}
       <AlertDialog open={statusModalOpen} onOpenChange={setStatusModalOpen}>
         <AlertDialogTrigger
           render={
-            <Button
-              variant="outline"
-              size="sm"
+            <button
+              type="button"
               disabled={isUpdatingStatus || isDeleting}
-              className="gap-1.5 text-xs cursor-pointer"
+              className={`inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md font-medium text-[11px] border transition-all cursor-pointer disabled:opacity-50 active:scale-[0.98] ${
+                nextStatus === "published"
+                  ? "bg-primary/10 hover:bg-primary/20 text-primary border-primary/30 hover:border-primary/50"
+                  : "bg-muted/40 hover:bg-muted/70 text-muted-foreground hover:text-foreground border-border/40 hover:border-border"
+              }`}
+              title={nextStatus === "published" ? "Publish article" : "Revert to draft"}
             >
               {isUpdatingStatus ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
               ) : nextStatus === "published" ? (
-                <Globe className="w-3.5 h-3.5 text-primary" />
+                <Globe className="w-3.5 h-3.5" />
               ) : (
-                <FileText className="w-3.5 h-3.5 text-muted-foreground" />
+                <FileText className="w-3.5 h-3.5" />
               )}
-              {nextStatus === "published" ? "Publish" : "Unpublish"}
-            </Button>
+              <span>{nextStatus === "published" ? "Publish" : "Draft"}</span>
+            </button>
           }
         />
         <AlertDialogContent>
@@ -163,15 +172,14 @@ export function AdminBlogActions({
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Delete Modal Confirmation */}
+      {/* 4. Delete Confirmation */}
       <AlertDialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
         <AlertDialogTrigger
           render={
-            <Button
-              variant="ghost"
-              size="icon"
+            <button
+              type="button"
               disabled={isDeleting || isUpdatingStatus}
-              className="h-8 w-8 text-muted-foreground hover:text-destructive cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md bg-destructive/10 hover:bg-destructive/20 text-destructive border border-destructive/30 hover:border-destructive/50 transition-all font-medium text-[11px] cursor-pointer disabled:opacity-50 active:scale-[0.98]"
               title="Delete post"
             >
               {isDeleting ? (
@@ -179,7 +187,8 @@ export function AdminBlogActions({
               ) : (
                 <Trash2 className="w-3.5 h-3.5" />
               )}
-            </Button>
+              <span>Delete</span>
+            </button>
           }
         />
         <AlertDialogContent>

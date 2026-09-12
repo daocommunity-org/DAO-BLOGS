@@ -35,7 +35,7 @@ export default async function AdminBlogsPage() {
       <Navbar />
 
       <main className="flex-1 w-full flex flex-col">
-        {/* Top Breadcrumb Bar */}
+        {/* Top Navigation */}
         <section className="w-full dashed-border-b">
           <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
             <Link
@@ -45,30 +45,23 @@ export default async function AdminBlogsPage() {
               <ArrowLeft className="w-3.5 h-3.5" />
               Back to blogs
             </Link>
-
-            <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
-              ADMIN WORKSPACE // ARTICLE_DIRECTORY
-            </span>
           </div>
         </section>
 
-        {/* Header Hero Section */}
+        {/* Header Section */}
         <header className="w-full dashed-border-b">
           <div className="max-w-6xl w-full mx-auto px-6 sm:px-10 py-10 sm:py-12 dashed-border-x flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-            <div className="space-y-1.5">
-              <span className="text-[11px] uppercase tracking-wider text-primary font-semibold">
-                Control Plane
-              </span>
+            <div className="space-y-1">
               <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
                 Blog Management
               </h1>
               <p className="text-xs sm:text-sm text-muted-foreground">
-                Author, review, publish, and moderate all platform articles.
+                Manage, publish, and review articles across the community.
               </p>
             </div>
 
             <Link href="/admin/blogs/new">
-              <Button size="sm" className="gap-2 font-semibold text-xs cursor-pointer">
+              <Button size="sm" className="gap-2 font-medium text-xs cursor-pointer rounded-lg">
                 <Plus className="w-4 h-4" />
                 Write New Post
               </Button>
@@ -76,45 +69,41 @@ export default async function AdminBlogsPage() {
           </div>
         </header>
 
-        {/* 4-Column Blueprint Stats Row */}
+        {/* 4-Column Minimal Stats Row */}
         <section className="w-full dashed-border-b">
           <div className="max-w-6xl w-full mx-auto dashed-border-x grid grid-cols-2 md:grid-cols-4">
             <div className="p-6 md:dashed-border-r max-md:dashed-border-b flex flex-col justify-between space-y-2">
-              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-primary" />
+              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
                 Total Articles
               </span>
-              <div className="text-2xl sm:text-3xl font-bold text-foreground">
+              <div className="text-2xl sm:text-3xl font-semibold text-foreground">
                 {totalCount}
               </div>
             </div>
 
             <div className="p-6 md:dashed-border-r max-md:dashed-border-b flex flex-col justify-between space-y-2">
-              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
                 Published
               </span>
-              <div className="text-2xl sm:text-3xl font-bold text-foreground">
+              <div className="text-2xl sm:text-3xl font-semibold text-foreground">
                 {publishedCount}
               </div>
             </div>
 
             <div className="p-6 md:dashed-border-r max-md:dashed-border-b flex flex-col justify-between space-y-2">
-              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
-                <FileEdit className="w-3.5 h-3.5 text-amber-400" />
+              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
                 Drafts
               </span>
-              <div className="text-2xl sm:text-3xl font-bold text-foreground">
+              <div className="text-2xl sm:text-3xl font-semibold text-foreground">
                 {draftCount}
               </div>
             </div>
 
             <div className="p-6 flex flex-col justify-between space-y-2">
-              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
-                <MessageSquare className="w-3.5 h-3.5 text-primary" />
+              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
                 Total Engagement
               </span>
-              <div className="text-2xl sm:text-3xl font-bold text-foreground">
+              <div className="text-2xl sm:text-3xl font-semibold text-foreground">
                 {totalEngagement}
               </div>
             </div>

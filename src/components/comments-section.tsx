@@ -250,22 +250,22 @@ export function CommentsSection({
                           onClick={() => handleDeleteComment(c._id)}
                           disabled={deletingCommentId === c._id}
                           title="Delete comment"
-                          className="group relative flex items-center h-7 w-[96px] rounded-md overflow-hidden bg-[#e62222] hover:bg-[#ff3636] active:scale-95 transition-all duration-200 cursor-pointer disabled:opacity-50 select-none shadow-sm"
+                          className="group relative flex items-center h-7 w-[96px] rounded-md overflow-hidden bg-destructive hover:bg-destructive/90 active:scale-95 transition-all duration-200 cursor-pointer disabled:opacity-50 select-none shadow-sm"
                         >
                           {/* Label Text */}
-                          <span className="w-full text-left pl-3 text-xs font-semibold text-white tracking-wide transition-all duration-200 group-hover:text-transparent">
+                          <span className="w-full text-left pl-3 text-xs font-semibold text-destructive-foreground tracking-wide transition-all duration-200 group-hover:text-transparent">
                             {deletingCommentId === c._id ? "Deleting" : "Delete"}
                           </span>
 
                           {/* Icon Container that slides across full button on hover */}
-                          <span className="absolute right-0 top-0 bottom-0 w-7 flex items-center justify-center border-l border-[#c41b1b] transition-all duration-200 group-hover:w-full group-hover:border-l-0">
+                          <span className="absolute right-0 top-0 bottom-0 w-7 flex items-center justify-center border-l border-black/20 transition-all duration-200 group-hover:w-full group-hover:border-l-0">
                             {deletingCommentId === c._id ? (
-                              <Loader2 className="w-3.5 h-3.5 text-white animate-spin" />
+                              <Loader2 className="w-3.5 h-3.5 text-destructive-foreground animate-spin" />
                             ) : (
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
-                                className="w-3 h-3 fill-white transition-transform duration-200 group-active:scale-75"
+                                className="w-3 h-3 fill-destructive-foreground transition-transform duration-200 group-active:scale-75"
                               >
                                 <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z" />
                               </svg>

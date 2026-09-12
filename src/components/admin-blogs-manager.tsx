@@ -2,9 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import Image from "next/image";
 import { AdminBlogActions } from "@/components/admin-blog-actions";
 import { Search, Heart, MessageSquare, FileText, Image as ImageIcon } from "lucide-react";
 
@@ -34,17 +32,17 @@ export function AdminBlogsManager({ blogs }: AdminBlogsManagerProps) {
   const draftCount = blogs.filter((b) => b.status === "draft").length;
 
   return (
-    <div className="space-y-6">
-      {/* Search & Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-        {/* Status Tabs */}
-        <div className="inline-flex p-1 rounded-lg border border-border/70 bg-card/60 text-xs">
+    <div className="space-y-8">
+      {/* Search & Underline Filter Bar */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-b border-border/40 pb-px">
+        {/* Clean Underline Tabs */}
+        <div className="flex items-center gap-8">
           <button
             type="button"
             onClick={() => setStatusFilter("all")}
-            className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+            className={`pb-3.5 text-sm font-medium transition-colors cursor-pointer relative ${
               statusFilter === "all"
-                ? "bg-primary text-primary-foreground font-semibold"
+                ? "text-foreground font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-primary"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -53,9 +51,9 @@ export function AdminBlogsManager({ blogs }: AdminBlogsManagerProps) {
           <button
             type="button"
             onClick={() => setStatusFilter("published")}
-            className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+            className={`pb-3.5 text-sm font-medium transition-colors cursor-pointer relative ${
               statusFilter === "published"
-                ? "bg-primary text-primary-foreground font-semibold"
+                ? "text-foreground font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-primary"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -64,9 +62,9 @@ export function AdminBlogsManager({ blogs }: AdminBlogsManagerProps) {
           <button
             type="button"
             onClick={() => setStatusFilter("draft")}
-            className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+            className={`pb-3.5 text-sm font-medium transition-colors cursor-pointer relative ${
               statusFilter === "draft"
-                ? "bg-primary text-primary-foreground font-semibold"
+                ? "text-foreground font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-primary"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -75,114 +73,114 @@ export function AdminBlogsManager({ blogs }: AdminBlogsManagerProps) {
         </div>
 
         {/* Search Input */}
-        <div className="relative max-w-xs w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-          <Input
+        <div className="relative max-w-xs w-full pb-2 sm:pb-3">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 sm:-translate-y-[calc(50%+6px)] w-3.5 h-3.5 text-muted-foreground" />
+          <input
             type="text"
-            placeholder="Search by title, slug, author..."
+            placeholder="Search articles..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 text-xs h-9"
+            className="w-full bg-muted/10 border border-border/50 focus:border-primary/60 rounded-lg pl-9 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/70 outline-none transition-colors"
           />
         </div>
       </div>
 
-      {/* Blogs List */}
+      {/* Blogs Feed (No Card Boxes) */}
       {filteredBlogs.length === 0 ? (
-        <div className="p-12 rounded-xl border border-border/60 bg-card/30 text-center space-y-3">
-          <FileText className="w-8 h-8 text-muted-foreground mx-auto" />
-          <h3 className="text-sm font-semibold text-foreground">No articles match your criteria</h3>
+        <div className="py-16 text-center space-y-2">
+          <FileText className="w-7 h-7 text-muted-foreground/60 mx-auto" />
+          <h3 className="text-base font-medium text-foreground">No articles match your criteria</h3>
           <p className="text-xs text-muted-foreground max-w-sm mx-auto">
             {searchQuery
-              ? `No articles found matching "${searchQuery}". Try a different keyword or clear the search filter.`
+              ? `No articles found matching "${searchQuery}". Try a different search keyword.`
               : "No articles available in this view."}
           </p>
-          {searchQuery && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setSearchQuery("")}
-              className="text-xs mt-2"
-            >
-              Clear Search
-            </Button>
-          )}
         </div>
       ) : (
-        <div className="divide-y divide-border/40 border border-border/70 rounded-xl overflow-hidden bg-card/40">
+          <div className="divide-y divide-border/20">
           {filteredBlogs.map((b) => (
-            <div
+            <article
               key={b._id}
-              className="p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 hover:bg-muted/20 transition-colors"
+              className="py-6 first:pt-0 last:pb-0 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 group"
             >
-              <div className="flex items-start gap-4 min-w-0 flex-1">
+              <div className="flex items-start gap-4 sm:gap-5 min-w-0 flex-1">
                 {/* Thumbnail Preview */}
-                <div className="w-20 h-14 sm:w-28 sm:h-18 rounded-lg overflow-hidden border border-border/70 bg-muted/40 shrink-0 flex items-center justify-center">
+                <div className="relative w-20 h-16 sm:w-28 sm:h-20 rounded-lg overflow-hidden border border-border/40 bg-muted/20 shrink-0 flex items-center justify-center">
                   {b.coverImage ? (
-                    <img
+                    <Image
                       src={b.coverImage}
                       alt={b.title}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover"
+                      width={112}
+                      height={80}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
-                    <ImageIcon className="w-5 h-5 text-muted-foreground/50" />
+                    <ImageIcon className="w-6 h-6 text-muted-foreground/40" />
                   )}
                 </div>
 
                 <div className="space-y-1.5 min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <Badge
-                      variant={b.status === "published" ? "default" : "secondary"}
-                      className="text-[10px] uppercase px-1.5 py-0"
+                    <span
+                      className={`text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded border ${
+                        b.status === "published"
+                          ? "bg-primary/10 text-primary border-primary/20"
+                          : "bg-muted/40 text-muted-foreground border-border/40"
+                      }`}
                     >
                       {b.status}
-                    </Badge>
-                    <span className="text-[11px] text-muted-foreground">
+                    </span>
+                    <span className="text-muted-foreground/50 text-xs">•</span>
+                    <time className="text-[11px] text-muted-foreground">
                       {new Date(b.createdAt).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
                         year: "numeric",
                       })}
-                    </span>
-                    <span className="text-[11px] text-muted-foreground/70 hidden sm:inline">
-                      • By {b.author?.name}
+                    </time>
+                    <span className="text-muted-foreground/50 text-xs hidden sm:inline">•</span>
+                    <span className="text-[11px] text-muted-foreground hidden sm:inline">
+                      By {b.author?.name}
                     </span>
                   </div>
 
-                  <h3 className="font-semibold text-sm sm:text-base text-foreground hover:text-primary transition-colors truncate">
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors leading-snug line-clamp-2">
                     <Link href={`/blogs/${b.slug}`}>{b.title}</Link>
                   </h3>
 
-                  <p className="text-xs text-muted-foreground line-clamp-1">
-                    {b.excerpt}
-                  </p>
+                  {b.excerpt && (
+                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed max-w-2xl">
+                      {b.excerpt}
+                    </p>
+                  )}
 
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
-                    <span className="text-[11px] text-muted-foreground/60">
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground pt-0.5">
+                    <span className="text-[11px] text-muted-foreground/60 font-mono truncate max-w-[180px] sm:max-w-xs">
                       /blogs/{b.slug}
                     </span>
-                    <span>•</span>
+                    <span className="text-muted-foreground/40">•</span>
                     <span className="flex items-center gap-1">
-                      <Heart className="w-3 h-3" />
+                      <Heart className="w-3.5 h-3.5 text-muted-foreground/70" />
                       {b.likesCount || 0}
                     </span>
                     <span className="flex items-center gap-1">
-                      <MessageSquare className="w-3 h-3" />
+                      <MessageSquare className="w-3.5 h-3.5 text-muted-foreground/70" />
                       {b.commentsCount || 0}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* Admin Actions */}
-              <AdminBlogActions
-                blogId={b._id}
-                slug={b.slug}
-                title={b.title}
-                status={b.status}
-              />
-            </div>
+              {/* Admin Actions (Responsive 2x2 Grid) */}
+              <div className="w-full md:w-auto flex md:justify-end shrink-0 pt-2 md:pt-0">
+                <AdminBlogActions
+                  blogId={b._id}
+                  slug={b.slug}
+                  title={b.title}
+                  status={b.status}
+                />
+              </div>
+            </article>
           ))}
         </div>
       )}
