@@ -31,9 +31,23 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // Protect /api/admin at proxy level
+  if (pathname.startsWith("/api/admin")) {
+    const sessionToken =
+      request.cookies.get("better-auth.session_token")?.value ||
+      request.cookies.get("__Secure-better-auth.session_token")?.value;
+
+    if (!sessionToken) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. Session required." },
+        { status: 401 }
+      );
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/upload/:path*"],
+  matcher: ["/admin/:path*", "/api/upload/:path*", "/api/admin/:path*"],
 };
