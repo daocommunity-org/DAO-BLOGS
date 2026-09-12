@@ -61,11 +61,28 @@ export async function POST(
     }
 
     const body = await request.json();
-    const content = body?.content?.trim();
+    const rawContent = body?.content?.trim();
+
+    if (!rawContent) {
+      return NextResponse.json(
+        { success: false, error: "Comment content cannot be empty." },
+        { status: 400 }
+      );
+    }
+
+    if (rawContent.length > 1500) {
+      return NextResponse.json(
+        { success: false, error: "Comment cannot exceed 1,500 characters." },
+        { status: 400 }
+      );
+    }
+
+    const DOMPurify = (await import("isomorphic-dompurify")).default;
+    const content = DOMPurify.sanitize(rawContent, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim();
 
     if (!content) {
       return NextResponse.json(
-        { success: false, error: "Comment content cannot be empty." },
+        { success: false, error: "Invalid comment content." },
         { status: 400 }
       );
     }

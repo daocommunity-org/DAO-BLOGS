@@ -16,10 +16,12 @@ const CommentSchema = new Schema<IComment>(
     userId: { type: String, required: true },
     userName: { type: String, required: true },
     userImage: { type: String, default: "" },
-    content: { type: String, required: true, trim: true },
+    content: { type: String, required: true, trim: true, maxlength: 1500 },
   },
   { timestamps: true }
 );
+
+CommentSchema.index({ blogId: 1, createdAt: -1 });
 
 export const Comment: Model<IComment> =
   mongoose.models.Comment || mongoose.model<IComment>("Comment", CommentSchema);
