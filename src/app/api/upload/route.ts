@@ -30,7 +30,9 @@ export async function POST(request: NextRequest) {
     // 2. Parse Multipart Form Data
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
-    const folder = (formData.get("folder") as string) || "dao-blogs";
+    const rawFolder = (formData.get("folder") as string) || "dao-blogs";
+    // Sanitize folder to alphanumeric, dash, and underscore only
+    const folder = rawFolder.replace(/[^a-zA-Z0-9-_]/g, "").slice(0, 50) || "dao-blogs";
 
     if (!file) {
       return NextResponse.json(

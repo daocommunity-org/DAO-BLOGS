@@ -9,6 +9,10 @@ import Comment from "@/models/Comment";
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
 
+function escapeRegex(text: string): string {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
+
 export async function GET(request: NextRequest) {
   try {
     const session = await auth.api.getSession({
@@ -57,12 +61,13 @@ export async function GET(request: NextRequest) {
 
       // If user search query is provided, find matching users first
       if (query) {
+        const safeQuery = escapeRegex(query);
         const userMatches = await db
           .collection("user")
           .find({
             $or: [
-              { name: { $regex: query, $options: "i" } },
-              { email: { $regex: query, $options: "i" } },
+              { name: { $regex: safeQuery, $options: "i" } },
+              { email: { $regex: safeQuery, $options: "i" } },
             ],
           })
           .project({ _id: 1 })
@@ -151,9 +156,10 @@ export async function GET(request: NextRequest) {
       }
 
       if (query) {
+        const safeQuery = escapeRegex(query);
         filter.$or = [
-          { userName: { $regex: query, $options: "i" } },
-          { content: { $regex: query, $options: "i" } },
+          { userName: { $regex: safeQuery, $options: "i" } },
+          { content: { $regex: safeQuery, $options: "i" } },
         ];
       }
 

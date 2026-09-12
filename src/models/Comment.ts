@@ -22,6 +22,7 @@ const CommentSchema = new Schema<IComment>(
 );
 
 CommentSchema.index({ blogId: 1, createdAt: -1 });
+CommentSchema.index({ userId: 1, createdAt: -1 });
 
 export const Comment: Model<IComment> =
   mongoose.models.Comment || mongoose.model<IComment>("Comment", CommentSchema);
