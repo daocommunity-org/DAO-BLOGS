@@ -22,6 +22,7 @@ async function getBlogs() {
     await connectToDatabase();
     const blogs = await Blog.find({ status: "published" })
       .sort({ createdAt: -1 })
+      .limit(24)
       .select("title slug excerpt coverImage tags author likesCount commentsCount createdAt")
       .lean();
     return JSON.parse(JSON.stringify(blogs));

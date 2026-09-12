@@ -37,20 +37,36 @@ export function CommentsSection({
   const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!blogId) {
+      setIsLoading(false);
+      return;
+    }
+
+    let isMounted = true;
     const fetchComments = async () => {
       try {
         const res = await fetch(`/api/blogs/${blogId}/comments`);
-        const data = await res.json();
-        if (data.success) {
+        if (!res.ok) {
+          return;
+        }
+        const text = await res.text();
+        if (!text) return;
+        const data = JSON.parse(text);
+        if (isMounted && data.success && Array.isArray(data.comments)) {
           setComments(data.comments);
         }
       } catch (err) {
         console.error("Failed to fetch comments:", err);
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
     fetchComments();
+    return () => {
+      isMounted = false;
+    };
   }, [blogId]);
 
   const handlePostComment = async (e: React.FormEvent) => {
@@ -72,7 +88,8 @@ export function CommentsSection({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: commentText.trim() }),
       });
-      const data = await res.json();
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : {};
       if (!res.ok || !data.success) {
         throw new Error(data.error || "Failed to post comment");
       }
@@ -93,7 +110,8 @@ export function CommentsSection({
       const res = await fetch(`/api/blogs/${blogId}/comments/${commentId}`, {
         method: "DELETE",
       });
-      const data = await res.json();
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : {};
       if (!res.ok || !data.success) {
         throw new Error(data.error || "Failed to delete comment");
       }
