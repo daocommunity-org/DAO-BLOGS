@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/mongodb";
+import client from "@/lib/mongodb-client";
 import Blog from "@/models/Blog";
+import mongoose from "mongoose";
 
 function escapeRegex(text: string): string {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
@@ -76,7 +78,7 @@ export async function POST(request: NextRequest) {
 
     await connectToDatabase();
     const body = await request.json();
-    const { title, slug, excerpt, coverImage, tags, content, status } = body;
+    const { title, slug, excerpt, coverImage, tags, content, status, coAuthors } = body;
 
     if (!title || !slug || !excerpt || !content) {
       return NextResponse.json(
@@ -93,6 +95,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Sanitize and hydrate coAuthors list from user collection, excluding primary author
+    const rawCoAuthorList = Array.isArray(coAuthors)
+      ? coAuthors.filter((ca: any) => ca && ca.id && ca.id !== session.user.id)
+      : [];
+
+    const rawIds = rawCoAuthorList.map((ca: any) => String(ca.id));
+    const objectIds = rawIds
+      .filter((cid: string) => mongoose.Types.ObjectId.isValid(cid))
+      .map((cid: string) => new mongoose.Types.ObjectId(cid));
+
+    const usersDb = await client
+      .db()
+      .collection("user")
+      .find({ _id: { $in: objectIds } })
+      .project({ _id: 1, name: 1, email: 1, image: 1 })
+      .toArray();
+
+    const userMap = new Map(usersDb.map((u) => [u._id.toString(), u]));
+
+    const sanitizedCoAuthors = rawCoAuthorList.map((ca: any) => {
+      const u = userMap.get(String(ca.id));
+      return {
+        id: String(ca.id),
+        name: String(u?.name || ca.name || "Co-Author"),
+        email: String(u?.email || ca.email || ""),
+        image: String(u?.image || ca.image || ""),
+      };
+    });
+
     const newBlog = await Blog.create({
       title,
       slug,
@@ -107,6 +138,7 @@ export async function POST(request: NextRequest) {
         email: session.user.email,
         image: session.user.image || "",
       },
+      coAuthors: sanitizedCoAuthors,
     });
 
     return NextResponse.json({ success: true, blog: newBlog }, { status: 201 });

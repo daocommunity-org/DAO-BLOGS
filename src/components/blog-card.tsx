@@ -18,6 +18,11 @@ export interface BlogCardProps {
       name: string;
       image?: string;
     };
+    coAuthors?: Array<{
+      id: string;
+      name: string;
+      image?: string;
+    }>;
     likesCount: number;
     commentsCount: number;
     createdAt: string | Date;
@@ -74,13 +79,26 @@ export function BlogCard({ blog }: BlogCardProps) {
         <Separator className="mb-3" />
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Avatar className="w-5 h-5">
-              <AvatarImage src={blog.author.image} alt={blog.author.name} referrerPolicy="no-referrer" />
-              <AvatarFallback className="text-[10px]">
-                {blog.author.name?.[0]?.toUpperCase() || "A"}
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-foreground/70 font-medium">{blog.author.name}</span>
+            <div className="flex -space-x-1.5 overflow-hidden">
+              <Avatar className="w-5 h-5 ring-1 ring-background">
+                <AvatarImage src={blog.author.image} alt={blog.author.name} referrerPolicy="no-referrer" />
+                <AvatarFallback className="text-[10px]">
+                  {blog.author.name?.[0]?.toUpperCase() || "A"}
+                </AvatarFallback>
+              </Avatar>
+              {blog.coAuthors?.slice(0, 2).map((ca: any) => (
+                <Avatar key={ca.id} className="w-5 h-5 ring-1 ring-background">
+                  <AvatarImage src={ca.image} alt={ca.name} referrerPolicy="no-referrer" />
+                  <AvatarFallback className="text-[10px]">
+                    {ca.name?.[0]?.toUpperCase() || "C"}
+                  </AvatarFallback>
+                </Avatar>
+              ))}
+            </div>
+            <span className="text-foreground/70 font-medium truncate max-w-[120px]">
+              {blog.author.name}
+              {blog.coAuthors && blog.coAuthors.length > 0 && ` +${blog.coAuthors.length}`}
+            </span>
             <span>·</span>
             <time>{formattedDate}</time>
           </div>

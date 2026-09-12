@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 import Like from "@/models/Like";
 import Comment from "@/models/Comment";
 import mongoose from "mongoose";
+import client from "@/lib/mongodb-client";
 import {
   extractAllCloudinaryUrls,
   deleteOrphanedCloudinaryImages,
@@ -103,6 +105,63 @@ export async function PUT(
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const query = isObjectId ? { $or: [{ _id: id }, { slug: id }] } : { slug: id };
 
+    // Fetch existing blog first to check permissions and track images
+    const existingBlog = await Blog.findOne(query);
+    if (!existingBlog) {
+      return NextResponse.json(
+        { success: false, error: "Blog not found" },
+        { status: 404 }
+      );
+    }
+
+    // Co-author permission check: must be primary author or listed as a co-author
+    const isPrimaryAuthor = existingBlog.author?.id === session.user.id;
+    const isCoAuthor = existingBlog.coAuthors?.some((ca: any) => ca.id === session.user.id);
+    if (!isPrimaryAuthor && !isCoAuthor) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. You are not an author or co-author of this article." },
+        { status: 403 }
+      );
+    }
+
+    // Only the primary author can modify co-authors
+    if (body.coAuthors !== undefined) {
+      if (!isPrimaryAuthor) {
+        return NextResponse.json(
+          { success: false, error: "Only the primary author can add or modify co-authors." },
+          { status: 403 }
+        );
+      }
+
+      const rawList = Array.isArray(body.coAuthors)
+        ? body.coAuthors.filter((ca: any) => ca && ca.id && ca.id !== existingBlog.author?.id)
+        : [];
+
+      const rawIds = rawList.map((ca: any) => String(ca.id));
+      const objectIds = rawIds
+        .filter((cid: string) => mongoose.Types.ObjectId.isValid(cid))
+        .map((cid: string) => new mongoose.Types.ObjectId(cid));
+
+      const usersDb = await client
+        .db()
+        .collection("user")
+        .find({ _id: { $in: objectIds } })
+        .project({ _id: 1, name: 1, email: 1, image: 1 })
+        .toArray();
+
+      const userMap = new Map(usersDb.map((u) => [u._id.toString(), u]));
+
+      updateData.coAuthors = rawList.map((ca: any) => {
+        const u = userMap.get(String(ca.id));
+        return {
+          id: String(ca.id),
+          name: String(u?.name || ca.name || "Co-Author"),
+          email: String(u?.email || ca.email || ""),
+          image: String(u?.image || ca.image || ""),
+        };
+      });
+    }
+
     // Check slug uniqueness if slug is being updated
     if (updateData.slug) {
       const slugConflict = await Blog.findOne({
@@ -117,14 +176,6 @@ export async function PUT(
       }
     }
 
-    // Fetch existing blog to track current images before update
-    const existingBlog = await Blog.findOne(query);
-    if (!existingBlog) {
-      return NextResponse.json(
-        { success: false, error: "Blog not found" },
-        { status: 404 }
-      );
-    }
     const oldImageUrls = extractAllCloudinaryUrls(existingBlog.content, existingBlog.coverImage);
 
     const updatedBlog = await Blog.findOneAndUpdate(
@@ -146,6 +197,11 @@ export async function PUT(
       console.error("Orphaned Cloudinary images cleanup failed:", err)
     );
 
+    revalidatePath(`/admin/blogs/${id}/edit`);
+    revalidatePath("/admin/blogs");
+    revalidatePath(`/blogs/${updatedBlog.slug}`);
+    revalidatePath("/");
+
     return NextResponse.json({ success: true, blog: updatedBlog });
   } catch (error: any) {
     console.error("PUT /api/blogs/[id] error:", error);
@@ -155,6 +211,8 @@ export async function PUT(
     );
   }
 }
+
+export const PATCH = PUT;
 
 export async function DELETE(
   request: NextRequest,
@@ -177,8 +235,27 @@ export async function DELETE(
     await connectToDatabase();
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const query = isObjectId ? { $or: [{ _id: id }, { slug: id }] } : { slug: id };
-    const blog = await Blog.findOneAndDelete(query);
+    
+    const existingBlog = await Blog.findOne(query);
+    if (!existingBlog) {
+      return NextResponse.json(
+        { success: false, error: "Blog not found" },
+        { status: 404 }
+      );
+    }
 
+    // Only the primary author who created the blog can delete it
+    if (existingBlog.author?.id !== session.user.id) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Permission denied. Only the primary author can delete this article.",
+        },
+        { status: 403 }
+      );
+    }
+
+    const blog = await Blog.findOneAndDelete(query);
     if (!blog) {
       return NextResponse.json(
         { success: false, error: "Blog not found" },

@@ -141,6 +141,11 @@ export function AdminBlogsManager({ blogs }: AdminBlogsManagerProps) {
                     <span className="text-muted-foreground/50 text-xs hidden sm:inline">•</span>
                     <span className="text-[11px] text-muted-foreground hidden sm:inline">
                       By {b.author?.name}
+                      {b.coAuthors && b.coAuthors.length > 0 && (
+                        <span className="text-muted-foreground/70">
+                          {" "}+{b.coAuthors.length} co-{b.coAuthors.length === 1 ? "author" : "authors"}
+                        </span>
+                      )}
                     </span>
                   </div>
 
@@ -184,6 +189,8 @@ export function AdminBlogsManager({ blogs }: AdminBlogsManagerProps) {
                   slug={b.slug}
                   title={b.title}
                   status={b.status}
+                  authorId={b.author?.id}
+                  coAuthors={b.coAuthors}
                 />
               </div>
             </article>

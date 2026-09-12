@@ -3,13 +3,13 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Heart,
   MessageSquare,
   Search,
   ChevronLeft,
   ChevronRight,
-  Loader2,
   Calendar,
   RefreshCw,
   Clock,
@@ -220,9 +220,25 @@ export function BlogAnalyticsView({
 
       {/* Main List Section */}
       {isLoading ? (
-        <div className="py-20 flex flex-col items-center justify-center space-y-3 text-muted-foreground">
-          <Loader2 className="w-6 h-6 animate-spin text-primary" />
-          <span className="text-xs">Loading engagement log...</span>
+        <div className="divide-y divide-border/20">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="py-4 first:pt-0 last:pb-0 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5 flex-1">
+                <Skeleton className="w-8 h-8 rounded-full shrink-0" />
+                <div className="space-y-1.5 flex-1">
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-3.5 w-28" />
+                    <Skeleton className="h-3 w-36" />
+                    <Skeleton className="h-3 w-20" />
+                  </div>
+                  {tab === "comments" && (
+                    <Skeleton className="h-3 w-3/4 mt-1" />
+                  )}
+                </div>
+              </div>
+              <Skeleton className="h-4 w-12 rounded shrink-0" />
+            </div>
+          ))}
         </div>
       ) : items.length === 0 ? (
         <div className="py-16 text-center space-y-2">

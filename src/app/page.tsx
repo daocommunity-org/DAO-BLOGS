@@ -24,7 +24,7 @@ async function getBlogs() {
     const blogs = await Blog.find({ status: "published" })
       .sort({ createdAt: -1 })
       .limit(24)
-      .select("title slug excerpt coverImage tags author likesCount commentsCount createdAt")
+      .select("title slug excerpt coverImage tags author coAuthors likesCount commentsCount createdAt")
       .lean();
     return JSON.parse(JSON.stringify(blogs));
   } catch (error) {
@@ -90,18 +90,55 @@ export default async function HomePage() {
                       </div>
 
                       <div className="flex items-center gap-2.5 pt-1">
-                        <Avatar className="w-6 h-6 border border-border/60">
-                          <AvatarImage
-                            src={featuredPost.author?.image}
-                            alt={featuredPost.author?.name}
-                            referrerPolicy="no-referrer"
-                          />
-                          <AvatarFallback className="text-[10px] font-medium">
-                            {featuredPost.author?.name?.[0]?.toUpperCase() || "A"}
-                          </AvatarFallback>
-                        </Avatar>
+                        <div className="flex -space-x-1.5 overflow-hidden">
+                          <Avatar className="w-6 h-6 border border-border/60 ring-1 ring-background shrink-0">
+                            <AvatarImage
+                              src={featuredPost.author?.image}
+                              alt={featuredPost.author?.name}
+                              referrerPolicy="no-referrer"
+                            />
+                            <AvatarFallback className="text-[10px] font-medium">
+                              {featuredPost.author?.name?.[0]?.toUpperCase() || "A"}
+                            </AvatarFallback>
+                          </Avatar>
+                          {featuredPost.coAuthors?.slice(0, 4).map((ca: any) => (
+                            <Avatar key={ca.id} className="w-6 h-6 border border-border/60 ring-1 ring-background shrink-0">
+                              <AvatarImage
+                                src={ca.image}
+                                alt={ca.name}
+                                referrerPolicy="no-referrer"
+                              />
+                              <AvatarFallback className="text-[10px] font-medium">
+                                {ca.name?.[0]?.toUpperCase() || "C"}
+                              </AvatarFallback>
+                            </Avatar>
+                          ))}
+                          {featuredPost.coAuthors && featuredPost.coAuthors.length > 4 && (
+                            <div className="w-6 h-6 rounded-full bg-muted border border-border/60 ring-1 ring-background flex items-center justify-center shrink-0">
+                              <span className="text-[9px] font-semibold text-muted-foreground">
+                                +{featuredPost.coAuthors.length - 4}
+                              </span>
+                            </div>
+                          )}
+                        </div>
                         <span className="text-xs text-foreground/80 font-medium">
                           {featuredPost.author?.name}
+                          {featuredPost.coAuthors && featuredPost.coAuthors.length > 0 && (
+                            <span className="text-muted-foreground font-normal">
+                              {" "}with{" "}
+                              {featuredPost.coAuthors.slice(0, 2).map((ca: any, idx: number) => (
+                                <span key={ca.id} className="text-foreground/90 font-medium">
+                                  {ca.name}
+                                  {idx < Math.min(featuredPost.coAuthors.length, 2) - 1 ? ", " : ""}
+                                </span>
+                              ))}
+                              {featuredPost.coAuthors.length > 2 && (
+                                <span className="text-muted-foreground">
+                                  {" "}+{featuredPost.coAuthors.length - 2} more
+                                </span>
+                              )}
+                            </span>
+                          )}
                         </span>
                       </div>
                     </div>
@@ -157,18 +194,55 @@ export default async function HomePage() {
                       </div>
 
                       <div className="flex items-center gap-2.5 pt-1">
-                        <Avatar className="w-6 h-6 border border-border/60">
-                          <AvatarImage
-                            src={post.author?.image}
-                            alt={post.author?.name}
-                            referrerPolicy="no-referrer"
-                          />
-                          <AvatarFallback className="text-[10px] font-medium">
-                            {post.author?.name?.[0]?.toUpperCase() || "A"}
-                          </AvatarFallback>
-                        </Avatar>
+                        <div className="flex -space-x-1.5 overflow-hidden">
+                          <Avatar className="w-6 h-6 border border-border/60 ring-1 ring-background shrink-0">
+                            <AvatarImage
+                              src={post.author?.image}
+                              alt={post.author?.name}
+                              referrerPolicy="no-referrer"
+                            />
+                            <AvatarFallback className="text-[10px] font-medium">
+                              {post.author?.name?.[0]?.toUpperCase() || "A"}
+                            </AvatarFallback>
+                          </Avatar>
+                          {post.coAuthors?.slice(0, 4).map((ca: any) => (
+                            <Avatar key={ca.id} className="w-6 h-6 border border-border/60 ring-1 ring-background shrink-0">
+                              <AvatarImage
+                                src={ca.image}
+                                alt={ca.name}
+                                referrerPolicy="no-referrer"
+                              />
+                              <AvatarFallback className="text-[10px] font-medium">
+                                {ca.name?.[0]?.toUpperCase() || "C"}
+                              </AvatarFallback>
+                            </Avatar>
+                          ))}
+                          {post.coAuthors && post.coAuthors.length > 4 && (
+                            <div className="w-6 h-6 rounded-full bg-muted border border-border/60 ring-1 ring-background flex items-center justify-center shrink-0">
+                              <span className="text-[9px] font-semibold text-muted-foreground">
+                                +{post.coAuthors.length - 4}
+                              </span>
+                            </div>
+                          )}
+                        </div>
                         <span className="text-xs text-foreground/80 font-medium">
                           {post.author?.name}
+                          {post.coAuthors && post.coAuthors.length > 0 && (
+                            <span className="text-muted-foreground font-normal">
+                              {" "}with{" "}
+                              {post.coAuthors.slice(0, 2).map((ca: any, idx: number) => (
+                                <span key={ca.id} className="text-foreground/90 font-medium">
+                                  {ca.name}
+                                  {idx < Math.min(post.coAuthors.length, 2) - 1 ? ", " : ""}
+                                </span>
+                              ))}
+                              {post.coAuthors.length > 2 && (
+                                <span className="text-muted-foreground">
+                                  {" "}+{post.coAuthors.length - 2} more
+                                </span>
+                              )}
+                            </span>
+                          )}
                         </span>
                       </div>
                     </article>

@@ -156,16 +156,44 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </p>
             )}
 
-            <div className="flex items-center gap-3 pt-4">
-              <Avatar className="w-8 h-8 border border-border/60">
-                <AvatarImage src={blog.author?.image} alt={blog.author?.name} referrerPolicy="no-referrer" />
-                <AvatarFallback className="text-xs font-medium">
-                  {blog.author?.name?.[0]?.toUpperCase() || "A"}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <span className="text-sm font-medium text-foreground">{blog.author?.name}</span>
-                <span className="text-xs text-muted-foreground">Author</span>
+            {/* Authors & Co-Authors Presentation */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-border/30">
+              <div className="flex items-center gap-3">
+                {/* Stacked Avatars */}
+                <div className="flex -space-x-2.5 overflow-hidden p-0.5">
+                  <Avatar className="inline-block w-9 h-9 ring-2 ring-background shrink-0">
+                    <AvatarImage src={blog.author?.image} alt={blog.author?.name} referrerPolicy="no-referrer" />
+                    <AvatarFallback className="text-xs font-semibold bg-primary/20 text-primary">
+                      {blog.author?.name?.[0]?.toUpperCase() || "A"}
+                    </AvatarFallback>
+                  </Avatar>
+                  {blog.coAuthors?.map((ca: any) => (
+                    <Avatar key={ca.id} className="inline-block w-9 h-9 ring-2 ring-background shrink-0">
+                      <AvatarImage src={ca.image} alt={ca.name} referrerPolicy="no-referrer" />
+                      <AvatarFallback className="text-xs font-semibold bg-muted text-muted-foreground">
+                        {ca.name?.[0]?.toUpperCase() || "C"}
+                      </AvatarFallback>
+                    </Avatar>
+                  ))}
+                </div>
+
+                {/* Combined Author Byline */}
+                <div className="space-y-0.5">
+                  <div className="text-sm font-medium text-foreground">
+                    <span>{blog.author?.name}</span>
+                    {blog.coAuthors && blog.coAuthors.length > 0 && (
+                      <span className="text-muted-foreground font-normal">
+                        {" "}with{" "}
+                        {blog.coAuthors.map((ca: any, idx: number) => (
+                          <span key={ca.id} className="text-foreground font-medium">
+                            {ca.name}
+                            {idx < (blog.coAuthors?.length || 0) - 1 ? ", " : ""}
+                          </span>
+                        ))}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 

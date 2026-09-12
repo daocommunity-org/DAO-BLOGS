@@ -3,50 +3,47 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
-import { Navbar } from "@/components/navbar";
-import { BlogEditorForm } from "@/components/blog-editor-form";
 import mongoose from "mongoose";
+import { BlogContentEditor } from "@/components/blog-content-editor";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-interface EditBlogPageProps {
+interface EditorPageProps {
   params: Promise<{ id: string }>;
 }
 
-async function getBlogForEdit(id: string) {
+async function getBlogForEditor(id: string) {
   try {
     await connectToDatabase();
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const blog = await Blog.findOne({
       $or: [{ _id: isObjectId ? id : null }, { slug: id }],
-    }).lean();
-
+    })
+      .select("_id title slug status content author coAuthors")
+      .lean();
     if (!blog) return null;
     return JSON.parse(JSON.stringify(blog));
   } catch (error) {
-    console.error("Error fetching blog for edit:", error);
+    console.error("Error fetching blog for editor:", error);
     return null;
   }
 }
 
-export default async function EditBlogPage({ params }: EditBlogPageProps) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+export default async function EditorPage({ params }: EditorPageProps) {
+  const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session?.user) {
     redirect("/?error=unauthorized");
   }
 
   const { id } = await params;
-  const blog = await getBlogForEdit(id);
+  const blog = await getBlogForEditor(id);
 
   if (!blog) {
     notFound();
   }
 
-  // Permission enforcement: must be primary author or designated co-author
   const isPrimaryAuthor = blog.author?.id === session.user.id;
   const isCoAuthor = blog.coAuthors?.some((ca: any) => ca.id === session.user.id);
 
@@ -55,11 +52,12 @@ export default async function EditBlogPage({ params }: EditBlogPageProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <Navbar />
-      <main className="flex-1 w-full flex flex-col">
-        <BlogEditorForm key={blog._id} initialData={blog} isEdit={true} />
-      </main>
-    </div>
+    <BlogContentEditor
+      blogId={blog._id}
+      slug={blog.slug}
+      title={blog.title}
+      status={blog.status}
+      initialContent={blog.content || ""}
+    />
   );
 }

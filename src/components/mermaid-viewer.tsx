@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import mermaid from "mermaid";
+import { Skeleton } from "@/components/ui/skeleton";
 
 let isMermaidInitialized = false;
 
@@ -145,6 +146,8 @@ export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
 
     const renderChart = async () => {
       if (!chart.trim()) return;
+      // Hidden sandbox element off-screen so Mermaid measurement elements never flash on the page
+      let sandbox: HTMLDivElement | null = null;
       try {
         if (typeof document !== "undefined" && document.fonts) {
           await document.fonts.ready;
@@ -152,7 +155,23 @@ export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
         initMermaid();
         const id = `mermaid-${Math.random().toString(36).substring(2, 9)}`;
         const processedChart = wrapEdgeLabels(chart);
-        const { svg: renderedSvg } = await mermaid.render(id, processedChart);
+
+        // Create off-screen container for rendering calculations
+        if (typeof document !== "undefined") {
+          sandbox = document.createElement("div");
+          sandbox.style.position = "fixed";
+          sandbox.style.top = "-9999px";
+          sandbox.style.left = "-9999px";
+          sandbox.style.width = "1000px";
+          sandbox.style.height = "1000px";
+          sandbox.style.opacity = "0";
+          sandbox.style.pointerEvents = "none";
+          sandbox.style.visibility = "hidden";
+          sandbox.style.zIndex = "-9999";
+          document.body.appendChild(sandbox);
+        }
+
+        const { svg: renderedSvg } = await mermaid.render(id, processedChart, sandbox ?? undefined);
         const finalSvg = adjustClusterLabels(renderedSvg);
         if (isMounted) {
           setSvg(finalSvg);
@@ -162,6 +181,10 @@ export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
         console.error("Mermaid render error:", err);
         if (isMounted) {
           setError(err.message || "Failed to render Mermaid diagram.");
+        }
+      } finally {
+        if (sandbox && sandbox.parentNode) {
+          sandbox.parentNode.removeChild(sandbox);
         }
       }
     };
@@ -275,13 +298,32 @@ export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
     <>
       {/* 1. In-Post Diagram Card with Click-to-Expand */}
       <div className="relative group my-6 w-full max-w-full">
-        <div
-          ref={containerRef}
-          onClick={handleOpen}
-          className={`mermaid mermaid-wrapper w-full max-w-full p-6 rounded-xl overflow-hidden cursor-zoom-in transition-all duration-200 hover:border-[#1fb6ff]/40 text-center ${className}`}
-          dangerouslySetInnerHTML={{ __html: svg }}
-          title="Click to expand diagram in fullscreen viewer"
-        />
+        {svg ? (
+          <div
+            ref={containerRef}
+            onClick={handleOpen}
+            className={`mermaid mermaid-wrapper w-full max-w-full p-6 rounded-xl overflow-hidden cursor-zoom-in transition-all duration-200 hover:border-[#1fb6ff]/40 text-center ${className}`}
+            dangerouslySetInnerHTML={{ __html: svg }}
+            title="Click to expand diagram in fullscreen viewer"
+          />
+        ) : (
+          <div
+            className={`mermaid mermaid-wrapper w-full max-w-full p-6 rounded-xl overflow-hidden text-center flex flex-col items-center justify-center min-h-[220px] ${className}`}
+          >
+            <div className="w-full max-w-md space-y-4">
+              <div className="flex items-center justify-center gap-4">
+                <Skeleton className="h-10 w-28 rounded-lg bg-white/10" />
+                <Skeleton className="h-0.5 w-12 bg-white/10" />
+                <Skeleton className="h-10 w-28 rounded-lg bg-white/10" />
+                <Skeleton className="h-0.5 w-12 bg-white/10" />
+                <Skeleton className="h-10 w-28 rounded-lg bg-white/10" />
+              </div>
+              <div className="flex justify-center">
+                <Skeleton className="h-3 w-32 rounded bg-white/5" />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Top-Right Expand Badge */}
         <button
