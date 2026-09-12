@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { Edit, ExternalLink, Trash2, Globe, FileText, Loader2 } from "lucide-react";
+import { Edit, ExternalLink, Trash2, Globe, FileText, Loader2, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 
 interface AdminBlogActionsProps {
@@ -92,94 +92,103 @@ export function AdminBlogActions({
   };
 
   return (
-    <div className="grid grid-cols-2 gap-2 shrink-0 self-stretch sm:self-end lg:self-center w-full sm:w-56 text-xs">
-      {/* 1. View Article */}
-      <Link
-        href={`/blogs/${slug}`}
-        target="_blank"
-        className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md bg-muted/30 hover:bg-muted/60 text-muted-foreground hover:text-foreground font-medium text-[11px] border border-border/40 hover:border-border transition-all active:scale-[0.98]"
-        title="View live post"
-      >
-        <ExternalLink className="w-3.5 h-3.5 opacity-70" />
-        <span>View</span>
-      </Link>
+    <div className="flex flex-col gap-2 shrink-0 self-stretch sm:self-end md:self-center w-full sm:w-60 text-xs">
+      {/* 2x2 Clean Action Grid */}
+      <div className="grid grid-cols-2 gap-1.5 w-full">
+        {/* 1. Analytics Link */}
+        <Link
+          href={`/admin/blogs/${blogId}/analytics`}
+          className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded-md bg-primary/10 hover:bg-primary/20 text-primary font-medium text-[11px] border border-primary/30 hover:border-primary/50 transition-all active:scale-[0.98]"
+          title="View article analytics"
+        >
+          <BarChart3 className="w-3.5 h-3.5" />
+          <span>Analytics</span>
+        </Link>
 
-      {/* 2. Edit Post */}
-      <Link
-        href={`/admin/blogs/${blogId}/edit`}
-        className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md bg-primary/10 hover:bg-primary/20 text-primary font-medium text-[11px] border border-primary/30 hover:border-primary/50 transition-all active:scale-[0.98]"
-        title="Edit post content"
-      >
-        <Edit className="w-3.5 h-3.5" />
-        <span>Edit</span>
-      </Link>
+        {/* 2. Edit Post */}
+        <Link
+          href={`/admin/blogs/${blogId}/edit`}
+          className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded-md bg-muted/30 hover:bg-muted/60 text-muted-foreground hover:text-foreground font-medium text-[11px] border border-border/40 hover:border-border transition-all active:scale-[0.98]"
+          title="Edit post content"
+        >
+          <Edit className="w-3.5 h-3.5" />
+          <span>Edit</span>
+        </Link>
 
-      {/* 3. Toggle Status (Publish / Draft) */}
-      <AlertDialog open={statusModalOpen} onOpenChange={setStatusModalOpen}>
-        <AlertDialogTrigger
-          render={
-            <button
-              type="button"
-              disabled={isUpdatingStatus || isDeleting}
-              className={`inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md font-medium text-[11px] border transition-all cursor-pointer disabled:opacity-50 active:scale-[0.98] ${
-                nextStatus === "published"
-                  ? "bg-primary/10 hover:bg-primary/20 text-primary border-primary/30 hover:border-primary/50"
-                  : "bg-muted/40 hover:bg-muted/70 text-muted-foreground hover:text-foreground border-border/40 hover:border-border"
-              }`}
-              title={nextStatus === "published" ? "Publish article" : "Revert to draft"}
-            >
-              {isUpdatingStatus ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : nextStatus === "published" ? (
-                <Globe className="w-3.5 h-3.5" />
-              ) : (
-                <FileText className="w-3.5 h-3.5" />
-              )}
-              <span>{nextStatus === "published" ? "Publish" : "Draft"}</span>
-            </button>
-          }
-        />
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {nextStatus === "published"
-                ? "Publish blog post?"
-                : "Revert post to draft?"}
-            </AlertDialogTitle>
-            <AlertDialogDescription className="space-y-2 pt-1">
-              <span>
+        {/* 3. View Article */}
+        <Link
+          href={`/blogs/${slug}`}
+          target="_blank"
+          className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded-md bg-muted/20 hover:bg-muted/50 text-muted-foreground hover:text-foreground font-medium text-[11px] border border-border/30 hover:border-border transition-all active:scale-[0.98]"
+          title="View live post"
+        >
+          <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+          <span>View</span>
+        </Link>
+
+        {/* 4. Toggle Status (Publish / Draft) */}
+        <AlertDialog open={statusModalOpen} onOpenChange={setStatusModalOpen}>
+          <AlertDialogTrigger
+            render={
+              <button
+                type="button"
+                disabled={isUpdatingStatus || isDeleting}
+                className="inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded-md font-medium text-[11px] border border-border/40 hover:border-border bg-muted/20 hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-all cursor-pointer disabled:opacity-50 active:scale-[0.98]"
+                title={nextStatus === "published" ? "Publish article" : "Revert to draft"}
+              >
+                {isUpdatingStatus ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : nextStatus === "published" ? (
+                  <Globe className="w-3.5 h-3.5" />
+                ) : (
+                  <FileText className="w-3.5 h-3.5" />
+                )}
+                <span>{nextStatus === "published" ? "Publish" : "Draft"}</span>
+              </button>
+            }
+          />
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
                 {nextStatus === "published"
-                  ? `Are you sure you want to publish "${title}"? It will be immediately visible on the home feed to everyone.`
-                  : `Are you sure you want to unpublish "${title}"? It will be hidden from the public feed and saved as a draft.`}
-              </span>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isUpdatingStatus}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleToggleStatus}
-              disabled={isUpdatingStatus}
-              className="gap-1.5 cursor-pointer font-medium"
-            >
-              {isUpdatingStatus && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-              {isUpdatingStatus
-                ? "Updating..."
-                : nextStatus === "published"
-                ? "Confirm & Publish"
-                : "Confirm & Unpublish"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+                  ? "Publish blog post?"
+                  : "Revert post to draft?"}
+              </AlertDialogTitle>
+              <AlertDialogDescription className="space-y-2 pt-1">
+                <span>
+                  {nextStatus === "published"
+                    ? `Are you sure you want to publish "${title}"? It will be immediately visible on the home feed to everyone.`
+                    : `Are you sure you want to unpublish "${title}"? It will be hidden from the public feed and saved as a draft.`}
+                </span>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isUpdatingStatus}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleToggleStatus}
+                disabled={isUpdatingStatus}
+                className="gap-1.5 cursor-pointer font-medium"
+              >
+                {isUpdatingStatus && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                {isUpdatingStatus
+                  ? "Updating..."
+                  : nextStatus === "published"
+                  ? "Confirm & Publish"
+                  : "Confirm & Unpublish"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
 
-      {/* 4. Delete Confirmation */}
+      {/* Full-width clean Delete trigger underneath */}
       <AlertDialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
         <AlertDialogTrigger
           render={
             <button
               type="button"
               disabled={isDeleting || isUpdatingStatus}
-              className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md bg-destructive/10 hover:bg-destructive/20 text-destructive border border-destructive/30 hover:border-destructive/50 transition-all font-medium text-[11px] cursor-pointer disabled:opacity-50 active:scale-[0.98]"
+              className="inline-flex items-center justify-center gap-1.5 h-7 w-full rounded-md bg-destructive/10 hover:bg-destructive/20 text-destructive border border-destructive/25 hover:border-destructive/40 transition-all font-medium text-[11px] cursor-pointer disabled:opacity-50 active:scale-[0.98]"
               title="Delete post"
             >
               {isDeleting ? (
@@ -187,7 +196,7 @@ export function AdminBlogActions({
               ) : (
                 <Trash2 className="w-3.5 h-3.5" />
               )}
-              <span>Delete</span>
+              <span>Delete Article</span>
             </button>
           }
         />

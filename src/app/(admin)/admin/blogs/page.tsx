@@ -60,21 +60,12 @@ export default async function AdminBlogsPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <Link href="/admin/analytics">
-                <Button variant="outline" size="sm" className="gap-2 font-medium text-xs cursor-pointer rounded-lg">
-                  <BarChart3 className="w-4 h-4 text-primary" />
-                  Analytics
-                </Button>
-              </Link>
-
-              <Link href="/admin/blogs/new">
-                <Button size="sm" className="gap-2 font-medium text-xs cursor-pointer rounded-lg">
-                  <Plus className="w-4 h-4" />
-                  Write New Post
-                </Button>
-              </Link>
-            </div>
+            <Link href="/admin/blogs/new">
+              <Button size="sm" className="gap-2 font-medium text-xs cursor-pointer rounded-lg">
+                <Plus className="w-4 h-4" />
+                Write New Post
+              </Button>
+            </Link>
           </div>
         </header>
 
