@@ -17,6 +17,34 @@ function decodeHtmlEntities(str: string): string {
     .replace(/&amp;/g, "&");
 }
 
+function sanitizeHtml(html: string): string {
+  if (typeof window === "undefined") {
+    // Return raw HTML during SSR; full DOMPurify sanitization runs once hydrated in the browser
+    return html;
+  }
+
+  try {
+    if (typeof DOMPurify?.sanitize === "function") {
+      return DOMPurify.sanitize(html, {
+        ADD_ATTR: ["id", "target", "rel", "referrerpolicy"],
+      });
+    }
+
+    if (typeof DOMPurify === "function") {
+      const purifier = (DOMPurify as unknown as (root: Window) => typeof DOMPurify)(window);
+      if (purifier && typeof purifier.sanitize === "function") {
+        return purifier.sanitize(html, {
+          ADD_ATTR: ["id", "target", "rel", "referrerpolicy"],
+        });
+      }
+    }
+  } catch (err) {
+    console.error("DOMPurify sanitization error:", err);
+  }
+
+  return html;
+}
+
 export function BlogContentRenderer({ content }: BlogContentRendererProps) {
   // Extract mermaid blocks:
   // Match either:
@@ -67,14 +95,13 @@ export function BlogContentRenderer({ content }: BlogContentRendererProps) {
         if (part.type === "mermaid") {
           return <MermaidViewer key={index} chart={part.data} />;
         }
-        const cleanHtml = DOMPurify.sanitize(part.data, {
-          ADD_ATTR: ["id", "target", "rel", "referrerpolicy"],
-        });
+        const cleanHtml = sanitizeHtml(part.data);
         return (
           <div
             key={index}
             dangerouslySetInnerHTML={{ __html: cleanHtml }}
             className="prose-container"
+            suppressHydrationWarning
           />
         );
       })}
