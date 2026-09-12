@@ -61,9 +61,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 5. Convert to Buffer and Upload to Cloudinary
+    // 5. Convert to Buffer (Sanitize if SVG) and Upload to Cloudinary
     const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    let buffer = Buffer.from(arrayBuffer);
+
+    if (file.type === "image/svg+xml") {
+      const DOMPurify = (await import("isomorphic-dompurify")).default;
+      const rawSvg = buffer.toString("utf-8");
+      const cleanSvg = DOMPurify.sanitize(rawSvg, { USE_PROFILES: { svg: true, svgFilters: true } });
+      buffer = Buffer.from(cleanSvg, "utf-8");
+    }
 
     const result = await uploadImageToCloudinary(buffer, folder);
 

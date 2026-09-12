@@ -53,9 +53,10 @@ export async function uploadImageToCloudinary(
  */
 export function extractCloudinaryPublicId(
   url: string,
-  cloudName: string = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dukiwrbq9"
+  cloudName: string = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || ""
 ): string | null {
   if (!url || typeof url !== "string") return null;
+  if (!cloudName) return null;
   if (!url.includes("res.cloudinary.com") || !url.includes(cloudName)) return null;
 
   try {
@@ -112,9 +113,10 @@ export async function deleteImageFromCloudinary(urlOrPublicId: string): Promise<
 export function extractAllCloudinaryUrls(
   content: string = "",
   coverImage?: string,
-  cloudName: string = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dukiwrbq9"
+  cloudName: string = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || ""
 ): string[] {
   const urls = new Set<string>();
+  if (!cloudName) return [];
 
   if (coverImage && coverImage.includes("res.cloudinary.com") && coverImage.includes(cloudName)) {
     urls.add(coverImage.trim());
