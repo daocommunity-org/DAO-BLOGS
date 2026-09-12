@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import DOMPurify from "isomorphic-dompurify";
 import { MermaidViewer } from "./mermaid-viewer";
 
 interface BlogContentRendererProps {
@@ -66,10 +67,13 @@ export function BlogContentRenderer({ content }: BlogContentRendererProps) {
         if (part.type === "mermaid") {
           return <MermaidViewer key={index} chart={part.data} />;
         }
+        const cleanHtml = DOMPurify.sanitize(part.data, {
+          ADD_ATTR: ["target", "rel", "referrerpolicy"],
+        });
         return (
           <div
             key={index}
-            dangerouslySetInnerHTML={{ __html: part.data }}
+            dangerouslySetInnerHTML={{ __html: cleanHtml }}
             className="prose-container"
           />
         );
