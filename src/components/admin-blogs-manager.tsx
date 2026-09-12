@@ -155,18 +155,28 @@ export function AdminBlogsManager({ blogs }: AdminBlogsManagerProps) {
                   )}
 
                   <div className="flex items-center gap-4 text-xs text-muted-foreground pt-0.5">
-                    <span className="text-[11px] text-muted-foreground/60 font-mono truncate max-w-[180px] sm:max-w-xs">
+                    <span className="text-[11px] text-muted-foreground/60 font-mono truncate max-w-[160px] sm:max-w-xs">
                       /blogs/{b.slug}
                     </span>
                     <span className="text-muted-foreground/40">•</span>
-                    <span className="flex items-center gap-1">
-                      <Heart className="w-3.5 h-3.5 text-muted-foreground/70" />
-                      {b.likesCount || 0}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MessageSquare className="w-3.5 h-3.5 text-muted-foreground/70" />
-                      {b.commentsCount || 0}
-                    </span>
+                    <Link
+                      href={`/admin/blogs/${b._id}/analytics`}
+                      className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors py-0.5"
+                      title="View article engagement breakdown"
+                    >
+                      <span className="flex items-center gap-1">
+                        <Heart className="w-3.5 h-3.5 text-muted-foreground/70" />
+                        {b.likesCount || 0}
+                      </span>
+                      <span className="text-muted-foreground/30">•</span>
+                      <span className="flex items-center gap-1">
+                        <MessageSquare className="w-3.5 h-3.5 text-muted-foreground/70" />
+                        {b.commentsCount || 0}
+                      </span>
+                      <span className="text-[11px] font-medium text-primary hover:underline ml-1">
+                        Analytics &rarr;
+                      </span>
+                    </Link>
                   </div>
                 </div>
               </div>
