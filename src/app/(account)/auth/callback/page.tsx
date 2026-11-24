@@ -1,23 +1,11 @@
-import { Suspense } from "react";
-import AuthCallbackContent from "./callback-content";
-import { AuthLoadingScreen } from "@/features/auth/auth-loading-screen";
+import { redirect } from "next/navigation";
+import { getReturnPath } from "@/features/auth/return-path";
 
-export const metadata = {
-  title: "Signing in... | DAO Blogs",
-  robots: { index: false, follow: false },
-};
-
-export default function AuthCallbackPage() {
-  return (
-    <Suspense
-      fallback={
-        <AuthLoadingScreen
-          message="Completing sign-in..."
-          submessage="Finalizing your session, welcome to DAO Blogs"
-        />
-      }
-    >
-      <AuthCallbackContent />
-    </Suspense>
-  );
+export default async function AuthCallbackPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ returnTo?: string }>;
+}) {
+  const params = await searchParams;
+  redirect(getReturnPath(params.returnTo));
 }
