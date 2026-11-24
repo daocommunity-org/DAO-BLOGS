@@ -41,9 +41,6 @@ const defineWorkspaceTheme: BeforeMount = (monaco) => {
   });
 };
 
-const insertButtonClass = "h-8 min-w-0 gap-1 px-0 text-[11px] text-slate-200 enabled:cursor-pointer sm:gap-1.5 sm:px-2.5 sm:text-xs";
-const paneHeaderClass = "flex h-9 shrink-0 items-center justify-between gap-2 border-b border-border/50 bg-card px-3 sm:px-4";
-
 interface MonacoHtmlEditorProps {
   value: string;
   onChange: Dispatch<SetStateAction<string>>;
@@ -82,9 +79,7 @@ export function MonacoHtmlEditor({
     const file = e.target.files?.[0];
     if (!file || readOnly || isUploadingImage) return;
 
-    // Reset input so re-selecting same file triggers change
     e.target.value = "";
-
     onUploadingChange(true);
     try {
       const formData = new FormData();
@@ -128,69 +123,105 @@ graph LR
 <p class="text-muted-foreground leading-relaxed mb-4">Add detailed analysis and documentation here.</p>`;
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-border/75 bg-card shadow-lg shadow-slate-950/15">
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-background">
       <input ref={fileInputRef} type="file" accept="image/*" hidden onChange={handleFileChange} />
 
-      <div className="flex shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-border/65 bg-card px-2 py-2 sm:px-3">
-        <div role="group" aria-label="Insert content" className="grid w-full grid-cols-4 items-center gap-1 sm:flex sm:w-auto sm:flex-wrap">
-          <span aria-hidden="true" className="mr-1 hidden text-xs font-medium text-slate-400 lg:inline">Insert</span>
-          <Button type="button" variant="ghost" size="sm" disabled={readOnly || isUploadingImage}
-            onClick={() => fileInputRef.current?.click()} className={insertButtonClass} title="Upload and insert an image">
-            {isUploadingImage
-              ? <Loader2 aria-hidden="true" className="size-3.5 motion-safe:animate-spin" />
-              : <ImageIcon aria-hidden="true" className="size-3.5 text-sky-300" />}
-            {isUploadingImage ? "Uploading…" : "Image"}
+      {/* Clean toolbar */}
+      <div className="flex shrink-0 items-center justify-between border-b border-border/60 bg-[#162238]/60 px-4 py-2">
+        <div role="group" aria-label="Insert content" className="flex items-center gap-1 sm:gap-1.5">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            disabled={readOnly || isUploadingImage}
+            onClick={() => fileInputRef.current?.click()}
+            className="h-8 gap-1.5 px-2.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white"
+            title="Upload and insert an image"
+          >
+            {isUploadingImage ? (
+              <Loader2 aria-hidden="true" className="size-3.5 motion-safe:animate-spin" />
+            ) : (
+              <ImageIcon aria-hidden="true" className="size-3.5 text-slate-400" />
+            )}
+            <span>{isUploadingImage ? "Uploading…" : "Image"}</span>
           </Button>
-          <Button type="button" variant="ghost" size="sm" disabled={readOnly}
-            onClick={() => insertSnippet(mermaidSample)} className={insertButtonClass} title="Insert a Mermaid diagram">
-            <Workflow aria-hidden="true" className="size-3.5 text-sky-300" />
-            Diagram
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            disabled={readOnly}
+            onClick={() => insertSnippet(mermaidSample)}
+            className="h-8 gap-1.5 px-2.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white"
+            title="Insert a Mermaid diagram"
+          >
+            <Workflow aria-hidden="true" className="size-3.5 text-slate-400" />
+            <span>Diagram</span>
           </Button>
-          <Button type="button" variant="ghost" size="sm" disabled={readOnly}
-            onClick={() => insertSnippet(cardSample)} className={insertButtonClass} title="Insert a Tailwind card">
-            <Layout aria-hidden="true" className="size-3.5 text-sky-300" />
-            Card
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            disabled={readOnly}
+            onClick={() => insertSnippet(cardSample)}
+            className="h-8 gap-1.5 px-2.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white"
+            title="Insert a Tailwind card"
+          >
+            <Layout aria-hidden="true" className="size-3.5 text-slate-400" />
+            <span>Card</span>
           </Button>
-          <Button type="button" variant="ghost" size="sm" disabled={readOnly}
-            onClick={() => insertSnippet(headingSample)} className={insertButtonClass} title="Insert a section heading">
-            <Heading2 aria-hidden="true" className="size-3.5 text-sky-300" />
-            Heading
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            disabled={readOnly}
+            onClick={() => insertSnippet(headingSample)}
+            className="h-8 gap-1.5 px-2.5 text-xs text-slate-300 hover:bg-white/5 hover:text-white"
+            title="Insert a section heading"
+          >
+            <Heading2 aria-hidden="true" className="size-3.5 text-slate-400" />
+            <span>Heading</span>
           </Button>
         </div>
 
-        <div role="group" aria-label="Editor view" className="inline-flex rounded-lg border border-border/60 bg-slate-950/25 p-0.5">
+        {/* View mode toggle */}
+        <div role="group" aria-label="Editor view" className="flex items-center rounded-lg border border-border/60 bg-background/60 p-0.5">
           {viewModes.map(({ value: mode, label, icon: Icon }) => (
-            <Button key={mode} type="button" variant="ghost" size="sm" aria-pressed={viewMode === mode}
+            <button
+              key={mode}
+              type="button"
+              aria-pressed={viewMode === mode}
               onClick={() => setViewMode(mode)}
-              className="h-8 cursor-pointer gap-1.5 rounded-md px-2.5 text-xs text-slate-300 aria-pressed:border-sky-300/25 aria-pressed:bg-sky-300/10 aria-pressed:text-sky-100">
+              className={`flex h-7 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium transition-colors ${
+                viewMode === mode
+                  ? "bg-white/10 text-white"
+                  : "text-slate-400 hover:text-slate-200"
+              }`}
+            >
               <Icon aria-hidden="true" className="size-3.5" />
-              {label}
-            </Button>
+              <span className="hidden sm:inline">{label}</span>
+            </button>
           ))}
         </div>
       </div>
 
-      <div className={`grid min-h-0 flex-1 grid-cols-1 overflow-hidden divide-border/70 ${
+      {/* Editor & Preview Workspace */}
+      <div className={`grid min-h-0 flex-1 overflow-hidden ${
         viewMode === "split"
-          ? "grid-rows-2 divide-y md:grid-cols-2 md:grid-rows-1 md:divide-x md:divide-y-0"
-          : "grid-rows-1"
+          ? "grid-rows-2 md:grid-cols-2 md:grid-rows-1"
+          : "grid-cols-1 grid-rows-1"
       }`}>
         {(viewMode === "editor" || viewMode === "split") && (
-          <section aria-label="Code panel" className="flex min-h-0 min-w-0 flex-col overflow-hidden bg-[#121c2c]">
-            <div className={paneHeaderClass}>
-              <h2 className="flex items-center gap-2 text-xs font-semibold text-slate-100">
-                <Code2 aria-hidden="true" className="size-3.5 text-slate-400" />
-                Source code
-              </h2>
-              <span className="font-[ui-monospace,monospace] text-[11px] text-slate-400">HTML</span>
-            </div>
+          <section aria-label="Code editor" className="flex min-h-0 min-w-0 flex-col overflow-hidden bg-[#121c2c]">
             <div className="min-h-0 flex-1">
               <Editor
                 height="100%"
                 defaultLanguage="html"
                 theme={workspaceTheme}
                 beforeMount={defineWorkspaceTheme}
-                loading={<p role="status" className="text-xs text-slate-300">Loading code editor…</p>}
+                loading={<p role="status" className="p-4 text-xs text-slate-400">Loading code editor…</p>}
                 value={value}
                 onMount={(editor) => {
                   editorRef.current = editor;
@@ -208,9 +239,9 @@ graph LR
                   automaticLayout: true,
                   readOnly,
                   ariaLabel: "HTML source code",
-                  padding: { top: 14, bottom: 14 },
-                  lineHeight: 21,
-                  fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace",
+                  padding: { top: 16, bottom: 16 },
+                  lineHeight: 22,
+                  fontFamily: "var(--font-mono), ui-monospace, SFMono-Regular, Consolas, monospace",
                 }}
               />
             </div>
@@ -218,29 +249,25 @@ graph LR
         )}
 
         {(viewMode === "preview" || viewMode === "split") && (
-          <section className="flex min-h-0 min-w-0 flex-col overflow-hidden bg-background">
-            <div className={paneHeaderClass}>
-              <h2 className="flex items-center gap-2 text-xs font-semibold text-slate-100">
-                <Eye aria-hidden="true" className="size-3.5 text-slate-400" />
-                Live preview
-              </h2>
-              <span aria-hidden="true" className="size-1.5 rounded-full bg-emerald-300" />
-            </div>
+          <section
+            aria-label="Live preview"
+            className={`flex min-h-0 min-w-0 flex-col overflow-hidden bg-background ${
+              viewMode === "split" ? "border-t border-border/50 md:border-t-0 md:border-l" : ""
+            }`}
+          >
             <div
               role="region"
               aria-label="Live preview"
               tabIndex={0}
-              className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 [scrollbar-color:var(--border)_transparent] [scrollbar-width:thin] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary sm:px-8 sm:py-6"
+              className="min-h-0 flex-1 overflow-y-auto px-6 py-8 sm:px-12 sm:py-10 [scrollbar-color:var(--border)_transparent] [scrollbar-width:thin] focus:outline-none"
             >
               {value.trim() ? (
                 <div className="mx-auto w-full max-w-3xl">
                   <BlogContentRenderer content={value} />
                 </div>
               ) : (
-                <div className="mx-auto grid max-w-xs justify-items-center gap-2 py-5 text-center sm:py-10">
-                  <Eye aria-hidden="true" className="mb-1 size-5 text-slate-400" />
-                  <p className="text-sm font-semibold text-slate-200">No content to preview</p>
-                  <p className="text-xs leading-5 text-slate-300">Add HTML in the code editor or insert a snippet from the toolbar.</p>
+                <div className="flex h-full min-h-[16rem] items-center justify-center text-center">
+                  <p className="text-sm text-slate-400">Write HTML in the editor to preview your article live.</p>
                 </div>
               )}
             </div>
