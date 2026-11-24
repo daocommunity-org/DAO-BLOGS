@@ -75,12 +75,11 @@ function GoogleSignIn({
     const returnPath = getReturnPath(
       returnTo ?? (window.location.pathname + window.location.search + window.location.hash),
     );
-    const callbackURL = `/auth/callback?returnTo=${encodeURIComponent(returnPath)}`;
     try {
       const [result] = await Promise.all([
         signIn.social({
           provider: "google",
-          callbackURL,
+          callbackURL: returnPath,
           errorCallbackURL: `/sign-in/error?returnTo=${encodeURIComponent(returnPath)}`,
         }),
         new Promise((resolve) => setTimeout(resolve, 1000)),
