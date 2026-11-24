@@ -1,35 +1,51 @@
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
+import { requireAdminPage } from "@/features/auth/admin-access";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
 import { connectToDatabase } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { AdminBlogsManager } from "@/components/admin-blogs-manager";
-import { Plus, ArrowLeft, FileText, Globe, FileEdit, MessageSquare, BarChart3 } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { AdminBlogsManager, type AdminBlogListItem } from "@/features/admin/admin-blogs-manager";
+import { Plus, ArrowLeft } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-async function getAllAdminBlogs() {
-  try {
-    await connectToDatabase();
-    const blogs = await Blog.find({}).sort({ createdAt: -1 }).lean();
-    return JSON.parse(JSON.stringify(blogs));
-  } catch (error) {
-    console.error("Admin fetch blogs error:", error);
-    return [];
-  }
+async function getAllAdminBlogs(viewerId: string): Promise<AdminBlogListItem[]> {
+  await connectToDatabase();
+  const posts = await Blog.find({})
+    .sort({ createdAt: -1 })
+    .select("slug title excerpt coverImage status author.id author.name coAuthors.id createdAt likesCount commentsCount")
+    .lean();
+
+  return posts.map((post) => {
+    const canDelete = post.author?.id === viewerId;
+    const coAuthors = post.coAuthors ?? [];
+    return {
+      id: String(post._id),
+      slug: post.slug,
+      title: post.title,
+      excerpt: post.excerpt,
+      coverImage: post.coverImage,
+      status: post.status,
+      authorName: post.author?.name,
+      coAuthorCount: coAuthors.length,
+      createdAt: post.createdAt?.toISOString(),
+      likesCount: post.likesCount ?? 0,
+      commentsCount: post.commentsCount ?? 0,
+      canEdit: canDelete || coAuthors.some((author) => author.id === viewerId),
+      canDelete,
+    };
+  });
 }
 
 export default async function AdminBlogsPage() {
-  const blogs = await getAllAdminBlogs();
+  const session = await requireAdminPage();
+  const blogs = await getAllAdminBlogs(session.user.id);
 
   const totalCount = blogs.length;
-  const publishedCount = blogs.filter((b: any) => b.status === "published").length;
-  const draftCount = blogs.filter((b: any) => b.status === "draft").length;
-  const totalEngagement = blogs.reduce(
-    (acc: number, b: any) => acc + (b.likesCount || 0) + (b.commentsCount || 0),
-    0
-  );
+  const publishedCount = blogs.filter((post) => post.status === "published").length;
+  const draftCount = totalCount - publishedCount;
+  const totalEngagement = blogs.reduce((sum, post) => sum + post.likesCount + post.commentsCount, 0);
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
@@ -41,9 +57,9 @@ export default async function AdminBlogsPage() {
           <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="inline-flex items-center gap-2 rounded-sm text-sm font-medium text-slate-300 transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
+              <ArrowLeft aria-hidden="true" className="size-4" />
               Back to blogs
             </Link>
           </div>
@@ -61,11 +77,9 @@ export default async function AdminBlogsPage() {
               </p>
             </div>
 
-            <Link href="/admin/blogs/new">
-              <Button size="sm" className="gap-2 font-medium text-xs cursor-pointer rounded-lg">
-                <Plus className="w-4 h-4" />
-                Write New Post
-              </Button>
+            <Link href="/admin/blogs/new" className={buttonVariants({ size: "lg", className: "h-10 gap-2 px-4 font-semibold" })}>
+              <Plus aria-hidden="true" className="size-4" />
+              Write new post
             </Link>
           </div>
         </header>
@@ -77,7 +91,7 @@ export default async function AdminBlogsPage() {
               <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
                 Total Articles
               </span>
-              <div className="text-2xl sm:text-3xl font-semibold text-foreground">
+              <div className="text-2xl sm:text-3xl font-semibold tracking-tight tabular-nums text-foreground">
                 {totalCount}
               </div>
             </div>
@@ -86,7 +100,7 @@ export default async function AdminBlogsPage() {
               <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
                 Published
               </span>
-              <div className="text-2xl sm:text-3xl font-semibold text-foreground">
+              <div className="text-2xl sm:text-3xl font-semibold tracking-tight tabular-nums text-foreground">
                 {publishedCount}
               </div>
             </div>
@@ -95,7 +109,7 @@ export default async function AdminBlogsPage() {
               <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
                 Drafts
               </span>
-              <div className="text-2xl sm:text-3xl font-semibold text-foreground">
+              <div className="text-2xl sm:text-3xl font-semibold tracking-tight tabular-nums text-foreground">
                 {draftCount}
               </div>
             </div>
@@ -104,7 +118,7 @@ export default async function AdminBlogsPage() {
               <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
                 Total Engagement
               </span>
-              <div className="text-2xl sm:text-3xl font-semibold text-foreground">
+              <div className="text-2xl sm:text-3xl font-semibold tracking-tight tabular-nums text-foreground">
                 {totalEngagement}
               </div>
             </div>

@@ -1,6 +1,5 @@
+import { getViewerSession, hasAdminPermission } from "@/features/auth/admin-access";
 import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 import Comment from "@/models/Comment";
@@ -11,9 +10,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string; commentId: string }> }
 ) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await getViewerSession();
 
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -37,6 +34,10 @@ export async function DELETE(
     const blogObjectId = new mongoose.Types.ObjectId(id);
     const commentObjectId = new mongoose.Types.ObjectId(commentId);
 
+    if (!(await Blog.exists({ _id: blogObjectId, status: "published" }))) {
+      return NextResponse.json({ success: false, error: "Not found." }, { status: 404 });
+    }
+
     const comment = await Comment.findOne({
       _id: commentObjectId,
       blogId: blogObjectId,
@@ -49,25 +50,27 @@ export async function DELETE(
       );
     }
 
-    const userRole = (session.user as { role?: string }).role;
     const isAuthor = comment.userId === session.user.id;
-    const isAdmin = userRole === "admin";
 
-    if (!isAuthor && !isAdmin) {
+    if (!isAuthor && !(await hasAdminPermission(session.user.id))) {
       return NextResponse.json(
         { success: false, error: "Unauthorized to delete this comment." },
         { status: 403 }
       );
     }
 
-    await Comment.findByIdAndDelete(commentObjectId);
-    await Blog.updateOne(
-      { _id: blogObjectId, commentsCount: { $gt: 0 } },
-      { $inc: { commentsCount: -1 } }
-    );
+    const { deletedCount } = await Comment.deleteOne({ _id: commentObjectId, blogId: blogObjectId });
+    const blog = deletedCount
+      ? await Blog.findOneAndUpdate(
+        { _id: blogObjectId, commentsCount: { $gt: 0 } },
+        { $inc: { commentsCount: -1 } },
+        { new: true, projection: { commentsCount: 1 } },
+      )
+      : await Blog.findById(blogObjectId).select("commentsCount").lean();
 
     return NextResponse.json({
       success: true,
+      commentsCount: blog?.commentsCount ?? 0,
       message: "Comment deleted successfully",
     });
   } catch (error: any) {

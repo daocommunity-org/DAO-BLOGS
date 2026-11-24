@@ -1,62 +1,53 @@
 import Link from "next/link";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
-import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
+import styles from "./not-found-face.module.css";
+
+function NotFoundFace() {
+  return (
+    <svg aria-hidden="true" focusable="false" viewBox="0 0 320 380" className="w-28 text-primary sm:w-36">
+      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={25}>
+        <g className={styles.eyes} transform="translate(0,15)">
+          <g transform="translate(15,0)">
+            <polyline className={styles.lid} points="37,0 0,120 75,120" />
+            <polyline className={styles.pupil} points="55,120 55,155" strokeDasharray="35 35" />
+          </g>
+          <g transform="translate(230,0)">
+            <polyline className={styles.lid} points="37,0 0,120 75,120" />
+            <polyline className={styles.pupil} points="55,120 55,155" strokeDasharray="35 35" />
+          </g>
+        </g>
+        <rect className={styles.nose} x="132.5" y="112.5" width={55} height={155} rx={4} ry={4} />
+        <g transform="translate(65,334)" strokeDasharray="102 102">
+          <path className={styles.mouthLeft} d="M 0 30 C 0 30 40 0 95 0" />
+          <path className={styles.mouthRight} d="M 95 0 C 150 0 190 30 190 30" />
+        </g>
+      </g>
+    </svg>
+  );
+}
 
 export default function NotFound() {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Navbar />
-
-      <main className="flex-1 w-full flex flex-col">
-        {/* Top Breadcrumb Bar */}
-        <section className="w-full dashed-border-b">
-          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 py-4 dashed-border-x flex items-center justify-between">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              Back to blogs
-            </Link>
-
-            <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
-              HTTP // 404_NOT_FOUND
-            </span>
-          </div>
-        </section>
-
-        {/* Centered Blueprint 404 */}
-        <section className="w-full flex-1 flex flex-col">
-          <div className="max-w-screen-2xl w-full mx-auto px-6 sm:px-10 flex-1 flex flex-col items-center justify-center dashed-border-x text-center py-20 sm:py-28">
-            {/* Giant Monospace 404 */}
-            <div className="text-7xl sm:text-9xl font-bold font-mono tracking-tighter text-foreground select-none">
-              4<span className="text-primary">0</span>4
-            </div>
-
-            {/* Title & Description */}
-            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground mt-4">
-              Page or Article Not Found
-            </h1>
-
-            <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto leading-relaxed mt-2.5">
-              The requested route does not exist, may have been unpublished, or moved to another URL.
-            </p>
-
-            {/* Primary Action Button */}
-            <div className="flex items-center gap-3 mt-8">
-              <Link href="/">
-                <Button size="sm" className="gap-2 text-xs font-semibold cursor-pointer h-9 px-5">
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                  Return to Home Feed
-                </Button>
-              </Link>
-            </div>
-          </div>
+      <main className="flex flex-1">
+        <section className="mx-auto flex w-full max-w-screen-2xl flex-col items-center justify-center px-6 py-12 text-center dashed-border-x sm:py-16">
+          <NotFoundFace />
+          <h1 className="mt-5 text-2xl font-semibold tracking-tight sm:text-3xl">
+            <span className="text-primary">404</span> · Page not found
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">This page may have moved or is unavailable.</p>
+          <Link
+            href="/"
+            className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+          >
+            <ArrowLeft aria-hidden="true" className="size-4" />
+            Back to blogs
+          </Link>
         </section>
       </main>
-
       <Footer />
     </div>
   );

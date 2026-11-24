@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { AlertCircle, RotateCcw, Home, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Footer } from "@/components/footer";
+import { Footer } from "@/components/layout/footer";
 
 interface RootErrorProps {
   error: Error & { digest?: string };

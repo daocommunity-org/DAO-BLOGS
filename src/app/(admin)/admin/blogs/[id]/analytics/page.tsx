@@ -1,10 +1,9 @@
-import { Navbar } from "@/components/navbar";
+import { requireAdminPage } from "@/features/auth/admin-access";
+import { Navbar } from "@/components/layout/navbar";
 import Link from "next/link";
-import { BlogAnalyticsView } from "@/components/blog-analytics-view";
+import { BlogAnalyticsView } from "@/features/admin/blog-analytics-view";
 import { ArrowLeft, ExternalLink, BarChart3, ShieldCheck } from "lucide-react";
-import { headers } from "next/headers";
-import { redirect, notFound } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { notFound } from "next/navigation";
 import { connectToDatabase } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 import mongoose from "mongoose";
@@ -16,14 +15,7 @@ interface BlogAnalyticsPageProps {
 }
 
 export default async function BlogAnalyticsPage({ params }: BlogAnalyticsPageProps) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  const userRole = (session?.user as { role?: string } | undefined)?.role;
-  if (!session?.user || userRole !== "admin") {
-    redirect("/");
-  }
+  await requireAdminPage();
 
   const { id } = await params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -95,7 +87,7 @@ export default async function BlogAnalyticsPage({ params }: BlogAnalyticsPagePro
 
             <div className="flex items-center gap-2.5 shrink-0">
               <Link
-                href={`/blogs/${blog.slug}`}
+                href={blog.status === "published" ? `/blogs/${blog.slug}` : `/admin/blogs/${id}/preview`}
                 target="_blank"
                 className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-lg border border-border/40 hover:border-border transition-colors"
               >

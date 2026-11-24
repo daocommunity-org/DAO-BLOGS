@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import { adminNotFound, getAdminSession } from "@/features/auth/admin-access";
 import { connectToDatabase } from "@/lib/mongodb";
 import client from "@/lib/mongodb-client";
 import Blog from "@/models/Blog";
@@ -13,19 +12,11 @@ function escapeRegex(text: string): string {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    const userRole = (session?.user as { role?: string } | undefined)?.role;
-    if (!session?.user || userRole !== "admin") {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized. Admin role required." },
-        { status: 403 }
-      );
-    }
+    if (!(await getAdminSession())) return adminNotFound();
 
     const { searchParams } = new URL(request.url);
     const tab = searchParams.get("tab") || "likes"; // "likes" | "comments"

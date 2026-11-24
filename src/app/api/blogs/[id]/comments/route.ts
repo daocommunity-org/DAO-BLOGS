@@ -22,11 +22,14 @@ export async function GET(
     await connectToDatabase();
     const blogId = new mongoose.Types.ObjectId(id);
 
+    if (!(await Blog.exists({ _id: blogId, status: "published" }))) {
+      return NextResponse.json({ success: false, error: "Not found." }, { status: 404 });
+    }
     const comments = await Comment.find({ blogId })
       .sort({ createdAt: -1 })
       .lean();
 
-    return NextResponse.json({ success: true, comments });
+    return NextResponse.json({ success: true, comments }, { headers: { "Cache-Control": "private, no-store" } });
   } catch (error: any) {
     console.error("GET /api/blogs/[id]/comments error:", error);
     return NextResponse.json(
@@ -90,20 +93,8 @@ export async function POST(
     await connectToDatabase();
     const blogId = new mongoose.Types.ObjectId(id);
 
-    const blog = await Blog.findById(blogId);
-    if (!blog) {
-      return NextResponse.json(
-        { success: false, error: "Blog post not found." },
-        { status: 404 }
-      );
-    }
-
-    const userRole = (session?.user as { role?: string } | undefined)?.role;
-    if (blog.status === "draft" && userRole !== "admin") {
-      return NextResponse.json(
-        { success: false, error: "Cannot comment on an unpublished blog post." },
-        { status: 403 }
-      );
+    if (!(await Blog.exists({ _id: blogId, status: "published" }))) {
+      return NextResponse.json({ success: false, error: "Not found." }, { status: 404 });
     }
 
     const newComment = await Comment.create({
@@ -114,10 +105,12 @@ export async function POST(
       content,
     });
 
-    await Blog.findByIdAndUpdate(blogId, { $inc: { commentsCount: 1 } });
+    const blog = await Blog.findByIdAndUpdate(
+      blogId, { $inc: { commentsCount: 1 } }, { new: true, projection: { commentsCount: 1 } },
+    );
 
     return NextResponse.json(
-      { success: true, comment: newComment },
+      { success: true, comment: newComment, commentsCount: blog?.commentsCount ?? 0 },
       { status: 201 }
     );
   } catch (error: any) {
