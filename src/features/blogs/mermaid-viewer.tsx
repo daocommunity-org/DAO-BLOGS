@@ -176,10 +176,11 @@ export function MermaidViewer({ chart, className = "" }: MermaidViewerProps) {
           setSvg(finalSvg);
           setError(null);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Mermaid render error:", err);
         if (isMounted) {
-          setError(err.message || "Failed to render Mermaid diagram.");
+          const message = err instanceof Error ? err.message : "Failed to render Mermaid diagram.";
+          setError(message);
         }
       } finally {
         if (sandbox && sandbox.parentNode) {

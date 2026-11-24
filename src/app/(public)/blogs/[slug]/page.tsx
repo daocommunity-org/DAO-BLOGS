@@ -9,7 +9,9 @@ export function generateStaticParams() {
   return [];
 }
 
-type BlogPostPageProps = PageProps<"/blogs/[slug]">;
+interface BlogPostPageProps {
+  params: Promise<{ slug: string }>;
+}
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;

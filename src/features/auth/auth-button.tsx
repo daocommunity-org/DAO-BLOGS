@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useSession } from "@/lib/auth-client";
 import { SignInDialog } from "@/features/auth/sign-in-dialog";
 
@@ -22,9 +23,12 @@ export function AuthButton() {
         title="View profile"
       >
         {session.user.image && !imageError ? (
-          <img
+          <Image
             src={session.user.image}
             alt={session.user.name || "User"}
+            width={32}
+            height={32}
+            unoptimized
             referrerPolicy="no-referrer"
             onError={() => setImageError(true)}
             className="w-full h-full object-cover"

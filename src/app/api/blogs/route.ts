@@ -37,10 +37,11 @@ export async function GET(request: NextRequest) {
       .lean();
 
     return NextResponse.json({ success: true, blogs }, { headers: { "Cache-Control": "private, no-store" } });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("GET /api/blogs error:", error);
+    const message = error instanceof Error ? error.message : "Failed to fetch blogs";
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to fetch blogs" },
+      { success: false, error: message },
       { status: 500 }
     );
   }

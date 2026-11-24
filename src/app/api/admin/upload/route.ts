@@ -76,12 +76,13 @@ export async function POST(request: NextRequest) {
       height: result.height,
       format: result.format,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Image upload error:", error);
+    const message = error instanceof Error ? error.message : "Failed to upload image to Cloudinary.";
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "Failed to upload image to Cloudinary.",
+        error: message,
       },
       { status: 500 }
     );

@@ -12,7 +12,11 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function PreviewPage({ params }: PageProps<"/admin/blogs/[id]/preview">) {
+interface PreviewPageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function PreviewPage({ params }: PreviewPageProps) {
   await requireAdminPage();
   const { id } = await params;
   if (!isValidObjectId(id)) notFound();

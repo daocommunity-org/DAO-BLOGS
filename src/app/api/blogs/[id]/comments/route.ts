@@ -30,10 +30,11 @@ export async function GET(
       .lean();
 
     return NextResponse.json({ success: true, comments }, { headers: { "Cache-Control": "private, no-store" } });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("GET /api/blogs/[id]/comments error:", error);
+    const message = error instanceof Error ? error.message : "Failed to fetch comments";
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to fetch comments" },
+      { success: false, error: message },
       { status: 500 }
     );
   }
@@ -113,10 +114,11 @@ export async function POST(
       { success: true, comment: newComment, commentsCount: blog?.commentsCount ?? 0 },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("POST /api/blogs/[id]/comments error:", error);
+    const message = error instanceof Error ? error.message : "Failed to create comment";
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to create comment" },
+      { success: false, error: message },
       { status: 500 }
     );
   }

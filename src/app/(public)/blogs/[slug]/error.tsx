@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { FileQuestion, RotateCcw, Home, ArrowLeft, BookOpen } from "lucide-react";
+import { FileQuestion, RotateCcw, Home, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface BlogErrorProps {

@@ -8,6 +8,36 @@ import Comment from "@/models/Comment";
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
 
+interface PopulatedBlogRef {
+  _id?: mongoose.Types.ObjectId | string;
+  title?: string;
+  slug?: string;
+  coverImage?: string;
+}
+
+interface PopulatedLike {
+  _id: mongoose.Types.ObjectId | string;
+  userId: string;
+  createdAt: string | Date;
+  blogId?: PopulatedBlogRef | null;
+}
+
+interface PopulatedComment {
+  _id: mongoose.Types.ObjectId | string;
+  content: string;
+  createdAt: string | Date;
+  userId: string;
+  userName?: string;
+  userImage?: string;
+  blogId?: PopulatedBlogRef | null;
+}
+
+interface BlogSummary {
+  _id: mongoose.Types.ObjectId | string;
+  title: string;
+  slug: string;
+}
+
 function escapeRegex(text: string): string {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
@@ -45,7 +75,7 @@ export async function GET(request: NextRequest) {
 
     if (tab === "likes") {
       // Build filter
-      const filter: any = {};
+      const filter: Record<string, unknown> = {};
       if (blogId && mongoose.Types.ObjectId.isValid(blogId)) {
         filter.blogId = new mongoose.Types.ObjectId(blogId);
       }
@@ -71,15 +101,15 @@ export async function GET(request: NextRequest) {
       const totalItems = await Like.countDocuments(filter);
       const totalPages = Math.ceil(totalItems / limit) || 1;
 
-      const rawLikes = await Like.find(filter)
+      const rawLikes = (await Like.find(filter)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .populate({ path: "blogId", select: "title slug coverImage" })
-        .lean();
+        .lean()) as unknown as PopulatedLike[];
 
       // Collect distinct user IDs to fetch user profiles
-      const userIds = Array.from(new Set(rawLikes.map((l: any) => l.userId))).filter(Boolean);
+      const userIds = Array.from(new Set(rawLikes.map((l) => l.userId))).filter(Boolean);
       const objectIds = userIds
         .filter((id) => ObjectId.isValid(id))
         .map((id) => new ObjectId(id));
@@ -90,12 +120,12 @@ export async function GET(request: NextRequest) {
         .project({ _id: 1, name: 1, email: 1, image: 1 })
         .toArray();
 
-      const userMap = new Map<string, any>();
+      const userMap = new Map<string, { _id: ObjectId; name?: string; email?: string; image?: string }>();
       users.forEach((u) => {
-        userMap.set(u._id.toString(), u);
+        userMap.set(u._id.toString(), u as { _id: ObjectId; name?: string; email?: string; image?: string });
       });
 
-      const items = rawLikes.map((l: any) => {
+      const items = rawLikes.map((l) => {
         const u = userMap.get(l.userId);
         return {
           id: l._id.toString(),
@@ -132,7 +162,7 @@ export async function GET(request: NextRequest) {
             totalComments,
             totalBlogs,
           },
-          activeBlogs: activeBlogs.map((b: any) => ({
+          activeBlogs: (activeBlogs as unknown as BlogSummary[]).map((b) => ({
             id: b._id.toString(),
             title: b.title,
             slug: b.slug,
@@ -141,7 +171,7 @@ export async function GET(request: NextRequest) {
       });
     } else {
       // Tab === "comments"
-      const filter: any = {};
+      const filter: Record<string, unknown> = {};
       if (blogId && mongoose.Types.ObjectId.isValid(blogId)) {
         filter.blogId = new mongoose.Types.ObjectId(blogId);
       }
@@ -157,14 +187,14 @@ export async function GET(request: NextRequest) {
       const totalItems = await Comment.countDocuments(filter);
       const totalPages = Math.ceil(totalItems / limit) || 1;
 
-      const rawComments = await Comment.find(filter)
+      const rawComments = (await Comment.find(filter)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .populate({ path: "blogId", select: "title slug coverImage" })
-        .lean();
+        .lean()) as unknown as PopulatedComment[];
 
-      const items = rawComments.map((c: any) => ({
+      const items = rawComments.map((c) => ({
         id: c._id.toString(),
         content: c.content,
         createdAt: c.createdAt,
@@ -198,7 +228,7 @@ export async function GET(request: NextRequest) {
             totalComments,
             totalBlogs,
           },
-          activeBlogs: activeBlogs.map((b: any) => ({
+          activeBlogs: (activeBlogs as unknown as BlogSummary[]).map((b) => ({
             id: b._id.toString(),
             title: b.title,
             slug: b.slug,
@@ -206,10 +236,11 @@ export async function GET(request: NextRequest) {
         },
       });
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("GET /api/admin/analytics error:", error);
+    const message = error instanceof Error ? error.message : "Failed to fetch analytics";
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to fetch analytics" },
+      { success: false, error: message },
       { status: 500 }
     );
   }

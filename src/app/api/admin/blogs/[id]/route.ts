@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePublishedPost } from "@/features/blogs/revalidate-published-post";
 import { adminNotFound, getAdminSession } from "@/features/auth/admin-access";
 import { connectToDatabase } from "@/lib/mongodb";
-import Blog from "@/models/Blog";
+import Blog, { IBlogAuthor } from "@/models/Blog";
 import Like from "@/models/Like";
 import Comment from "@/models/Comment";
 import mongoose from "mongoose";
@@ -43,7 +43,7 @@ export async function PUT(
     const body = await request.json();
 
     // Whitelist explicitly allowed fields to prevent mass assignment
-    const updateData: Record<string, any> = {};
+    const updateData: Record<string, unknown> = {};
     if (body.title !== undefined) updateData.title = String(body.title).trim();
     if (body.slug !== undefined) updateData.slug = String(body.slug).trim();
     if (body.excerpt !== undefined) updateData.excerpt = String(body.excerpt).trim();
@@ -72,7 +72,7 @@ export async function PUT(
 
     // Co-author permission check: must be primary author or listed as a co-author
     const isPrimaryAuthor = existingBlog.author?.id === session.user.id;
-    const isCoAuthor = existingBlog.coAuthors?.some((ca: any) => ca.id === session.user.id);
+    const isCoAuthor = existingBlog.coAuthors?.some((ca: IBlogAuthor) => ca.id === session.user.id);
     if (!isPrimaryAuthor && !isCoAuthor) {
       return NextResponse.json(
         { success: false, error: "Unauthorized. You are not an author or co-author of this article." },
@@ -89,11 +89,18 @@ export async function PUT(
         );
       }
 
+      interface RawCoAuthorInput {
+        id?: string;
+        name?: string;
+        email?: string;
+        image?: string;
+      }
+
       const rawList = Array.isArray(body.coAuthors)
-        ? body.coAuthors.filter((ca: any) => ca && ca.id && ca.id !== existingBlog.author?.id)
+        ? (body.coAuthors as RawCoAuthorInput[]).filter((ca) => ca && ca.id && ca.id !== existingBlog.author?.id)
         : [];
 
-      const rawIds = rawList.map((ca: any) => String(ca.id));
+      const rawIds = rawList.map((ca) => String(ca.id));
       const objectIds = rawIds
         .filter((cid: string) => mongoose.Types.ObjectId.isValid(cid))
         .map((cid: string) => new mongoose.Types.ObjectId(cid));
@@ -107,7 +114,7 @@ export async function PUT(
 
       const userMap = new Map(usersDb.map((u) => [u._id.toString(), u]));
 
-      updateData.coAuthors = rawList.map((ca: any) => {
+      updateData.coAuthors = rawList.map((ca) => {
         const u = userMap.get(String(ca.id));
         return {
           id: String(ca.id),
@@ -156,10 +163,11 @@ export async function PUT(
     revalidatePublishedPost(existingBlog, updatedBlog);
 
     return NextResponse.json({ success: true, blog: updatedBlog });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("PUT /api/blogs/[id] error:", error);
+    const message = error instanceof Error ? error.message : "Failed to update blog";
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to update blog" },
+      { success: false, error: message },
       { status: 500 }
     );
   }
@@ -224,10 +232,11 @@ export async function DELETE(
     ]);
 
     return NextResponse.json({ success: true, message: "Blog deleted successfully" });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("DELETE /api/blogs/[id] error:", error);
+    const message = error instanceof Error ? error.message : "Failed to delete blog";
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to delete blog" },
+      { success: false, error: message },
       { status: 500 }
     );
   }

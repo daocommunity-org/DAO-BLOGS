@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
+import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -10,11 +9,9 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
-  Calendar,
   RefreshCw,
   Clock,
   Mail,
-  UserCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -39,16 +36,14 @@ interface PaginationState {
 
 interface BlogAnalyticsViewProps {
   blogId: string;
-  blogTitle: string;
-  slug: string;
+  blogTitle?: string;
+  slug?: string;
   initialLikesCount: number;
   initialCommentsCount: number;
 }
 
 export function BlogAnalyticsView({
   blogId,
-  blogTitle,
-  slug,
   initialLikesCount,
   initialCommentsCount,
 }: BlogAnalyticsViewProps) {
@@ -57,6 +52,7 @@ export function BlogAnalyticsView({
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const [items, setItems] = useState<AnalyticsItem[]>([]);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -77,48 +73,63 @@ export function BlogAnalyticsView({
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Fetch blog-specific analytics
-  const fetchData = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const params = new URLSearchParams({
-        tab,
-        blogId,
-        page: page.toString(),
-        limit: "15",
+  // Fetch blog-specific analytics without synchronous setState inside effect
+  useEffect(() => {
+    let ignore = false;
+    const params = new URLSearchParams({
+      tab,
+      blogId,
+      page: page.toString(),
+      limit: "15",
+    });
+
+    if (debouncedQuery) params.set("query", debouncedQuery);
+
+    fetch(`/api/admin/analytics?${params.toString()}`)
+      .then((res) => res.text())
+      .then((text) => {
+        if (ignore) return;
+        const json = text ? JSON.parse(text) : {};
+
+        if (!json.success) {
+          throw new Error(json.error || "Failed to load analytics");
+        }
+
+        setItems(json.data?.items || []);
+        if (json.data?.pagination) {
+          setPagination(json.data.pagination);
+          if (tab === "likes" && !debouncedQuery) {
+            setTotalLikes(json.data.pagination.totalItems);
+          } else if (tab === "comments" && !debouncedQuery) {
+            setTotalComments(json.data.pagination.totalItems);
+          }
+        }
+      })
+      .catch((err: unknown) => {
+        if (ignore) return;
+        console.error("Blog analytics fetch error:", err);
+        const message = err instanceof Error ? err.message : "Failed to load analytics";
+        toast.error(message);
+      })
+      .finally(() => {
+        if (!ignore) {
+          setIsLoading(false);
+        }
       });
 
-      if (debouncedQuery) params.set("query", debouncedQuery);
+    return () => {
+      ignore = true;
+    };
+  }, [tab, blogId, page, debouncedQuery, refreshKey]);
 
-      const res = await fetch(`/api/admin/analytics?${params.toString()}`);
-      const text = await res.text();
-      const json = text ? JSON.parse(text) : {};
-
-      if (!res.ok || !json.success) {
-        throw new Error(json.error || "Failed to load analytics");
-      }
-
-      setItems(json.data.items || []);
-      setPagination(json.data.pagination);
-      if (tab === "likes" && !debouncedQuery) {
-        setTotalLikes(json.data.pagination.totalItems);
-      } else if (tab === "comments" && !debouncedQuery) {
-        setTotalComments(json.data.pagination.totalItems);
-      }
-    } catch (err: any) {
-      console.error("Blog analytics fetch error:", err);
-      toast.error(err.message || "Failed to load analytics");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [tab, blogId, page, debouncedQuery]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const handleRefresh = () => {
+    setIsLoading(true);
+    setRefreshKey((k) => k + 1);
+  };
 
   const handleTabChange = (newTab: "likes" | "comments") => {
     if (newTab !== tab) {
+      setIsLoading(true);
       setTab(newTab);
       setPage(1);
     }
@@ -208,7 +219,7 @@ export function BlogAnalyticsView({
 
           <button
             type="button"
-            onClick={() => fetchData()}
+            onClick={handleRefresh}
             disabled={isLoading}
             className="h-8 px-2.5 rounded-lg border border-border/40 hover:border-border text-muted-foreground hover:text-foreground bg-muted/20 hover:bg-muted/40 transition-colors flex items-center justify-center cursor-pointer disabled:opacity-50"
             title="Refresh list"

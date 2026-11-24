@@ -72,9 +72,9 @@ export async function POST(
           liked: true,
           likesCount: Math.max(0, updated?.likesCount ?? 1),
         });
-      } catch (createErr: any) {
+      } catch (createErr: unknown) {
         // If code 11000 (duplicate key from concurrent request), user is already liked
-        if (createErr.code === 11000) {
+        if (typeof createErr === "object" && createErr !== null && "code" in createErr && (createErr as { code: unknown }).code === 11000) {
           const currentBlog = await Blog.findById(blogId).select("likesCount").lean();
           return NextResponse.json({
             success: true,
@@ -85,10 +85,11 @@ export async function POST(
         throw createErr;
       }
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("POST /api/blogs/[id]/like error:", error);
+    const message = error instanceof Error ? error.message : "Failed to toggle like";
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to toggle like" },
+      { success: false, error: message },
       { status: 500 }
     );
   }
