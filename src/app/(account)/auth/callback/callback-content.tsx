@@ -1,20 +1,16 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { AuthLoadingScreen } from "@/features/auth/auth-loading-screen";
 import { getReturnPath } from "@/features/auth/return-path";
 
 export default function AuthCallbackContent() {
   const searchParams = useSearchParams();
-  const hasTriggered = useRef(false);
+  const rawReturnTo = searchParams?.get("returnTo") ?? "/";
+  const returnTo = getReturnPath(rawReturnTo);
 
   useEffect(() => {
-    if (hasTriggered.current) return;
-    hasTriggered.current = true;
-
-    const returnTo = getReturnPath(searchParams?.get("returnTo") ?? "/");
-
     const timer = setTimeout(() => {
       window.location.replace(returnTo);
     }, 1000);
@@ -22,12 +18,19 @@ export default function AuthCallbackContent() {
     return () => {
       clearTimeout(timer);
     };
-  }, [searchParams]);
+  }, [returnTo]);
 
   return (
-    <AuthLoadingScreen
-      message="Signing in..."
-      submessage="Redirecting you back"
-    />
+    <>
+      <AuthLoadingScreen
+        message="Signing in..."
+        submessage="Redirecting you back"
+      />
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `setTimeout(function(){ window.location.replace(${JSON.stringify(returnTo)}); }, 1000);`,
+        }}
+      />
+    </>
   );
 }
