@@ -5,9 +5,11 @@ From Uiverse.io by ZacharyCrespin - https://uiverse.io/ZacharyCrespin/grumpy-sti
 MIT License, Copyright (c) ZacharyCrespin (Zachary Crespin)
 */
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { SquareLoader } from "@/components/ui/square-loader";
+
+const subscribe = () => () => {};
 
 interface AuthLoadingScreenProps {
   message?: string;
@@ -18,11 +20,11 @@ export function AuthLoadingScreen({
   message = "Please wait...",
   submessage,
 }: AuthLoadingScreenProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false
+  );
 
   const content = (
     <div

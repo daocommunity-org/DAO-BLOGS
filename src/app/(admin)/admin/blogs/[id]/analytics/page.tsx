@@ -2,7 +2,7 @@ import { requireAdminPage } from "@/features/auth/admin-access";
 import { Navbar } from "@/components/layout/navbar";
 import Link from "next/link";
 import { BlogAnalyticsView } from "@/features/admin/blog-analytics-view";
-import { ArrowLeft, ExternalLink, BarChart3, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ExternalLink, ShieldCheck } from "lucide-react";
 import { notFound } from "next/navigation";
 import { connectToDatabase } from "@/lib/mongodb";
 import Blog from "@/models/Blog";

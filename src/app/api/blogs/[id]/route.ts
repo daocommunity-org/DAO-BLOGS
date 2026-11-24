@@ -42,10 +42,11 @@ export async function GET(
       blog: { ...blog, author: publicAuthor(author), coAuthors: (coAuthors ?? []).map(publicAuthor) },
       hasLiked,
     }, { headers: { "Cache-Control": "private, no-store" } });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("GET /api/blogs/[id] error:", error);
+    const message = error instanceof Error ? error.message : "Failed to retrieve blog";
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to retrieve blog" },
+      { success: false, error: message },
       { status: 500 }
     );
   }

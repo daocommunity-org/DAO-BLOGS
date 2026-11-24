@@ -86,7 +86,7 @@ export function BlogCard({ blog }: BlogCardProps) {
                   {blog.author.name?.[0]?.toUpperCase() || "A"}
                 </AvatarFallback>
               </Avatar>
-              {blog.coAuthors?.slice(0, 2).map((ca: any) => (
+              {blog.coAuthors?.slice(0, 2).map((ca) => (
                 <Avatar key={ca.id} className="w-5 h-5 ring-1 ring-background">
                   <AvatarImage src={ca.image} alt={ca.name} referrerPolicy="no-referrer" />
                   <AvatarFallback className="text-[10px]">

@@ -3,7 +3,11 @@ import { Navbar } from "@/components/layout/navbar";
 import { getReturnPath } from "@/features/auth/return-path";
 import { SignInPrompt } from "@/features/auth/sign-in-dialog";
 
-export default async function SignInErrorPage({ searchParams }: PageProps<"/sign-in/error">) {
+interface SignInErrorPageProps {
+  searchParams: Promise<{ returnTo?: string }>;
+}
+
+export default async function SignInErrorPage({ searchParams }: SignInErrorPageProps) {
   const { returnTo } = await searchParams;
 
   return (

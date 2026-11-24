@@ -7,7 +7,11 @@ import Like from "@/models/Like";
 
 const responseHeaders = { "Cache-Control": "private, no-store" };
 
-export async function GET(_request: Request, { params }: RouteContext<"/api/blogs/[id]/engagement">) {
+interface RouteContext {
+  params: Promise<{ id: string }>;
+}
+
+export async function GET(_request: Request, { params }: RouteContext) {
   const { id } = await params;
   if (!isValidObjectId(id)) {
     return NextResponse.json({ error: "Not found." }, { status: 404, headers: responseHeaders });

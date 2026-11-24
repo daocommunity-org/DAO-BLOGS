@@ -68,7 +68,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
       setSvgPath(path);
 
       // Track active segment position for highlight indicator
-      const activePoint = points.find((p) => p.id === activeId) || points[0];
+      const activePoint = points.find((p) => p.id === (activeId || headings[0]?.id)) || points[0];
       if (activePoint) {
         setActiveSegment({
           y1: activePoint.top + 2,
@@ -94,10 +94,6 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   useEffect(() => {
     if (headings.length === 0) return;
 
-    if (!activeId && headings[0]) {
-      setActiveId(headings[0].id);
-    }
-
     const observer = new IntersectionObserver(
       (entries) => {
         const visibleEntries = entries.filter((entry) => entry.isIntersecting);
@@ -120,11 +116,13 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
     });
 
     return () => observer.disconnect();
-  }, [headings, activeId]);
+  }, [headings]);
 
   if (headings.length < 2) {
     return null;
   }
+
+  const effectiveActiveId = activeId || headings[0]?.id || "";
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
@@ -181,7 +179,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
         {/* Headings List */}
         <div className="space-y-1.5">
           {headings.map((heading) => {
-            const isActive = activeId === heading.id;
+            const isActive = effectiveActiveId === heading.id;
             const isSubheading = heading.level === 3;
 
             return (

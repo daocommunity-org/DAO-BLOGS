@@ -30,12 +30,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    interface RawCoAuthorInput {
+      id?: string;
+      name?: string;
+      email?: string;
+      image?: string;
+    }
+
     // Sanitize and hydrate coAuthors list from user collection, excluding primary author
     const rawCoAuthorList = Array.isArray(coAuthors)
-      ? coAuthors.filter((ca: any) => ca && ca.id && ca.id !== session.user.id)
+      ? (coAuthors as RawCoAuthorInput[]).filter((ca) => ca && ca.id && ca.id !== session.user.id)
       : [];
 
-    const rawIds = rawCoAuthorList.map((ca: any) => String(ca.id));
+    const rawIds = rawCoAuthorList.map((ca) => String(ca.id));
     const objectIds = rawIds
       .filter((cid: string) => mongoose.Types.ObjectId.isValid(cid))
       .map((cid: string) => new mongoose.Types.ObjectId(cid));
@@ -49,7 +56,7 @@ export async function POST(request: NextRequest) {
 
     const userMap = new Map(usersDb.map((u) => [u._id.toString(), u]));
 
-    const sanitizedCoAuthors = rawCoAuthorList.map((ca: any) => {
+    const sanitizedCoAuthors = rawCoAuthorList.map((ca) => {
       const u = userMap.get(String(ca.id));
       return {
         id: String(ca.id),
@@ -78,10 +85,11 @@ export async function POST(request: NextRequest) {
 
     revalidatePublishedPost(undefined, newBlog);
     return NextResponse.json({ success: true, blog: newBlog }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("POST /api/blogs error:", error);
+    const message = error instanceof Error ? error.message : "Failed to create blog";
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to create blog" },
+      { success: false, error: message },
       { status: 500 }
     );
   }

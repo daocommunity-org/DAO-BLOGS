@@ -1,7 +1,7 @@
 import { requireAdminPage } from "@/features/auth/admin-access";
 import { notFound } from "next/navigation";
 import { connectToDatabase } from "@/lib/mongodb";
-import Blog from "@/models/Blog";
+import Blog, { IBlogAuthor } from "@/models/Blog";
 import mongoose from "mongoose";
 import { BlogContentEditor } from "@/features/admin/blog-content-editor";
 
@@ -40,7 +40,7 @@ export default async function EditorPage({ params }: EditorPageProps) {
   }
 
   const isPrimaryAuthor = blog.author?.id === session.user.id;
-  const isCoAuthor = blog.coAuthors?.some((ca: any) => ca.id === session.user.id);
+  const isCoAuthor = blog.coAuthors?.some((ca: IBlogAuthor) => ca.id === session.user.id);
 
   if (!isPrimaryAuthor && !isCoAuthor) {
     notFound();
