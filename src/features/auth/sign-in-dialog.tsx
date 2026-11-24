@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 import { useRef, useState, type RefObject } from "react";
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/lib/auth-client";
+import { AuthLoadingScreen } from "./auth-loading-screen";
 import { getReturnPath } from "./return-path";
 
 export function SignInDialog({
@@ -71,15 +72,19 @@ function GoogleSignIn({
     if (pending) return;
     setPending(true);
     setError(false);
-    const callbackURL = getReturnPath(
+    const returnPath = getReturnPath(
       returnTo ?? (window.location.pathname + window.location.search + window.location.hash),
     );
+    const callbackURL = `/auth/callback?returnTo=${encodeURIComponent(returnPath)}`;
     try {
-      const result = await signIn.social({
-        provider: "google",
-        callbackURL,
-        errorCallbackURL: `/sign-in/error?returnTo=${encodeURIComponent(callbackURL)}`,
-      });
+      const [result] = await Promise.all([
+        signIn.social({
+          provider: "google",
+          callbackURL,
+          errorCallbackURL: `/sign-in/error?returnTo=${encodeURIComponent(returnPath)}`,
+        }),
+        new Promise((resolve) => setTimeout(resolve, 1000)),
+      ]);
       if (!result.error && result.data?.redirect) return;
     } catch {
       // The inline message also covers a network failure before Google opens.
@@ -89,27 +94,35 @@ function GoogleSignIn({
   }
 
   return (
-    <div className="mt-7">
-      <button
-        ref={buttonRef}
-        type="button"
-        aria-label="Sign in with Google"
-        aria-busy={pending}
-        disabled={pending}
-        onClick={continueWithGoogle}
-        className="inline-flex cursor-pointer rounded-full transition-[filter,opacity] hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary disabled:cursor-wait disabled:opacity-60 motion-reduce:transition-none"
-      >
-        <Image
-          src="/auth/google-sign-in.png"
-          alt=""
-          width={198}
-          height={44}
-          unoptimized
-          className="h-auto w-[198px]"
+    <>
+      {pending && (
+        <AuthLoadingScreen
+          message="Connecting to Google..."
+          submessage="Redirecting to secure login"
         />
-      </button>
-      {error && <p role="alert" className="mt-3 text-sm text-rose-300">Couldn’t start sign-in. Try again.</p>}
-    </div>
+      )}
+      <div className="mt-7">
+        <button
+          ref={buttonRef}
+          type="button"
+          aria-label="Sign in with Google"
+          aria-busy={pending}
+          disabled={pending}
+          onClick={continueWithGoogle}
+          className="inline-flex cursor-pointer rounded-full transition-[filter,opacity] hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary disabled:cursor-wait disabled:opacity-60 motion-reduce:transition-none"
+        >
+          <Image
+            src="/auth/google-sign-in.png"
+            alt=""
+            width={198}
+            height={44}
+            unoptimized
+            className="h-auto w-[198px]"
+          />
+        </button>
+        {error && <p role="alert" className="mt-3 text-sm text-rose-300">Couldn’t start sign-in. Try again.</p>}
+      </div>
+    </>
   );
 }
 

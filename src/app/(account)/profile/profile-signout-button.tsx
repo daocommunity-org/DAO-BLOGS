@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { signOut } from "@/lib/auth-client";
+import { AuthLoadingScreen } from "@/features/auth/auth-loading-screen";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -27,20 +28,29 @@ export function ProfileSignOutButton() {
     if (isSigningOut) return;
     setIsSigningOut(true);
     try {
-      const result = await signOut();
+      const [result] = await Promise.all([
+        signOut(),
+        new Promise((resolve) => setTimeout(resolve, 1000)),
+      ]);
       if (result.error) throw new Error("Sign-out failed.");
       setOpen(false);
       router.push("/");
       router.refresh();
     } catch {
       toast.error("Couldn’t sign out. Try again.");
-    } finally {
       setIsSigningOut(false);
     }
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <>
+      {isSigningOut && (
+        <AuthLoadingScreen
+          message="Signing out..."
+          submessage="Clearing session and returning to home"
+        />
+      )}
+      <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger
         render={
           <Button
@@ -75,5 +85,6 @@ export function ProfileSignOutButton() {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+    </>
   );
 }
