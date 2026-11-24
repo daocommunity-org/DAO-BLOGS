@@ -124,7 +124,7 @@ export function BlogContentEditor({
         </div>
       </header>
 
-      <div className="min-h-0 flex-1 px-2 py-2 sm:px-6 sm:py-4">
+      <div className="min-h-0 flex-1 flex flex-col overflow-hidden">
         <MonacoHtmlEditor
           value={content}
           onChange={setContent}
