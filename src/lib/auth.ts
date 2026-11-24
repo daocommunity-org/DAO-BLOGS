@@ -16,6 +16,14 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
+  disabledPaths: [
+    "/admin/set-role", "/admin/create-user", "/admin/update-user",
+    "/admin/set-user-password", "/admin/remove-user", "/admin/impersonate-user",
+    "/admin/stop-impersonating", "/admin/ban-user", "/admin/unban-user",
+    "/admin/get-user", "/admin/list-users", "/admin/list-user-sessions",
+    "/admin/revoke-user-session", "/admin/revoke-user-sessions",
+    "/admin/has-permission",
+  ],
   plugins: [
     admin({
       defaultRole: "user",

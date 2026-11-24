@@ -1,6 +1,6 @@
 /**
  * Designated Admin User IDs
- * Add user IDs here or configure via the ADMIN_USER_IDS environment variable.
+ * Use Better Auth user IDs to grant admin access through the Admin plugin.
  */
 export const ADMIN_USER_IDS: string[] = [
   "6aa41ebcf8e6a5333a46830d", // Vishal P
@@ -8,9 +8,4 @@ export const ADMIN_USER_IDS: string[] = [
   "6aa436d32df875cca8324cd8", // Supbase test
   "6aa53bfae482469c59899ecd",
   "6aa5517cff6746d43ecde28c",
-  ...(process.env.ADMIN_USER_IDS
-    ? process.env.ADMIN_USER_IDS.split(",")
-        .map((s) => s.trim())
-        .filter(Boolean)
-    : []),
 ];

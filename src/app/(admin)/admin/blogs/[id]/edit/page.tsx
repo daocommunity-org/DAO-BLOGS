@@ -1,10 +1,9 @@
-import { notFound, redirect } from "next/navigation";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import { requireAdminPage } from "@/features/auth/admin-access";
+import { notFound } from "next/navigation";
 import { connectToDatabase } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
-import { Navbar } from "@/components/navbar";
-import { BlogEditorForm } from "@/components/blog-editor-form";
+import { Navbar } from "@/components/layout/navbar";
+import { BlogEditorForm } from "@/features/admin/blog-editor-form";
 import mongoose from "mongoose";
 
 export const dynamic = "force-dynamic";
@@ -15,29 +14,15 @@ interface EditBlogPageProps {
 }
 
 async function getBlogForEdit(id: string) {
-  try {
-    await connectToDatabase();
-    const isObjectId = mongoose.Types.ObjectId.isValid(id);
-    const blog = await Blog.findOne({
-      $or: [{ _id: isObjectId ? id : null }, { slug: id }],
-    }).lean();
-
-    if (!blog) return null;
-    return JSON.parse(JSON.stringify(blog));
-  } catch (error) {
-    console.error("Error fetching blog for edit:", error);
-    return null;
-  }
+  await connectToDatabase();
+  const query = mongoose.Types.ObjectId.isValid(id)
+    ? { $or: [{ _id: id }, { slug: id }] }
+    : { slug: id };
+  return Blog.findOne(query).lean();
 }
 
 export default async function EditBlogPage({ params }: EditBlogPageProps) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user) {
-    redirect("/?error=unauthorized");
-  }
+  const session = await requireAdminPage();
 
   const { id } = await params;
   const blog = await getBlogForEdit(id);
@@ -48,17 +33,33 @@ export default async function EditBlogPage({ params }: EditBlogPageProps) {
 
   // Permission enforcement: must be primary author or designated co-author
   const isPrimaryAuthor = blog.author?.id === session.user.id;
-  const isCoAuthor = blog.coAuthors?.some((ca: any) => ca.id === session.user.id);
+  const isCoAuthor = blog.coAuthors?.some((author) => author.id === session.user.id);
 
   if (!isPrimaryAuthor && !isCoAuthor) {
-    redirect("/admin/blogs?error=not_author");
+    notFound();
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Navbar />
       <main className="flex-1 w-full flex flex-col">
-        <BlogEditorForm key={blog._id} initialData={blog} isEdit={true} />
+        <BlogEditorForm
+          key={String(blog._id)}
+          viewerId={session.user.id}
+          canManageAuthors={isPrimaryAuthor}
+          initialData={{
+            _id: String(blog._id),
+            title: blog.title,
+            slug: blog.slug,
+            excerpt: blog.excerpt,
+            coverImage: blog.coverImage ?? "",
+            tags: blog.tags ?? [],
+            content: blog.content,
+            status: blog.status,
+            authorName: blog.author?.name,
+            coAuthors: (blog.coAuthors ?? []).map(({ id, name, email }) => ({ id, name, email })),
+          }}
+        />
       </main>
     </div>
   );

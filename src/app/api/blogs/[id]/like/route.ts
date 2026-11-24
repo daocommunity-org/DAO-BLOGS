@@ -33,6 +33,9 @@ export async function POST(
     await connectToDatabase();
     const blogId = new mongoose.Types.ObjectId(id);
     const userId = session.user.id;
+    if (!(await Blog.exists({ _id: blogId, status: "published" }))) {
+      return NextResponse.json({ success: false, error: "Not found." }, { status: 404 });
+    }
 
     const existingLike = await Like.findOne({ blogId, userId });
 

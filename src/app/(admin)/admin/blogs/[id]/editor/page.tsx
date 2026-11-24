@@ -1,10 +1,9 @@
-import { notFound, redirect } from "next/navigation";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import { requireAdminPage } from "@/features/auth/admin-access";
+import { notFound } from "next/navigation";
 import { connectToDatabase } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 import mongoose from "mongoose";
-import { BlogContentEditor } from "@/components/blog-content-editor";
+import { BlogContentEditor } from "@/features/admin/blog-content-editor";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -31,11 +30,7 @@ async function getBlogForEditor(id: string) {
 }
 
 export default async function EditorPage({ params }: EditorPageProps) {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (!session?.user) {
-    redirect("/?error=unauthorized");
-  }
+  const session = await requireAdminPage();
 
   const { id } = await params;
   const blog = await getBlogForEditor(id);
@@ -48,11 +43,12 @@ export default async function EditorPage({ params }: EditorPageProps) {
   const isCoAuthor = blog.coAuthors?.some((ca: any) => ca.id === session.user.id);
 
   if (!isPrimaryAuthor && !isCoAuthor) {
-    redirect("/admin/blogs?error=not_author");
+    notFound();
   }
 
   return (
     <BlogContentEditor
+      key={blog._id}
       blogId={blog._id}
       slug={blog.slug}
       title={blog.title}
