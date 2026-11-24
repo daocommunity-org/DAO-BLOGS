@@ -12,11 +12,10 @@ interface MongooseCache {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
   var mongooseCache: MongooseCache | undefined;
 }
 
-let cached: MongooseCache = global.mongooseCache || { conn: null, promise: null };
+const cached: MongooseCache = global.mongooseCache || { conn: null, promise: null };
 
 if (!global.mongooseCache) {
   global.mongooseCache = cached;
@@ -30,6 +29,7 @@ export async function connectToDatabase() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      serverSelectionTimeoutMS: 5000,
     };
 
     cached.promise = mongoose.connect(MONGODB_URI as string, opts).then((m) => {
