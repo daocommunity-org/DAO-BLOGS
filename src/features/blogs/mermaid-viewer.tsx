@@ -3,8 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-let isMermaidInitialized = false;
-
 function initMermaid(mermaid: typeof import("mermaid").default) {
   if (typeof window === "undefined") return;
 

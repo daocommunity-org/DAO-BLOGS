@@ -18,12 +18,17 @@ function formatDate(date: string | Date) {
 }
 
 async function getBlogs() {
-  await connectToDatabase();
-  return Blog.find({ status: "published" })
-    .sort({ createdAt: -1 })
-    .limit(24)
-    .select("title slug excerpt coverImage createdAt author.id author.name author.image coAuthors.id coAuthors.name coAuthors.image")
-    .lean();
+  try {
+    await connectToDatabase();
+    return await Blog.find({ status: "published" })
+      .sort({ createdAt: -1 })
+      .limit(24)
+      .select("title slug excerpt coverImage createdAt author.id author.name author.image coAuthors.id coAuthors.name coAuthors.image")
+      .lean();
+  } catch (error) {
+    console.error("Error fetching blogs for home page:", error);
+    return [];
+  }
 }
 
 export default async function HomePage() {

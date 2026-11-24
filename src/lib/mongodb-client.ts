@@ -8,16 +8,13 @@ if (!uri) {
 
 const options = {};
 
-let client: MongoClient;
-
 declare global {
-  // eslint-disable-next-line no-var
   var _mongoClient: MongoClient | undefined;
 }
 
 if (!global._mongoClient) {
   global._mongoClient = new MongoClient(uri, options);
 }
-client = global._mongoClient;
+const client: MongoClient = global._mongoClient;
 
 export default client;
