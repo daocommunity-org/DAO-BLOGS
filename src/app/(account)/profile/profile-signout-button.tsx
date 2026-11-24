@@ -17,10 +17,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 export function ProfileSignOutButton() {
-  const router = useRouter();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -34,8 +32,7 @@ export function ProfileSignOutButton() {
       ]);
       if (result.error) throw new Error("Sign-out failed.");
       setOpen(false);
-      router.push("/");
-      router.refresh();
+      window.location.replace("/");
     } catch {
       toast.error("Couldn’t sign out. Try again.");
       setIsSigningOut(false);
